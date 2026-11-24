@@ -1,6 +1,7 @@
-# Dependencies
+# Dependencies & Pages build output
 node_modules/
 package-lock.json
+dist/
 
 # Temporary capture frames & intermediate renders
 tmp_video/

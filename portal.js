@@ -8,6 +8,7 @@ const state = {
   rlaifR2: [],
   effortFull: [],
   effort32k: [],
+  authorHuman: null,
   blindMode: false,
   swapped: false,
   activeTrackId: null,
@@ -140,12 +141,15 @@ function renderGallery() {
         r1 && r2
           ? ` (${r2.composite_rlaif_100 - r1.composite_rlaif_100 >= 0 ? "+" : ""}${(r2.composite_rlaif_100 - r1.composite_rlaif_100).toFixed(1)})`
           : "";
-      const verdict = rl?.blind_critique?.verdict_ko || "RLAIF 평가 데이터 로드 완료";
+      const ah = state.authorHuman?.tracks?.find((x) => x.trackId === t.trackId);
+      const verdict = ah
+        ? `<strong>저자 정성 평가 (${ah.human.toFixed(1)}):</strong> ${ah.note}`
+        : (rl?.blind_critique?.verdict_ko || "RLAIF 평가 데이터 로드 완료");
       return `
       <article class="work-card" data-track="${t.trackId}">
         <div class="shot-stage" data-launch="${t.trackId}">
           <img id="img-${t.trackId}" src="${prefix}/${t.trackId}/hero_1440x900.png" alt="${t.title}" loading="lazy" />
-          <div class="rlaif-badge">RLAIF ${rl ? rl.composite_rlaif_100.toFixed(1) : "—"}${deltaStr}</div>
+          <div class="rlaif-badge">${ah ? `Human ${ah.human.toFixed(1)} · ` : ""}RLAIF ${rl ? rl.composite_rlaif_100.toFixed(1) : "—"}${deltaStr}</div>
           <div class="shot-pills" onclick="event.stopPropagation()">
             <button class="shot-pill active" data-shot="hero_1440x900.png" data-target="${t.trackId}">HERO</button>
             <button class="shot-pill" data-shot="macro_1440x900.png" data-target="${t.trackId}">MACRO</button>
@@ -631,7 +635,7 @@ function bindEvents() {
 
 async function init() {
   bindEvents();
-  const [telemetry, qaR1, qaR2, rlaifR1, rlaifR2, effortFull, effort32k] = await Promise.all([
+  const [telemetry, qaR1, qaR2, rlaifR1, rlaifR2, effortFull, effort32k, authorHuman] = await Promise.all([
     fetchJsonSafe("./results/swarm_telemetry.json"),
     fetchJsonSafe("./results/qa_round1.json"),
     fetchJsonSafe("./results/qa_round2.json"),
@@ -639,8 +643,9 @@ async function init() {
     fetchJsonSafe("./results/rlaif_round2.json"),
     fetchJsonSafe("./results/effort_sweep/effort_sweep_full.json"),
     fetchJsonSafe("./results/effort_sweep/effort_sweep_32k_cap.json"),
+    fetchJsonSafe("./results/human_vs_rlaif_final.json", null),
   ]);
-  Object.assign(state, { telemetry, qaR1, qaR2, rlaifR1, rlaifR2, effortFull, effort32k });
+  Object.assign(state, { telemetry, qaR1, qaR2, rlaifR1, rlaifR2, effortFull, effort32k, authorHuman });
   renderKpis();
   renderGallery();
   renderEffortSweep();

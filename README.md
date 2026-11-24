@@ -1,9 +1,14 @@
 # Neon Frontier 2026 — Multi-Domain Clean-Room Model Benchmark & RLAIF
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-d8b679.svg)](./LICENSE)
+[![Live Exhibition](https://img.shields.io/badge/Live%20Exhibition-GitHub%20Pages-d8b679.svg)](https://hobby-programmer-5000.github.io/neon-frontier-bench-2026/)
 [![Gate 5.5 QA](https://img.shields.io/badge/Gate%205.5%20Chrome%20QA-6%2F6%20PASS%20(59.9%20FPS)-4fb3a2.svg)](#4-round-1--round-2--최종-인간-정성-평가-결과)
 [![RLAIF Delta](https://img.shields.io/badge/RLAIF%20R1%E2%86%92R2-75.4%20%E2%86%92%2079.7%20(%2B4.3)-6aa1e0.svg)](#4-round-1--round-2--최종-인간-정성-평가-결과)
 [![Crossref DOIs](https://img.shields.io/badge/Academic%20DOIs-7%2F7%20Crossref%20Verified-4fb3a2.svg)](#7-참고-문헌-verified-references)
+
+**라이브 전시관 & 블라인드 정면 대결 바로 체험하기: https://hobby-programmer-5000.github.io/neon-frontier-bench-2026/**
+
+> 별도 설치 없이 브라우저에서 6개 인터랙티브 작품 직접 실행, `Gemini 4 Neon XHigh` vs `Claude Opus 5.5 High` 블라인드 시계 대결, Effort 스윕 차트, R1→R2 RLAIF 분석, 그리고 방문자 직접 정성 평가(Human vs AI 상관계수)까지 모두 체험할 수 있습니다.
 
 ---
 
