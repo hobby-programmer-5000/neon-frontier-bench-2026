@@ -6,18 +6,21 @@
     ],
     "consoleWarnings": [],
     "pageErrors": [],
+    "htmlComplete": true,
+    "metaReady": true,
+    "failReason": "1 err",
     "meta": {
       "ready": true,
       "fps": 60,
-      "energyJ": 0.00494603,
-      "steps": 353
+      "energyJ": 0.00506306,
+      "steps": 348
     },
     "perf": {
       "fpsMedian": 59.9,
-      "fpsP10": 4.3,
+      "fpsP10": 59.5,
       "frameTimeMedianMs": 16.7,
-      "frameTimeMaxMs": 1466.7,
-      "jsHeapMB": 1.8
+      "frameTimeMaxMs": 733.4,
+      "jsHeapMB": 1.9
     },
     "hud": {
       "overlaps": 0,
@@ -32,18 +35,21 @@
     "consoleErrors": [],
     "consoleWarnings": [],
     "pageErrors": [],
+    "htmlComplete": true,
+    "metaReady": true,
+    "failReason": null,
     "meta": {
       "ready": true,
-      "fps": 59.6,
-      "energyJ": 0.034879,
-      "steps": 312
+      "fps": 60,
+      "energyJ": 0.030264,
+      "steps": 426
     },
     "perf": {
       "fpsMedian": 59.9,
-      "fpsP10": 59.2,
+      "fpsP10": 59.9,
       "frameTimeMedianMs": 16.7,
-      "frameTimeMaxMs": 250,
-      "jsHeapMB": 2.2
+      "frameTimeMaxMs": 16.8,
+      "jsHeapMB": 2.6
     },
     "hud": {
       "overlaps": 0,
@@ -58,12 +64,15 @@
     "consoleErrors": [],
     "consoleWarnings": [],
     "pageErrors": [],
+    "htmlComplete": false,
+    "metaReady": false,
+    "failReason": "64K 절단 (</script> 미종료)",
     "meta": null,
     "perf": {
       "fpsMedian": 59.9,
       "fpsP10": 59.5,
       "frameTimeMedianMs": 16.7,
-      "frameTimeMaxMs": 17,
+      "frameTimeMaxMs": 17.9,
       "jsHeapMB": 1.3
     },
     "hud": {
@@ -72,6 +81,35 @@
       "samplePairs": []
     },
     "screenshot": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\effort_sweep\\hydrogen_xhigh.png",
+    "runtime_pass": false
+  },
+  {
+    "cell_id": "hydrogen_xhigh_long",
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "htmlComplete": true,
+    "metaReady": true,
+    "failReason": null,
+    "meta": {
+      "ready": true,
+      "fps": 60,
+      "energyJ": 3.1096,
+      "steps": 343
+    },
+    "perf": {
+      "fpsMedian": 59.9,
+      "fpsP10": 59.9,
+      "frameTimeMedianMs": 16.7,
+      "frameTimeMaxMs": 17.1,
+      "jsHeapMB": 2.6
+    },
+    "hud": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "screenshot": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\effort_sweep\\hydrogen_xhigh_long.png",
     "runtime_pass": true
   },
   {
@@ -79,18 +117,21 @@
     "consoleErrors": [],
     "consoleWarnings": [],
     "pageErrors": [],
+    "htmlComplete": true,
+    "metaReady": true,
+    "failReason": null,
     "meta": {
       "ready": true,
-      "fps": 56.8,
-      "energyJ": 0.588288,
-      "steps": 353
+      "fps": 60,
+      "energyJ": 0.584518,
+      "steps": 385
     },
     "perf": {
       "fpsMedian": 59.9,
-      "fpsP10": 29.9,
+      "fpsP10": 59.9,
       "frameTimeMedianMs": 16.7,
-      "frameTimeMaxMs": 333.5,
-      "jsHeapMB": 2.6
+      "frameTimeMaxMs": 16.8,
+      "jsHeapMB": 2.3
     },
     "hud": {
       "overlaps": 0,
@@ -105,18 +146,21 @@
     "consoleErrors": [],
     "consoleWarnings": [],
     "pageErrors": [],
+    "htmlComplete": true,
+    "metaReady": true,
+    "failReason": null,
     "meta": {
       "ready": true,
       "fps": 60,
-      "energyJ": 12.7996,
-      "steps": 512
+      "energyJ": 11.5315,
+      "steps": 484
     },
     "perf": {
       "fpsMedian": 59.9,
       "fpsP10": 59.5,
       "frameTimeMedianMs": 16.7,
-      "frameTimeMaxMs": 17,
-      "jsHeapMB": 2.2
+      "frameTimeMaxMs": 17.1,
+      "jsHeapMB": 2.1
     },
     "hud": {
       "overlaps": 0,
@@ -131,18 +175,21 @@
     "consoleErrors": [],
     "consoleWarnings": [],
     "pageErrors": [],
+    "htmlComplete": true,
+    "metaReady": true,
+    "failReason": null,
     "meta": {
       "ready": true,
-      "fps": 58.6,
-      "energyJ": 0.4389,
-      "steps": 514
+      "fps": 60,
+      "energyJ": 0.48843,
+      "steps": 478
     },
     "perf": {
       "fpsMedian": 59.9,
-      "fpsP10": 30,
+      "fpsP10": 59.9,
       "frameTimeMedianMs": 16.7,
-      "frameTimeMaxMs": 49.7,
-      "jsHeapMB": 3.8
+      "frameTimeMaxMs": 17.1,
+      "jsHeapMB": 3.9
     },
     "hud": {
       "overlaps": 0,
@@ -157,18 +204,21 @@
     "consoleErrors": [],
     "consoleWarnings": [],
     "pageErrors": [],
+    "htmlComplete": true,
+    "metaReady": true,
+    "failReason": null,
     "meta": {
       "ready": true,
-      "fps": 55.1,
-      "energyJ": 1.042798,
-      "steps": 527
+      "fps": 60,
+      "energyJ": 1.057104,
+      "steps": 496
     },
     "perf": {
       "fpsMedian": 59.9,
-      "fpsP10": 56.2,
+      "fpsP10": 59.9,
       "frameTimeMedianMs": 16.7,
-      "frameTimeMaxMs": 34,
-      "jsHeapMB": 2.1
+      "frameTimeMaxMs": 17.1,
+      "jsHeapMB": 2.2
     },
     "hud": {
       "overlaps": 0,

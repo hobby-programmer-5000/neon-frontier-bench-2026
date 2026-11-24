@@ -99,8 +99,8 @@
         </div>
       </div>
       <div class="callout-box">
-        <strong>핵심 실증 발견 — 32K Output Cap 과사고(Overthinking) 절단 절벽:</strong>
-        <code>max_output_tokens = 32,768</code> 설정 시 <code>neon_xhigh</code>(사고 29,701 / 출력 3,067), <code>hydrogen_xhigh</code>(사고 32,213 / 출력 555), <code>carbon_high</code>(사고 32,765 / 출력 3 — 99.99% 사고 소진!)가 코드 출력 직전 절단되었습니다. 아래 주 테이블은 <code>65,536</code> 캡 확장 후 완전 출력된 실측 결과이며, 하단에 32K vs 64K 비교 차트를 함께 제공합니다.
+        <strong>핵심 실측 발견 — 32K·64K 과사고(Overthinking) 출력 절단 및 Long Decode 조건:</strong>
+        <code>max_output_tokens = 32,768</code>에서는 <code>neon_xhigh</code>(사고 29,701 / 출력 3,067), <code>hydrogen_xhigh</code>(사고 32,213 / 출력 555), <code>carbon_high</code>(사고 32,765 / 출력 3)가 코드 완성 전 잘렸습니다. <code>65,536</code>(64K 동기)로 올려도 <code>hydrogen_xhigh</code>는 사고 토큰만 41,301개를 써 합계 65,536에 걸리며 <code>&lt;/script&gt;</code> 직전 잘려 <strong>실패(빈 캔버스)</strong>했습니다. 동일 프롬프트를 별도 대조 실험인 <code>hydrogen_xhigh_long</code>(<code>background=True</code>, <code>max_output_tokens=131,072</code>)으로 실행하면 사고 31,485 + 출력 24,774 = 56,259토큰(1 hop)으로 완주해 정상 렌더링(89.08점)됩니다. 즉 <code>hydrogen xhigh</code>는 사고 토큰 편차(31.5K~41.3K+)가 커서 64K 동기 상한에서는 절단 실패가 발생하며, 128K Long Decode를 켜야 안정적으로 그려집니다.
       </div>
       <div class="charts-row">
         <div class="chart-card">

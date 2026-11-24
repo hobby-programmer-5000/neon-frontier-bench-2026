@@ -80,22 +80,23 @@
 
 ---
 
-## 5. Model × Effort 제어 API 스윕 (`low → xhigh`) 및 32K 출력 절단 현상
+## 5. Model × Effort 제어 API 스윕 (`low → xhigh`) 및 32K·64K 출력 절단 현상
 
-동일한 단일 프롬프트(*스위스 이스케이프먼트 & 이중 진자 RK4 위상공간 스튜디오*)를 Gemini Interactions API(`v1`)로 직접 호출해 `thinking_level`별 사고 토큰(`thought_tokens`), 출력 토큰, 지연시간, 공식 USD 비용, Chrome QA, `gemini-decision-1` RLAIF 점수를 계측했습니다.
+동일한 단일 프롬프트(*스위스 이스케이프먼트 & 이중 진자 RK4 위상공간 스튜디오*)를 Gemini Interactions API(`v1`)로 직접 호출해 `thinking_level`별 사고 토큰(`thought_tokens`), 출력 토큰, 지연시간, 공식 USD 비용, Chrome QA(`</script>` 종료 및 `window.__SWEEP_META__.ready` 포함), `gemini-decision-1` RLAIF 점수를 계측했습니다.
 
-| Cell (`64K Cap`) | Model | Effort | Wall (s) | Thought Tok | Output Tok | Tok/s | 공식 USD | LOC | Chrome QA | `Decision-1` RLAIF | 점수/센트 |
+| Cell | Model | Effort / 실행 조건 | Wall (s) | Thought Tok | Output Tok | Tok/s | 공식 USD | LOC | Chrome QA | `Decision-1` RLAIF | 점수/센트 |
 |---|---|---|---:|---:|---:|---:|---:|---:|---|---:|---:|
-| `neon_low` | `gemini-4-neon` | `low` | 185.98 | 1,947 | 14,368 | 87.7 | **\$0.2460** | 1,340 | PASS (`59.9`) | 87.70 | **3.6** |
-| `neon_medium` | `gemini-4-neon` | `medium` | **185.46** | 6,340 | 17,765 | 130.0 | \$0.3628 | 1,650 | PASS (`59.9`) | **88.72** | **2.4** *(Pareto 최적)* |
-| `neon_high` | `gemini-4-neon` | `high` | 398.13 | 17,465 | 28,510 | 115.5 | \$0.6909 | 2,502 | PASS (`59.9`) | 89.53 | 1.3 |
-| `neon_xhigh` | `gemini-4-neon` | `xhigh` | 506.45 | 29,053 | 30,523 | 117.6 | \$0.8949 | 2,623 | PASS (`59.9`) | 89.83 | 1.0 |
-| `hydrogen_xhigh` | `gemini-4-hydrogen` | `xhigh` | 315.45 | 41,301 | 24,235 | **207.8** | \$0.4921 | 2,062 | PASS (`59.9`) | 67.90 *(64K 포화)* | 1.4 |
-| `argon_high` | `gemini-4-argon` | `high` | 284.66 | 6,237 | 21,113 | 96.1 | \$0.2743 | 1,901 | FAIL (`1 err`) | 41.25 *(0.5× 페널티)* | 1.5 |
-| `carbon_high` | `gemini-4-carbon` | `high` | 784.28 | 36,311 | 27,690 | 81.6 | \$0.7072 | 2,362 | PASS (`59.9`) | **90.10** *(단일샷 1위)* | 1.3 |
+| `neon_low` | `gemini-4-neon` | `low` (64K 동기) | 185.98 | 1,947 | 14,368 | 87.7 | **\$0.2460** | 1,340 | PASS (`59.9`) | 87.70 | **3.6** |
+| `neon_medium` | `gemini-4-neon` | `medium` (64K 동기) | **185.46** | 6,340 | 17,765 | 130.0 | \$0.3628 | 1,650 | PASS (`59.9`) | **88.72** | **2.4** *(Pareto 최적)* |
+| `neon_high` | `gemini-4-neon` | `high` (64K 동기) | 398.13 | 17,465 | 28,510 | 115.5 | \$0.6909 | 2,502 | PASS (`59.9`) | 89.53 | 1.3 |
+| `neon_xhigh` | `gemini-4-neon` | `xhigh` (64K 동기) | 506.45 | 29,053 | 30,523 | 117.6 | \$0.8949 | 2,623 | PASS (`59.9`) | 89.83 | 1.0 |
+| `hydrogen_xhigh` | `gemini-4-hydrogen` | `xhigh` (64K 동기) | 315.45 | 41,301 | 24,235 | **207.8** | \$0.4921 | 2,062 | **FAIL (`64K 절단`)** | 27.43 *(0.5× 페널티)* | 0.6 |
+| `hydrogen_xhigh_long` | `gemini-4-hydrogen` | `xhigh` *(128K Long Decode · 별도 대조)* | 285.42 | 31,485 | 24,774 | 197.1 | \$0.4226 | 2,141 | PASS (`59.9`) | 89.08 *(1 hop 완주)* | 2.1 |
+| `argon_high` | `gemini-4-argon` | `high` (64K 동기) | 284.66 | 6,237 | 21,113 | 96.1 | \$0.2743 | 1,901 | FAIL (`1 err`) | 41.25 *(0.5× 페널티)* | 1.5 |
+| `carbon_high` | `gemini-4-carbon` | `high` (64K 동기) | 784.28 | 36,311 | 27,690 | 81.6 | \$0.7072 | 2,362 | PASS (`59.9`) | **90.10** *(단일샷 1위)* | 1.3 |
 
-> **32K 상한에서 발생한 과사고(Overthinking) 출력 절단 ([effort_sweep_32k_cap.json](./results/effort_sweep/effort_sweep_32k_cap.json)):**  
-> `max_output_tokens = 32,768` 조건에서는 `neon_xhigh`(사고 `90.6%`, 352 LOC에서 절단), `hydrogen_xhigh`(사고 `98.3%`, 53 LOC에서 절단), `carbon_high`(사고 `99.99%`, 출력 3토큰 / 1 LOC)가 코드를 완성하기 전에 출력 한도를 모두 써 버렸습니다. `high`·`xhigh` 설정에서는 `max_output_tokens = 65536` 이상을 지정해야 하며, 이번 스윕에서는 `Neon Medium`이 `Carbon High` 품질의 `98.4%`를 `23.6%` 시간(`185s`)에 달성해 비용 대비 효율이 가장 높았습니다.
+> **32K·64K 상한에서 발생한 과사고(Overthinking) 출력 절단 ([effort_sweep_32k_cap.json](./results/effort_sweep/effort_sweep_32k_cap.json)):**  
+> `max_output_tokens = 32,768` 조건에서는 `neon_xhigh`(사고 `90.6%`, 352 LOC에서 절단), `hydrogen_xhigh`(사고 `98.3%`, 53 LOC에서 절단), `carbon_high`(사고 `99.99%`, 출력 3토큰 / 1 LOC)가 코드를 완성하기 전에 출력 한도를 모두 써 버렸습니다. `max_output_tokens = 65,536`(64K 동기)로 올려도 `hydrogen_xhigh`는 사고 토큰만 41,301개(63.0%)를 써 합계 65,536에 걸리며 `</script>` 직전 잘려 빈 캔버스로 실패(`FAIL`)했습니다. 공정 비교를 위해 64K 실패 원본은 그대로 두고, 동일 프롬프트를 별도 대조 조건인 Long Decode(`background=True`, `max_output_tokens = 131,072`)로 실행한 `hydrogen_xhigh_long`을 병기했습니다. 이 실행은 사고 31,485 + 출력 24,774 = 56,259토큰(`1 hop`, 2,141 LOC)으로 완주해 정상 렌더링(`89.08점`)되었습니다. `hydrogen xhigh`는 실행별 사고 길이 편차(31.5K~41.3K+)가 커서 64K 동기 상한에서는 절단 실패가 나며, Long Decode를 켜야 안정적으로 그려집니다. 64K 동기 동일 조건 기준 비용 대비 효율은 `Neon Medium`이 `Carbon High` 품질의 `98.4%`를 `23.6%` 시간(`185s`)에 달성해 가장 높았습니다.
 
 ---
 

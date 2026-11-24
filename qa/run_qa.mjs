@@ -241,24 +241,37 @@ async function auditEffortSweep(browser, baseUrl) {
     });
     page.on("pageerror", (e) => pErrs.push(String(e)));
 
+    const rawHtml = fs.readFileSync(path.join(sweepDir, f), "utf8");
+    const htmlComplete = /<\/script>/i.test(rawHtml) && /<\/html>/i.test(rawHtml);
+
     await page.goto(`${baseUrl}/results/effort_sweep/${f}`, { waitUntil: "domcontentloaded", timeout: 20000 });
     await page.waitForTimeout(1000);
     const perf = await samplePerformance(page, 60);
     const meta = await page.evaluate(() => window.__SWEEP_META__ || null);
+    const metaReady = Boolean(meta && meta.ready === true);
     const hud = await checkHudOverlaps(page);
     const png = path.join(sweepDir, `${cid}.png`);
     await page.screenshot({ path: png, type: "png" });
     await context.close();
+
+    let failReason = null;
+    if (!htmlComplete) failReason = "64K 절단 (</script> 미종료)";
+    else if (!metaReady) failReason = "미초기화 (meta=null)";
+    else if (errs.length + pErrs.length > 0) failReason = `${errs.length + pErrs.length} err`;
+
     out.push({
       cell_id: cid,
       consoleErrors: errs,
       consoleWarnings: warns,
       pageErrors: pErrs,
+      htmlComplete,
+      metaReady,
+      failReason,
       meta,
       perf,
       hud,
       screenshot: png,
-      runtime_pass: errs.length === 0 && pErrs.length === 0,
+      runtime_pass: errs.length === 0 && pErrs.length === 0 && htmlComplete && metaReady,
     });
   }
   return out;

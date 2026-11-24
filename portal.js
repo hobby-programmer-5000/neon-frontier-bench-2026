@@ -295,7 +295,7 @@ function renderEffortSweep() {
 
   // Bar Chart: Thought vs Output Tokens
   const maxTok = Math.max(...data.map((d) => (d.thought_tokens || 0) + (d.output_tokens || 0)), 1);
-  const svgW = 560, rowH = 34, padL = 118, padR = 72;
+  const svgW = 580, rowH = 34, padL = 152, padR = 72;
   const barW = svgW - padL - padR;
   const bars = data
     .map((d, i) => {
@@ -303,11 +303,12 @@ function renderEffortSweep() {
       const tw = ((d.thought_tokens || 0) / maxTok) * barW;
       const ow = ((d.output_tokens || 0) / maxTok) * barW;
       const tot = (d.thought_tokens || 0) + (d.output_tokens || 0);
+      const labelFill = d.long_decode ? "#4fb3a2" : !d.qa_runtime_pass ? "#e06c5b" : "#eceae4";
       return `<g>
-        <text x="${padL - 8}" y="${y + 14}" text-anchor="end" fill="#eceae4" font-size="11.5" font-family="monospace">${d.cell_id}</text>
+        <text x="${padL - 8}" y="${y + 14}" text-anchor="end" fill="${labelFill}" font-size="11" font-family="monospace">${d.cell_id}</text>
         <rect x="${padL}" y="${y + 2}" width="${tw.toFixed(1)}" height="16" fill="#d8b679" rx="2"/>
         <rect x="${(padL + tw).toFixed(1)}" y="${y + 2}" width="${ow.toFixed(1)}" height="16" fill="#4fb3a2" rx="2"/>
-        <text x="${(padL + tw + ow + 6).toFixed(1)}" y="${y + 14}" fill="#989aa6" font-size="10.5" font-family="monospace">${(tot / 1000).toFixed(1)}k</text>
+        <text x="${(padL + tw + ow + 6).toFixed(1)}" y="${y + 14}" fill="#989aa6" font-size="10.5" font-family="monospace">${(tot / 1000).toFixed(1)}k${d.qa_html_complete === false ? " (절단)" : ""}</text>
       </g>`;
     })
     .join("");
@@ -321,16 +322,21 @@ function renderEffortSweep() {
     </svg>`;
 
   // Scatter Chart: Cost USD vs RLAIF Score
-  const pW = 540, pH = 268, mL = 48, mB = 34, mT = 18, mR = 24;
+  const pW = 560, pH = 278, mL = 48, mB = 34, mT = 18, mR = 24;
   const maxC = Math.max(...data.map((d) => d.cost_usd || 0), 1.0);
+  const yMin = 20, yMax = 100;
   const pts = data
     .map((d) => {
       const x = mL + ((d.cost_usd || 0) / maxC) * (pW - mL - mR);
-      const y = pH - mB - (Math.max(35, d.rlaif_score_100 || 40) - 35) / 65 * (pH - mT - mB);
+      const y = pH - mB - ((Math.max(yMin, d.rlaif_score_100 || yMin) - yMin) / (yMax - yMin)) * (pH - mT - mB);
       const col = d.model.includes("neon") ? "#d8b679" : d.model.includes("carbon") ? "#6aa1e0" : d.model.includes("hydrogen") ? "#4fb3a2" : "#e06c5b";
+      const label = d.long_decode ? `${d.cell_id} [Long] (${d.rlaif_score_100})` : `${d.cell_id} (${d.rlaif_score_100})`;
+      const circle = d.long_decode
+        ? `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6" fill="#0c0d10" stroke="${col}" stroke-width="2.4"/>`
+        : `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6" fill="${d.qa_runtime_pass ? col : "#e06c5b"}" stroke="#0c0d10" stroke-width="1.5"/>`;
       return `<g>
-        <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6" fill="${col}" stroke="#0c0d10" stroke-width="1.5"/>
-        <text x="${(x + 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" fill="#eceae4" font-size="10.5" font-family="monospace">${d.cell_id} (${d.rlaif_score_100})</text>
+        ${circle}
+        <text x="${(x + 8).toFixed(1)}" y="${(y + 4).toFixed(1)}" fill="${d.long_decode ? "#4fb3a2" : "#eceae4"}" font-size="10" font-family="monospace">${label}</text>
       </g>`;
     })
     .join("");
@@ -339,36 +345,46 @@ function renderEffortSweep() {
       <line x1="${mL}" y1="${pH - mB}" x2="${pW - mR}" y2="${pH - mB}" stroke="#3a4050"/>
       <line x1="${mL}" y1="${mT}" x2="${mL}" y2="${pH - mB}" stroke="#3a4050"/>
       <text x="${pW / 2}" y="${pH - 6}" text-anchor="middle" fill="#989aa6" font-size="11">API Cost (USD, Official Nov 2026 Paid Tier)</text>
-      <text x="14" y="${pH / 2}" text-anchor="middle" fill="#989aa6" font-size="11" transform="rotate(-90 14 ${pH / 2})">RLAIF Score (0–100)</text>
+      <text x="14" y="${pH / 2}" text-anchor="middle" fill="#989aa6" font-size="11" transform="rotate(-90 14 ${pH / 2})">RLAIF Score (20–100)</text>
       ${pts}
     </svg>`;
 
-  // Full 64K Table
+  // Full 64K Table + Explicit Long Decode Control Row
   document.getElementById("effort-table-wrap").innerHTML = `<table>
     <thead><tr>
-      <th>Cell</th><th>Model</th><th>Effort</th><th class="num">Wall (s)</th><th class="num">Thought Tok</th>
+      <th>Cell</th><th>Model</th><th>Effort / 실행 조건</th><th class="num">Wall (s)</th><th class="num">Thought Tok</th>
       <th class="num">Output Tok</th><th class="num">Tok/s</th><th class="num">USD</th><th class="num">LOC</th>
       <th>QA</th><th class="num">FPS</th><th class="num">Decision-1 RLAIF</th><th class="num">점수/센트</th><th>라이브</th>
     </tr></thead>
     <tbody>${data
-      .map(
-        (d) => `<tr>
+      .map((d) => {
+        const capTag = d.long_decode
+          ? `<span style="color:#4fb3a2">128K Long Decode (대조)</span>`
+          : `64K 동기`;
+        const qaText = d.qa_runtime_pass
+          ? "PASS"
+          : d.qa_html_complete === false
+          ? "FAIL (64K 절단)"
+          : `FAIL (${d.qa_fail_reason || d.qa_errors + " err"})`;
+        const fpsText = d.qa_meta_ready === false ? "— (미실행)" : (d.qa_fps ?? "—");
+        const linkText = d.qa_html_complete === false ? "절단본 ↗" : "열기 ↗";
+        return `<tr${d.long_decode ? ' style="background:rgba(79,179,162,0.06)"' : ""}>
         <td><code>${d.cell_id}</code></td>
         <td>${d.model}</td>
-        <td><code>${d.effort}</code></td>
+        <td><code>${d.effort}</code> · <small class="muted">${capTag}</small></td>
         <td class="num">${d.wall_clock_sec}</td>
         <td class="num">${fmtInt(d.thought_tokens)}</td>
         <td class="num">${fmtInt(d.output_tokens)}</td>
         <td class="num">${d.tokens_per_sec}</td>
         <td class="num">$${Number(d.cost_usd).toFixed(4)}</td>
         <td class="num">${fmtInt(d.html_lines)}</td>
-        <td class="${d.qa_runtime_pass ? "pill-pass" : "pill-fail"}">${d.qa_runtime_pass ? "PASS" : "FAIL (" + d.qa_errors + ")"}</td>
-        <td class="num">${d.qa_fps ?? "—"}</td>
+        <td class="${d.qa_runtime_pass ? "pill-pass" : "pill-fail"}">${qaText}</td>
+        <td class="num">${fpsText}</td>
         <td class="num"><strong class="gold">${d.rlaif_score_100 ?? "—"}</strong></td>
         <td class="num">${d.quality_per_cent ?? "—"}</td>
-        <td><a class="btn-outline" style="padding:3px 8px;font-size:11px" href="./results/effort_sweep/${d.cell_id}.html" target="_blank">열기 ↗</a></td>
-      </tr>`
-      )
+        <td><a class="btn-outline" style="padding:3px 8px;font-size:11px" href="./results/effort_sweep/${d.cell_id}.html" target="_blank">${linkText}</a></td>
+      </tr>`;
+      })
       .join("")}</tbody>
   </table>`;
 

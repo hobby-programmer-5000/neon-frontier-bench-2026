@@ -98,6 +98,28 @@
     "html_path": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\effort_sweep\\hydrogen_xhigh.html"
   },
   {
+    "cell_id": "hydrogen_xhigh_long",
+    "model": "gemini-4-hydrogen",
+    "effort": "xhigh",
+    "max_output_tokens_cap": 131072,
+    "long_decode": true,
+    "long_decode_hops": 1,
+    "technique": "Direct Single-Shot API (Interactions v1, 128K Long Decode)",
+    "status": "ok",
+    "wall_clock_sec": 285.42,
+    "input_tokens": 417,
+    "cached_tokens": 0,
+    "thought_tokens": 31485,
+    "output_tokens": 24774,
+    "billable_output_tokens": 56259,
+    "total_tokens": 56676,
+    "tokens_per_sec": 197.1,
+    "cost_usd": 0.42257,
+    "html_bytes": 71359,
+    "html_lines": 2141,
+    "html_path": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\effort_sweep\\hydrogen_xhigh_long.html"
+  },
+  {
     "cell_id": "argon_high",
     "model": "gemini-4-argon",
     "effort": "high",

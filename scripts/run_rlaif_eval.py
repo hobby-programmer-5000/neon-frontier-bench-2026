@@ -222,14 +222,18 @@ def blind_qualitative_critic(client_std: genai.Client, qa_item: dict, anon_label
     return {"raw": txt, "blind_qualitative_score_100": None, "critic_model": "gemini-4-carbon (medium, blind)"}
 
 
-def score_effort_sweep(client_beta: genai.Client) -> None:
+def score_effort_sweep(client_beta: genai.Client, only_cells: set[str] | None = None) -> None:
     qa_path = ROOT / "results" / "effort_sweep" / "effort_sweep_qa.json"
     metrics_path = ROOT / "results" / "effort_sweep" / "effort_sweep_metrics.json"
+    full_path = ROOT / "results" / "effort_sweep" / "effort_sweep_full.json"
     if not qa_path.exists() or not metrics_path.exists():
         print("Effort sweep QA or metrics not found; skipping sweep RLAIF.")
         return
     qa_rows = {r["cell_id"]: r for r in json.loads(qa_path.read_text(encoding="utf-8"))}
     metric_rows = json.loads(metrics_path.read_text(encoding="utf-8"))
+    prev_full = {}
+    if full_path.exists():
+        prev_full = {r["cell_id"]: r for r in json.loads(full_path.read_text(encoding="utf-8"))}
 
     sweep_q = {
         "visual_craft": QUESTIONS["visual_craftsmanship"],
@@ -242,49 +246,62 @@ def score_effort_sweep(client_beta: genai.Client) -> None:
         q = qa_rows.get(cid)
         if not q or not Path(q["screenshot"]).exists():
             continue
-        inputs = [
-            {
-                "type": "text",
-                "text": (
-                    f"Evaluate this single-shot Swiss Escapement & Double-Pendulum Phase-Space Studio screenshot. "
-                    f"Runtime pass={q['runtime_pass']}, FPS={q['perf']['fpsMedian']}, errors={len(q['consoleErrors'])+len(q['pageErrors'])}, hud_overlaps={q['hud']['overlaps']}."
-                ),
-            },
-            img_part(Path(q["screenshot"])),
-        ]
-        res = client_beta.decisions.create(model="gemini-decision-1", input=inputs, questions=sweep_q)
-        scores = {k: round((float(res.answers[k].score) / 4.0) * 100.0, 1) for k in sweep_q}
-        avg = round(sum(scores.values()) / len(scores), 2)
-        if not q["runtime_pass"]:
-            avg = round(avg * 0.5, 2)
+        prev = prev_full.get(cid)
         row["qa_runtime_pass"] = q["runtime_pass"]
+        row["qa_html_complete"] = q.get("htmlComplete", True)
+        row["qa_meta_ready"] = q.get("metaReady", bool(q.get("meta") and q["meta"].get("ready")))
+        row["qa_fail_reason"] = q.get("failReason")
         row["qa_fps"] = q["perf"]["fpsMedian"]
         row["qa_errors"] = len(q["consoleErrors"]) + len(q["pageErrors"])
         row["qa_overlaps"] = q["hud"]["overlaps"]
+
+        if only_cells is not None and cid not in only_cells and prev and prev.get("rlaif_axes"):
+            scores = prev["rlaif_axes"]
+        else:
+            inputs = [
+                {
+                    "type": "text",
+                    "text": (
+                        f"Evaluate this single-shot Swiss Escapement & Double-Pendulum Phase-Space Studio screenshot. "
+                        f"Runtime pass={q['runtime_pass']}, html_complete={row['qa_html_complete']}, meta_ready={row['qa_meta_ready']}, "
+                        f"FPS={q['perf']['fpsMedian']}, errors={row['qa_errors']}, hud_overlaps={q['hud']['overlaps']}."
+                    ),
+                },
+                img_part(Path(q["screenshot"])),
+            ]
+            res = client_beta.decisions.create(model="gemini-decision-1", input=inputs, questions=sweep_q)
+            scores = {k: round((float(res.answers[k].score) / 4.0) * 100.0, 1) for k in sweep_q}
+
+        avg = round(sum(scores.values()) / len(scores), 2)
+        if not q["runtime_pass"]:
+            avg = round(avg * 0.5, 2)
         row["rlaif_axes"] = scores
         row["rlaif_score_100"] = avg
         row["quality_per_cent"] = round(avg / max(0.01, row.get("cost_usd", 0.001) * 100.0), 1)
         print(
-            f"  [SWEEP RLAIF] {cid:14s} | RLAIF={avg:5.1f} | FPS={q['perf']['fpsMedian']:5.1f} | "
-            f"errs={row['qa_errors']} | tok={row.get('total_tokens',0):6d} (thought={row.get('thought_tokens',0):5d}) | "
+            f"  [SWEEP RLAIF] {cid:20s} | pass={str(q['runtime_pass']):5s} | RLAIF={avg:5.2f} | FPS={q['perf']['fpsMedian']:5.1f} | "
+            f"errs={row['qa_errors']} | reason={row['qa_fail_reason']} | tok={row.get('total_tokens',0):6d} (thought={row.get('thought_tokens',0):5d}) | "
             f"${row.get('cost_usd',0):.4f}",
             flush=True,
         )
 
-    out_path = ROOT / "results" / "effort_sweep" / "effort_sweep_full.json"
-    out_path.write_text(json.dumps(metric_rows, indent=2), encoding="utf-8")
-    print(f"Saved full effort sweep + RLAIF -> {out_path}")
+    full_path.write_text(json.dumps(metric_rows, indent=2), encoding="utf-8")
+    print(f"Saved full effort sweep + RLAIF -> {full_path}")
 
 
 def main() -> int:
     mode = sys.argv[1] if len(sys.argv) > 1 else "works"
     round_num = sys.argv[2] if len(sys.argv) > 2 else "1"
+    only_cells = None
+    for arg in sys.argv[2:]:
+        if arg.startswith("--only="):
+            only_cells = set(x.strip() for x in arg.split("=", 1)[1].split(",") if x.strip())
 
     client_beta = genai.Client(http_options={"api_version": "v1beta"})
     client_std = genai.Client()
 
     if mode in ("sweep", "both"):
-        score_effort_sweep(client_beta)
+        score_effort_sweep(client_beta, only_cells=only_cells)
 
     if mode in ("works", "both"):
         from concurrent.futures import ThreadPoolExecutor
