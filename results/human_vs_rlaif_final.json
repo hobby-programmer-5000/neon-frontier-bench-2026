@@ -1,0 +1,84 @@
+{
+  "summary": {
+    "human_mean": 79.82,
+    "rlaif_r2_mean": 79.7,
+    "pearson_r_composite": 0.282,
+    "spearman_rho_composite": 0.464,
+    "pearson_r_anti_ai_axis": 0.59,
+    "mae_composite": 3.49
+  },
+  "tracks": [
+    {
+      "trackId": "track-1a-watch-neon",
+      "model": "Gemini 4 Neon (XHigh)",
+      "human": 80.0,
+      "rlaif_r2": 81.43,
+      "decision_1": 90.38,
+      "blind_carbon": 68,
+      "human_minus_rlaif": -1.43,
+      "usd": 7.6935,
+      "human_per_usd": 10.4,
+      "note": "미감적으로는 중간정도로 보인다. 공학적 이해는 잘 보인다. 조작은 하기 편한다. 자연스럽다기보다는 애매한 점이 있다."
+    },
+    {
+      "trackId": "track-1b-watch-opus",
+      "model": "Claude Opus 5.5 (High)",
+      "human": 88.8,
+      "rlaif_r2": 81.24,
+      "decision_1": 90.07,
+      "blind_carbon": 68,
+      "human_minus_rlaif": 7.56,
+      "usd": 23.6094,
+      "human_per_usd": 3.76,
+      "note": "미감이 확실히 좋다. 공학적 측면도 충족, 조작은 아쉽다, 높은 수준의 자연스러움"
+    },
+    {
+      "trackId": "track-2-turing-study",
+      "model": "Gemini 4 Neon (XHigh) ×2 Swarm",
+      "human": 78.8,
+      "rlaif_r2": 79.24,
+      "decision_1": 88.07,
+      "blind_carbon": 66,
+      "human_minus_rlaif": -0.44,
+      "usd": 18.7084,
+      "human_per_usd": 4.21,
+      "note": "시각적으로 좋다. 공학적으로도 높은 수준, 조작은 다소 아쉽다. 자연스러움은 높게 평가한다."
+    },
+    {
+      "trackId": "track-3-turbofan-cad",
+      "model": "Gemini 4 Carbon (High)",
+      "human": 77.5,
+      "rlaif_r2": 80.53,
+      "decision_1": 89.55,
+      "blind_carbon": 67,
+      "human_minus_rlaif": -3.03,
+      "usd": 5.8994,
+      "human_per_usd": 13.14,
+      "note": "미감은 많이 아쉽다. 공학적으로는 확실하다. 조작도 준수하고, 자연스러움은 다소 아쉽다."
+    },
+    {
+      "trackId": "track-4-chroma-forge",
+      "model": "Gemini 4 Argon (High)",
+      "human": 75.0,
+      "rlaif_r2": 80.2,
+      "decision_1": 89.67,
+      "blind_carbon": 66,
+      "human_minus_rlaif": -5.2,
+      "usd": 1.865,
+      "human_per_usd": 40.21,
+      "note": "아쉬운 미감.리얼리즘은 다소 있다. 조작은 편하다. 자연스러움은 글쎄."
+    },
+    {
+      "trackId": "track-5-kinetic-cloth",
+      "model": "Neon (High) → Hydrogen (XHigh)",
+      "human": 78.8,
+      "rlaif_r2": 75.55,
+      "decision_1": 83.92,
+      "blind_carbon": 63,
+      "human_minus_rlaif": 3.25,
+      "usd": 3.6981,
+      "human_per_usd": 21.31,
+      "note": "미감이 아쉽다. 공학적으로 훌륭하다. 조작도 다소 복잡. 자연스러운 편이다."
+    }
+  ]
+}

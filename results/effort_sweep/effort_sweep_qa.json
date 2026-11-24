@@ -1,0 +1,181 @@
+[
+  {
+    "cell_id": "argon_high",
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "meta": {
+      "ready": true,
+      "fps": 60,
+      "energyJ": 0.00494603,
+      "steps": 353
+    },
+    "perf": {
+      "fpsMedian": 59.9,
+      "fpsP10": 4.3,
+      "frameTimeMedianMs": 16.7,
+      "frameTimeMaxMs": 1466.7,
+      "jsHeapMB": 1.8
+    },
+    "hud": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "screenshot": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\effort_sweep\\argon_high.png",
+    "runtime_pass": false
+  },
+  {
+    "cell_id": "carbon_high",
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "meta": {
+      "ready": true,
+      "fps": 59.6,
+      "energyJ": 0.034879,
+      "steps": 312
+    },
+    "perf": {
+      "fpsMedian": 59.9,
+      "fpsP10": 59.2,
+      "frameTimeMedianMs": 16.7,
+      "frameTimeMaxMs": 250,
+      "jsHeapMB": 2.2
+    },
+    "hud": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "screenshot": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\effort_sweep\\carbon_high.png",
+    "runtime_pass": true
+  },
+  {
+    "cell_id": "hydrogen_xhigh",
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "meta": null,
+    "perf": {
+      "fpsMedian": 59.9,
+      "fpsP10": 59.5,
+      "frameTimeMedianMs": 16.7,
+      "frameTimeMaxMs": 17,
+      "jsHeapMB": 1.3
+    },
+    "hud": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "screenshot": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\effort_sweep\\hydrogen_xhigh.png",
+    "runtime_pass": true
+  },
+  {
+    "cell_id": "neon_high",
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "meta": {
+      "ready": true,
+      "fps": 56.8,
+      "energyJ": 0.588288,
+      "steps": 353
+    },
+    "perf": {
+      "fpsMedian": 59.9,
+      "fpsP10": 29.9,
+      "frameTimeMedianMs": 16.7,
+      "frameTimeMaxMs": 333.5,
+      "jsHeapMB": 2.6
+    },
+    "hud": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "screenshot": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\effort_sweep\\neon_high.png",
+    "runtime_pass": true
+  },
+  {
+    "cell_id": "neon_low",
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "meta": {
+      "ready": true,
+      "fps": 60,
+      "energyJ": 12.7996,
+      "steps": 512
+    },
+    "perf": {
+      "fpsMedian": 59.9,
+      "fpsP10": 59.5,
+      "frameTimeMedianMs": 16.7,
+      "frameTimeMaxMs": 17,
+      "jsHeapMB": 2.2
+    },
+    "hud": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "screenshot": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\effort_sweep\\neon_low.png",
+    "runtime_pass": true
+  },
+  {
+    "cell_id": "neon_medium",
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "meta": {
+      "ready": true,
+      "fps": 58.6,
+      "energyJ": 0.4389,
+      "steps": 514
+    },
+    "perf": {
+      "fpsMedian": 59.9,
+      "fpsP10": 30,
+      "frameTimeMedianMs": 16.7,
+      "frameTimeMaxMs": 49.7,
+      "jsHeapMB": 3.8
+    },
+    "hud": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "screenshot": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\effort_sweep\\neon_medium.png",
+    "runtime_pass": true
+  },
+  {
+    "cell_id": "neon_xhigh",
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "meta": {
+      "ready": true,
+      "fps": 55.1,
+      "energyJ": 1.042798,
+      "steps": 527
+    },
+    "perf": {
+      "fpsMedian": 59.9,
+      "fpsP10": 56.2,
+      "frameTimeMedianMs": 16.7,
+      "frameTimeMaxMs": 34,
+      "jsHeapMB": 2.1
+    },
+    "hud": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "screenshot": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\effort_sweep\\neon_xhigh.png",
+    "runtime_pass": true
+  }
+]

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kinetic Atelier — 3D Rube Goldberg + Live XPBD Cloth</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "/node_modules/three/build/three.module.js",
+      "three/addons/": "/node_modules/three/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="viewport"></canvas>
+
+  <!-- Top-Left Atelier Title Plaquette -->
+  <header class="hud-card hud-title-card" data-hud-card>
+    <div class="plaquette-kicker">BENCHMARK TRACK V · 120 HZ + XPBD</div>
+    <h1 class="plaquette-title">KINETIC ATELIER</h1>
+    <p class="plaquette-subtitle">120 Hz Rigid + XPBD Silk</p>
+    <div id="stage-pill" class="stage-pill">STAGE 1/8 · SPIRAL HELIX</div>
+  </header>
+
+  <!-- Top-Right Collapsible Control Drawer -->
+  <aside id="control-drawer" class="hud-card hud-drawer" data-hud-card>
+    <div class="drawer-header">
+      <span class="drawer-label">ATELIER CONTROLS</span>
+      <button id="drawer-toggle" class="btn btn-toggle" type="button" aria-expanded="true" aria-controls="drawer-body">
+        Controls
+      </button>
+    </div>
+
+    <div id="drawer-body" class="drawer-body">
+      <div class="btn-row">
+        <button id="btn-play" class="btn btn-brass" type="button">Pause</button>
+        <button id="btn-reset" class="btn" type="button">Reset [R]</button>
+      </div>
+
+      <button id="btn-launch" class="btn btn-emerald btn-full" type="button">
+        Launch Catapult Demo
+      </button>
+
+      <div class="section-label">INTERACTIVE LEVERS</div>
+      <div class="btn-row">
+        <button id="btn-lever-a" class="btn" type="button">Lever A [1]: AUTO</button>
+        <button id="btn-lever-b" class="btn" type="button">Lever B [2]: AUTO</button>
+      </div>
+
+      <label class="checkbox-row" for="chk-auto-levers">
+        <input id="chk-auto-levers" type="checkbox" checked />
+        <span>Auto-Levers Sequence</span>
+      </label>
+
+      <div class="section-label">CAMERA PRESETS</div>
+      <div class="pill-row">
+        <button id="view-hero" class="btn btn-pill is-active" type="button" data-view="hero">Hero</button>
+        <button id="view-macro" class="btn btn-pill" type="button" data-view="macro">Macro</button>
+        <button id="view-alt" class="btn btn-pill" type="button" data-view="alt_mode">XPBD Wire</button>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-head">
+          <label for="slider-breeze">Silk Breeze</label>
+          <span id="breeze-val" class="tabular">2.4 m/s²</span>
+        </div>
+        <input id="slider-breeze" type="range" min="0" max="6" step="0.2" value="2.4" />
+      </div>
+
+      <div class="btn-row">
+        <button id="btn-wind-burst" class="btn" type="button">Silk Gust</button>
+        <button id="btn-audio" class="btn" type="button">Audio: Off</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Bottom-Left Live Energy Conservation Sparkline -->
+  <section class="hud-card hud-sparkline-card" data-hud-card>
+    <div class="sparkline-header">
+      <span class="sparkline-title">ENERGY LEDGER</span>
+      <span id="energy-readout" class="sparkline-value tabular">0.00 J</span>
+    </div>
+    <canvas id="energy-sparkline" width="218" height="44"></canvas>
+    <div class="sparkline-legend">
+      <span class="leg-item"><i class="dot dot-tot"></i>TOT</span>
+      <span class="leg-item"><i class="dot dot-kin"></i>KIN</span>
+      <span class="leg-item"><i class="dot dot-pot"></i>POT</span>
+      <span class="leg-item"><i class="dot dot-cloth"></i>SILK×10</span>
+    </div>
+  </section>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

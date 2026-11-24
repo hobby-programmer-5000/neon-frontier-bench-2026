@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swiss Escapement &amp; Double-Pendulum Harmonic Phase-Space Studio</title>
+<style>
+  :root {
+    --bg-obsidian: #111214;
+    --bg-panel: #15171a;
+    --bg-card: #191b1f;
+    --bg-inset: #121316;
+    --border-hair: rgba(214, 185, 132, 0.16);
+    --border-subtle: rgba(200, 205, 214, 0.10);
+    --brass: #d6b984;
+    --brass-bright: #ead3a6;
+    --brass-dim: #8c744c;
+    --silver: #c8cdd6;
+    --silver-bright: #edf0f5;
+    --blued: #4e7cb2;
+    --blued-bright: #78a5db;
+    --ruby: #a3263a;
+    --text-primary: #eae6dd;
+    --text-secondary: #9c978d;
+    --text-muted: #68655e;
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "SF Mono", ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-obsidian);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-obsidian);
+  }
+
+  /* Top Editorial Studio Bar */
+  .studio-header {
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    background: #131417;
+    border-bottom: 1px solid var(--border-hair);
+    gap: 12px;
+  }
+
+  .brand-lockup {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+  }
+
+  .brand-emblem {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    border: 1px solid var(--brass);
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .brand-emblem::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--ruby);
+    border: 1px solid var(--brass-bright);
+  }
+
+  .brand-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brass-bright);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .brand-sub {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .header-specs {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+
+  .spec-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.09em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--brass);
+    transition: background-color 0.2s ease;
+  }
+
+  .status-dot.paused {
+    background: var(--blued);
+  }
+
+  /* Main Split Workspace: Left 65% / Right 35% */
+  .workspace {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 65fr 35fr;
+    background: var(--bg-obsidian);
+  }
+
+  /* Left 65% Stage */
+  .stage-panel {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    background: radial-gradient(circle at 46% 48%, #16181c 0%, #111214 74%, #0d0e10 100%);
+    border-right: 1px solid var(--border-hair);
+    overflow: hidden;
+  }
+
+  #stageCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .stage-overlay-top {
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    right: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    pointer-events: none;
+    gap: 12px;
+  }
+
+  .stage-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    background: rgba(17, 18, 20, 0.72);
+    border: 1px solid var(--border-subtle);
+    padding: 4px 8px;
+    border-radius: 2px;
+  }
+
+  .stage-badge strong {
+    color: var(--brass);
+    font-weight: 500;
+  }
+
+  .stage-overlay-bottom {
+    position: absolute;
+    bottom: 12px;
+    left: 16px;
+    right: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    pointer-events: none;
+    gap: 10px;
+  }
+
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: rgba(17, 18, 20, 0.72);
+    border: 1px solid var(--border-subtle);
+    padding: 4px 9px;
+    border-radius: 2px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .swatch {
+    width: 10px;
+    height: 2px;
+    border-radius: 1px;
+  }
+
+  .swatch.brass { background: var(--brass); }
+  .swatch.silver { background: var(--silver); }
+  .swatch.blued { background: var(--blued-bright); }
+  .swatch.ruby { background: var(--ruby); height: 5px; width: 5px; border-radius: 50%; }
+
+  /* Right 35% Telemetry & Control Studio */
+  .studio-panel {
+    min-width: 0;
+    min-height: 0;
+    background: var(--bg-panel);
+    display: flex;
+    flex-direction: column;
+    padding: 12px 14px;
+    gap: 10px;
+    overflow: hidden;
+  }
+
+  /* Telemetry Strip */
+  .telemetry-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .tele-cell {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-top: 1px solid rgba(214, 185, 132, 0.22);
+    padding: 6px 8px;
+    border-radius: 2px;
+    min-width: 0;
+  }
+
+  .tele-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+  }
+
+  .tele-value {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tele-value.brass { color: var(--brass-bright); }
+  .tele-value.blued { color: var(--blued-bright); }
+
+  /* Chart Containers */
+  .charts-stack {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .instrument-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-hair);
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .instrument-card.phase-card {
+    flex: 1.28;
+    min-height: 150px;
+  }
+
+  .instrument-card.energy-card {
+    flex: 0.78;
+    min-height: 112px;
+  }
+
+  .card-head {
+    height: 28px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: #17191d;
+    gap: 8px;
+  }
+
+  .card-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--brass);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mode-pills {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+  }
+
+  .mode-pill {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    padding: 2px 6px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid transparent;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .mode-pill:hover {
+    color: var(--silver);
+    border-color: var(--border-subtle);
+  }
+
+  .mode-pill.active {
+    color: var(--brass-bright);
+    background: rgba(214, 185, 132, 0.10);
+    border-color: rgba(214, 185, 132, 0.34);
+  }
+
+  .energy-readout-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .e-k { color: var(--blued-bright); }
+  .e-u { color: var(--brass); }
+  .e-t { color: var(--silver-bright); }
+
+  .canvas-wrap {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    background: var(--bg-inset);
+  }
+
+  .canvas-wrap canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Controls Module */
+  .controls-card {
+    flex-shrink: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-hair);
+    border-radius: 2px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .sliders-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .control-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .control-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .control-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--silver);
+  }
+
+  .control-val {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--brass-bright);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .slider-track-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: #252830;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--brass);
+    border: 1.5px solid #111214;
+    box-shadow: 0 0 0 1px rgba(214, 185, 132, 0.55);
+    cursor: pointer;
+    transition: transform 0.12s ease, background-color 0.12s ease;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.12);
+    background: var(--brass-bright);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--brass);
+    border: 1.5px solid #111214;
+    box-shadow: 0 0 0 1px rgba(214, 185, 132, 0.55);
+    cursor: pointer;
+  }
+
+  input[type="range"].blued-slider::-webkit-slider-thumb {
+    background: var(--blued-bright);
+    box-shadow: 0 0 0 1px rgba(78, 124, 178, 0.65);
+  }
+
+  input[type="range"].blued-slider::-moz-range-thumb {
+    background: var(--blued-bright);
+    box-shadow: 0 0 0 1px rgba(78, 124, 178, 0.65);
+  }
+
+  .scale-presets {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .preset-btn {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-variant-numeric: tabular-nums;
+    padding: 2px 6px;
+    background: #14161a;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.14s ease;
+  }
+
+  .preset-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--brass-dim);
+  }
+
+  .preset-btn.active {
+    color: #111214;
+    background: var(--brass);
+    border-color: var(--brass);
+    font-weight: 600;
+  }
+
+  .actions-row {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr 0.9fr;
+    gap: 7px;
+    padding-top: 2px;
+  }
+
+  .studio-btn {
+    height: 30px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    border: 1px solid var(--border-hair);
+    background: #14161a;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .studio-btn:hover {
+    border-color: var(--brass);
+    background: #1d2026;
+  }
+
+  .studio-btn.primary {
+    background: rgba(214, 185, 132, 0.14);
+    border-color: rgba(214, 185, 132, 0.45);
+    color: var(--brass-bright);
+  }
+
+  .studio-btn.primary:hover {
+    background: rgba(214, 185, 132, 0.24);
+  }
+
+  .studio-btn.accent-blue {
+    border-color: rgba(78, 124, 178, 0.45);
+    color: var(--blued-bright);
+  }
+
+  .studio-btn.accent-blue:hover {
+    background: rgba(78, 124, 178, 0.16);
+  }
+
+  /* Responsive Layout for 700x900 and Tablet Portrait */
+  @media (max-width: 959px) {
+    .studio-header {
+      height: 38px;
+      padding: 0 12px;
+    }
+
+    .brand-sub {
+      display: none;
+    }
+
+    .header-specs .spec-tag:first-child {
+      display: none;
+    }
+
+    .workspace {
+      grid-template-columns: 1fr;
+      grid-template-rows: minmax(340px, 46vh) 1fr;
+    }
+
+    .stage-panel {
+      border-right: none;
+      border-bottom: 1px solid var(--border-hair);
+    }
+
+    .studio-panel {
+      padding: 9px 12px;
+      gap: 8px;
+    }
+
+    .tele-cell {
+      padding: 4px 7px;
+    }
+
+    .tele-value {
+      font-size: 12px;
+    }
+
+    .charts-stack {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 8px;
+    }
+
+    .instrument-card.phase-card,
+    .instrument-card.energy-card {
+      flex: initial;
+      min-height: 135px;
+      height: 100%;
+    }
+
+    .controls-card {
+      padding: 8px 10px;
+      gap: 7px;
+    }
+
+    .sliders-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px 12px;
+    }
+
+    .control-row.time-row {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* Extra Narrow Viewports (<600px) */
+  @media (max-width: 599px) {
+    html, body {
+      overflow-y: auto;
+      height: auto;
+      min-height: 100%;
+    }
+
+    .app-shell {
+      height: auto;
+      min-height: 100vh;
+    }
+
+    .workspace {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stage-panel {
+      height: 360px;
+      flex-shrink: 0;
+    }
+
+    .telemetry-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .charts-stack {
+      grid-template-columns: 1fr;
+    }
+
+    .instrument-card.phase-card {
+      height: 210px;
+    }
+
+    .instrument-card.energy-card {
+      height: 150px;
+    }
+
+    .sliders-group {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="studio-header">
+    <div class="brand-lockup">
+      <div class="brand-emblem" aria-hidden="true"></div>
+      <span class="brand-title">Calibre 1800 &mdash; Escapement &amp; Harmonic Studio</span>
+      <span class="brand-sub">// SWISS LEVER &middot; COUPLED DOUBLE-PENDULUM</span>
+    </div>
+    <div class="header-specs">
+      <div class="spec-tag">RK4 &Delta;t = 1/240s</div>
+      <div class="spec-tag">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">RUNNING</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <!-- Left 65% Mechanical Escapement & Double-Pendulum Stage -->
+    <section class="stage-panel" id="stagePanel">
+      <canvas id="stageCanvas"></canvas>
+
+      <div class="stage-overlay-top">
+        <div class="stage-badge">
+          ESCAPEMENT: <strong id="hudState">LOCKED ENTRY</strong> &middot; TOOTH <strong id="hudTooth">01 / 15</strong>
+        </div>
+        <div class="stage-badge">
+          AMP <strong id="hudAmp">&plusmn;94.5&deg;</strong> &middot; BEAT <strong id="hudBeat">1.46 Hz</strong>
+        </div>
+      </div>
+
+      <div class="stage-overlay-bottom">
+        <div class="legend-row">
+          <div class="legend-item"><span class="swatch brass"></span>Balance &amp; Upper Arm</div>
+          <div class="legend-item"><span class="swatch silver"></span>15T Escape Wheel</div>
+          <div class="legend-item"><span class="swatch ruby"></span>Pallet Rubies</div>
+          <div class="legend-item"><span class="swatch blued"></span>Harmonic Trace</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right 35% Phase-Space, Energy Sparkline & Controls -->
+    <aside class="studio-panel">
+      <div class="telemetry-grid">
+        <div class="tele-cell">
+          <div class="tele-label">Balance &theta;<sub>b</sub></div>
+          <div class="tele-value brass" id="teleTheta">-94.5&deg;</div>
+        </div>
+        <div class="tele-cell">
+          <div class="tele-label">Pendulum &theta;<sub>1</sub></div>
+          <div class="tele-value blued" id="telePend">+24.1&deg;</div>
+        </div>
+        <div class="tele-cell">
+          <div class="tele-label">Total Energy</div>
+          <div class="tele-value" id="teleEnergy">0.000 J</div>
+        </div>
+        <div class="tele-cell">
+          <div class="tele-label">Rate / Steps</div>
+          <div class="tele-value" id="teleFps">60 fps</div>
+        </div>
+      </div>
+
+      <div class="charts-stack">
+        <!-- Phase-Space Portrait -->
+        <div class="instrument-card phase-card">
+          <div class="card-head">
+            <span class="card-title">Phase-Space Portrait (&theta; vs &omega;)</span>
+            <div class="mode-pills" id="phaseModeGroup">
+              <button class="mode-pill active" data-mode="dual" type="button">Dual</button>
+              <button class="mode-pill" data-mode="balance" type="button">Bal</button>
+              <button class="mode-pill" data-mode="pendulum" type="button">Pend</button>
+            </div>
+          </div>
+          <div class="canvas-wrap" id="phaseWrap">
+            <canvas id="phaseCanvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Kinetic & Potential Energy Conservation Sparkline -->
+        <div class="instrument-card energy-card">
+          <div class="card-head">
+            <span class="card-title">Energy Conservation (J)</span>
+            <div class="energy-readout-inline">
+              <span class="e-k" id="lblK">K 0.00</span>
+              <span class="e-u" id="lblU">U 0.00</span>
+              <span class="e-t" id="lblE">E 0.00</span>
+            </div>
+          </div>
+          <div class="canvas-wrap" id="energyWrap">
+            <canvas id="energyCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compact Precision Controls -->
+      <div class="controls-card">
+        <div class="sliders-group">
+          <div class="control-row">
+            <div class="control-top">
+              <label class="control-label" for="torqueSlider">Drive Torque</label>
+              <span class="control-val" id="torqueVal">0.48 N&middot;m</span>
+            </div>
+            <div class="slider-track-row">
+              <input id="torqueSlider" type="range" min="0.00" max="1.00" step="0.01" value="0.48">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-top">
+              <label class="control-label" for="dampingSlider">Damping</label>
+              <span class="control-val" id="dampingVal">0.35</span>
+            </div>
+            <div class="slider-track-row">
+              <input id="dampingSlider" class="blued-slider" type="range" min="0.00" max="1.00" step="0.01" value="0.35">
+            </div>
+          </div>
+
+          <div class="control-row time-row">
+            <div class="control-top">
+              <label class="control-label" for="timeScaleSlider">Time Scale</label>
+              <span class="control-val" id="timeScaleVal">1.00&times;</span>
+            </div>
+            <div class="slider-track-row">
+              <input id="timeScaleSlider" type="range" min="0.25" max="2.00" step="0.05" value="1.00">
+              <div class="scale-presets" id="scalePresets">
+                <button class="preset-btn" data-scale="0.25" type="button">0.25&times;</button>
+                <button class="preset-btn" data-scale="0.5" type="button">0.5&times;</button>
+                <button class="preset-btn active" data-scale="1" type="button">1&times;</button>
+                <button class="preset-btn" data-scale="2" type="button">2&times;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="studio-btn primary" id="btnPause" type="button">Pause</button>
+          <button class="studio-btn accent-blue" id="btnStep" type="button">Step</button>
+          <button class="studio-btn" id="btnReset" type="button">Reset</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  // =========================================================================
+  // 1. PHYSICAL PARAMETERS & COUPLED LAGRANGIAN CONSTANTS (RK4 dt = 1/240s)
+  // =========================================================================
+  const FIXED_DT = 1 / 240;
+  const TOOTH_COUNT = 15;
+  const TOOTH_PITCH = (2 * Math.PI) / TOOTH_COUNT; // 24 deg
+  const HALF_PITCH = TOOTH_PITCH * 0.5;            // 12 deg
+  const BANK_ANGLE = (7.5 * Math.PI) / 180;        // 7.5 deg fork stop
+  const ENGAGE_ANGLE = (21 * Math.PI) / 180;       // 21 deg roller slot half-angle
+  const UNLOCK_FORK_THR = 0.022;                   // fork angle past center for unlock
+  const IMPULSE_FRAC = 0.56;                       // fraction of 12 deg step spent on impulse plane
+
+  // Balance Wheel + Hairspring
+  const Ib = 0.0085;     // kg*m^2
+  const kb = 0.72;       // N*m/rad (~1.46 Hz uncoupled)
+  const GAMMA = 0.46;    // kinematic coupling ratio to pendulum arm 1
+  const kc = 0.21;       // coupling spring N*m/rad
+
+  // Compound Double Pendulum (exact rigid-body + end mass)
+  const L1 = 0.24;
+  const d1 = 0.156;
+  const m1 = 0.105;
+  const I1 = (1 / 12) * m1 * L1 * L1;
+
+  const L2 = 0.21;
+  const d2 = 0.1512;
+  const m2 = 0.082;
+  const I2 = (1 / 12) * m2 * L2 * L2;
+
+  const GRAV = 9.81;
+  const A11 = I1 + m1 * d1 * d1 + m2 * L1 * L1;
+  const A12 = m2 * L1 * d2;
+  const A22 = I2 + m2 * d2 * d2;
+  const G1 = (m1 * d1 + m2 * L1) * GRAV;
+  const G2 = m2 * d2 * GRAV;
+
+  // Escape Wheel & Anchor Pallet Fork
+  const Ie = 0.00032;
+  const If = 0.00024;
+  const STOP_WN = 235;
+  const STOP_ZETA = 0.94;
+  const K_STOP = Ie * STOP_WN * STOP_WN;
+  const C_STOP = 2 * STOP_ZETA * Ie * STOP_WN;
+
+  const BANK_WN = 220;
+  const K_BANK = If * BANK_WN * BANK_WN;
+  const C_BANK = 2 * 0.92 * If * BANK_WN;
+
+  // =========================================================================
+  // 2. SIMULATION STATE & USER CONTROLS
+  // =========================================================================
+  const params = {
+    driveTorque: 0.48,
+    damping: 0.35,
+    timeScale: 1.00,
+    paused: false,
+    phaseMode: "dual" // "dual" | "balance" | "pendulum"
+  };
+
+  // Continuous state vector: [tb, wb, t1, w1, t2, w2, te, we, tf, wf]
+  let state = new Float64Array(10);
+  let stepIndex = 0;         // discrete escapement half-step counter
+  let impulseFlash = 0;      // visual glint decay [0..1]
+  let totalSteps = 0;
+  let simAccumulator = 0;
+  let peakBalanceAmp = 1.65;
+  let estBeatHz = 1.46;
+  let lastZeroCrossSimTime = -1;
+  let simTime = 0;
+
+  // Buffers for Traces & Sparklines
+  const MAX_TRACE = 1350;
+  const traceTip = [];       // { x, y } world coordinates of pendulum tip
+  const traceElbow = [];     // { x, y }
+  const MAX_PHASE = 850;
+  const phaseBal = [];       // { t, w }
+  const phasePend = [];      // { t, w }
+  const MAX_ENERGY = 280;
+  const energyHist = [];     // { k, u, e }
+
+  function computeEnergies(s) {
+    const tb = s[0], wb = s[1];
+    const t1 = s[2], w1 = s[3];
+    const t2 = s[4], w2 = s[5];
+    const delta = t1 - t2;
+
+    const kBal = 0.5 * Ib * wb * wb;
+    const kPend = 0.5 * A11 * w1 * w1 + A12 * Math.cos(delta) * w1 * w2 + 0.5 * A22 * w2 * w2;
+    const K = kBal + kPend;
+
+    const uHair = 0.5 * kb * tb * tb;
+    const uCoup = 0.5 * kc * (GAMMA * tb - t1) * (GAMMA * tb - t1);
+    const uGrav = G1 * (1 - Math.cos(t1)) + G2 * (1 - Math.cos(t2));
+    const U = uHair + uCoup + uGrav;
+
+    return { K, U, E: K + U };
+  }
+
+  function resetSimulation() {
+    state[0] = -1.65;  // tb (~ -94.5 deg wound)
+    state[1] = 0.0;    // wb
+    state[2] = 0.42;   // t1 (~ +24 deg)
+    state[3] = 0.35;   // w1
+    state[4] = -0.28;  // t2
+    state[5] = -0.45;  // w2
+    state[6] = 0.0;    // te (escape wheel angle)
+    state[7] = 0.0;    // we
+    state[8] = -BANK_ANGLE; // tf (locked on entry stone)
+    state[9] = 0.0;    // wf
+
+    stepIndex = 0;
+    impulseFlash = 0;
+    totalSteps = 0;
+    simAccumulator = 0;
+    simTime = 0;
+    lastZeroCrossSimTime = -1;
+    peakBalanceAmp = Math.abs(state[0]);
+    estBeatHz = 1.46;
+
+    traceTip.length = 0;
+    traceElbow.length = 0;
+    phaseBal.length = 0;
+    phasePend.length = 0;
+    energyHist.length = 0;
+
+    pushSamplePoint();
+  }
+
+  function pushSamplePoint() {
+    const p = getPendulumCoords(state[2], state[4]);
+    traceTip.push({ x: p.x2, y: p.y2 });
+    if (traceTip.length > MAX_TRACE) traceTip.shift();
+
+    traceElbow.push({ x: p.x1, y: p.y1 });
+    if (traceElbow.length > 360) traceElbow.shift();
+
+    phaseBal.push({ t: state[0], w: state[1] });
+    if (phaseBal.length > MAX_PHASE) phaseBal.shift();
+
+    phasePend.push({ t: state[2], w: state[3] });
+    if (phasePend.length > MAX_PHASE) phasePend.shift();
+
+    const en = computeEnergies(state);
+    energyHist.push({ k: en.K, u: en.U, e: en.E });
+    if (energyHist.length > MAX_ENERGY) energyHist.shift();
+  }
+
+  // =========================================================================
+  // 3. EXACT RK4 INTEGRATOR FOR COUPLED ESCAPEMENT + DOUBLE PENDULUM
+  // =========================================================================
+  const k1 = new Float64Array(10);
+  const k2 = new Float64Array(10);
+  const k3 = new Float64Array(10);
+  const k4 = new Float64Array(10);
+  const tmpS = new Float64Array(10);
+
+  function computeDerivatives(s, out) {
+    const tb = s[0], wb = s[1];
+    const t1 = s[2], w1 = s[3];
+    const t2 = s[4], w2 = s[5];
+    const te = s[6], we = s[7];
+    const tf = s[8], wf = s[9];
+
+    const drive = params.driveTorque;
+    const damp = params.damping;
+
+    // Viscous damping (strictly 0 when damping slider = 0 for conservative mode)
+    const cb = damp * 0.0115;
+    const c1 = damp * 0.0085;
+    const c2 = damp * 0.0045;
+
+    // Escapement target & active locking side
+    const activeSide = (stepIndex % 2 === 0) ? -1 : 1; // -1 = Entry, +1 = Exit
+    const targetAngle = stepIndex * HALF_PITCH;
+    const prevAngle = (stepIndex - 1) * HALF_PITCH;
+    const impSpan = HALF_PITCH * IMPULSE_FRAC;
+
+    // 1. Escape Wheel Torque
+    let tauE = drive * 0.42 - 0.0025 * we;
+    // Locking ruby contact (one-sided spring-damper at targetAngle)
+    if (te >= targetAngle) {
+      const normalStop = K_STOP * (te - targetAngle) + C_STOP * we;
+      if (normalStop > 0) tauE -= normalStop;
+    }
+
+    // 2. Escapement Impulse Delivery to Balance Wheel
+    let tauImp = 0;
+    if (stepIndex > 0 && drive > 0.001) {
+      const impProg = (te - prevAngle) / impSpan;
+      if (impProg > 0 && impProg < 1) {
+        const dir = (stepIndex % 2 === 1) ? 1 : -1;
+        const speedCap = Math.max(0, 1 - Math.abs(wb) / 34.0);
+        const shape = Math.sin(Math.PI * impProg);
+        const velFactor = Math.max(0, we) / 8.0;
+        tauImp = dir * 2.25 * drive * shape * velFactor * speedCap;
+      }
+    }
+
+    // Gentle self-starting nudge if stalled at rest with drive > 0.03
+    if (drive > 0.03 && Math.abs(tb) < 0.045 && Math.abs(wb) < 0.12) {
+      tauImp += -activeSide * 0.06 * drive;
+    }
+
+    // 3. Pallet Fork Dynamics
+    let tauF = -0.0008 * wf;
+    if (Math.abs(tb) <= ENGAGE_ANGLE) {
+      // Coupled cleanly to balance roller jewel inside slot
+      const tfKin = BANK_ANGLE * (tb / ENGAGE_ANGLE);
+      const slotStiff = 0.95;
+      const slotDamp = 0.022;
+      tauF += slotStiff * (tfKin - tf) + slotDamp * (wb * (BANK_ANGLE / ENGAGE_ANGLE) - wf);
+    } else if (drive > 0.001) {
+      // Draw angle pressure holds fork softly against active banking pin
+      tauF += 0.28 * (activeSide * BANK_ANGLE - tf) - 0.012 * wf;
+    } else {
+      tauF += 0.04 * (activeSide * BANK_ANGLE - tf) - 0.008 * wf;
+    }
+
+    // Banking pin stops at +/- BANK_ANGLE
+    if (tf > BANK_ANGLE) {
+      const fStop = K_BANK * (tf - BANK_ANGLE) + C_BANK * wf;
+      if (fStop > 0) tauF -= fStop;
+    } else if (tf < -BANK_ANGLE) {
+      const fStop = K_BANK * (tf + BANK_ANGLE) + C_BANK * wf;
+      if (fStop < 0) tauF -= fStop;
+    }
+
+    // 4. Balance Wheel Equation of Motion
+    const coupForce = kc * (GAMMA * tb - t1);
+    const tauBal = -kb * tb - GAMMA * coupForce - cb * wb + tauImp;
+
+    // 5. Exact Compound Double-Pendulum Euler-Lagrange Equations
+    const delta = t1 - t2;
+    const sinD = Math.sin(delta);
+    const cosD = Math.cos(delta);
+
+    const Q1 = coupForce - c1 * w1 - c2 * (w1 - w2);
+    const Q2 = -c2 * (w2 - w1);
+
+    const rhs1 = Q1 - A12 * sinD * w2 * w2 - G1 * Math.sin(t1);
+    const rhs2 = Q2 + A12 * sinD * w1 * w1 - G2 * Math.sin(t2);
+
+    const det = A11 * A22 - A12 * A12 * cosD * cosD;
+    const alpha1 = (A22 * rhs1 - A12 * cosD * rhs2) / det;
+    const alpha2 = (A11 * rhs2 - A12 * cosD * rhs1) / det;
+
+    out[0] = wb;
+    out[1] = tauBal / Ib;
+    out[2] = w1;
+    out[3] = alpha1;
+    out[4] = w2;
+    out[5] = alpha2;
+    out[6] = we;
+    out[7] = tauE / Ie;
+    out[8] = wf;
+    out[9] = tauF / If;
+  }
+
+  function rk4Step(dt) {
+    const prevTb = state[0];
+
+    computeDerivatives(state, k1);
+    for (let i = 0; i < 10; i++) tmpS[i] = state[i] + 0.5 * dt * k1[i];
+    computeDerivatives(tmpS, k2);
+    for (let i = 0; i < 10; i++) tmpS[i] = state[i] + 0.5 * dt * k2[i];
+    computeDerivatives(tmpS, k3);
+    for (let i = 0; i < 10; i++) tmpS[i] = state[i] + dt * k3[i];
+    computeDerivatives(tmpS, k4);
+
+    for (let i = 0; i < 10; i++) {
+      state[i] += (dt / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]);
+    }
+
+    // Clamp fork strictly within tiny tolerance of banking pins for crisp geometry
+    if (state[8] > BANK_ANGLE * 1.04) {
+      state[8] = BANK_ANGLE * 1.04;
+      if (state[9] > 0) state[9] = 0;
+    } else if (state[8] < -BANK_ANGLE * 1.04) {
+      state[8] = -BANK_ANGLE * 1.04;
+      if (state[9] < 0) state[9] = 0;
+    }
+
+    // Discrete escapement unlock transition (evaluated strictly between RK4 steps)
+    if (params.driveTorque > 0.001) {
+      const activeSide = (stepIndex % 2 === 0) ? -1 : 1;
+      const targetAngle = stepIndex * HALF_PITCH;
+      const settledOnCurrent = state[6] >= targetAngle - 0.06;
+
+      if (settledOnCurrent) {
+        if (activeSide === -1 && state[8] >= -UNLOCK_FORK_THR && state[1] > 0.08) {
+          stepIndex++;
+          impulseFlash = 1.0;
+        } else if (activeSide === 1 && state[8] <= UNLOCK_FORK_THR && state[1] < -0.08) {
+          stepIndex++;
+          impulseFlash = 1.0;
+        }
+      }
+    }
+
+    simTime += dt;
+    totalSteps++;
+
+    // Track balance amplitude & oscillation frequency
+    const absTb = Math.abs(state[0]);
+    if (absTb > peakBalanceAmp) {
+      peakBalanceAmp = absTb;
+    } else {
+      peakBalanceAmp *= 0.9996;
+    }
+    if ((prevTb < 0 && state[0] >= 0) || (prevTb > 0 && state[0] <= 0)) {
+      if (lastZeroCrossSimTime >= 0) {
+        const halfPeriod = simTime - lastZeroCrossSimTime;
+        if (halfPeriod > 0.12 && halfPeriod < 2.0) {
+          const instHz = 1 / (2 * halfPeriod);
+          estBeatHz = estBeatHz * 0.78 + instHz * 0.22;
+        }
+      }
+      lastZeroCrossSimTime = simTime;
+    }
+
+    impulseFlash = Math.max(0, impulseFlash - dt * 6.5);
+  }
+
+  // =========================================================================
+  // 4. LOGICAL WORLD COORDINATES FOR LEFT 65% STAGE
+  // =========================================================================
+  const WORLD_W = 1000;
+  const WORLD_H = 640;
+
+  // Escapement column (left side, exact tangent geometry)
+  const OE = { x: 234, y: 472 };
+  const RE = 118;
+  const PALLET_ALPHA = (42 * Math.PI) / 180; // 3.5 tooth span = 84 deg -> +/-42 deg
+  const DEF = RE / Math.cos(PALLET_ALPHA);   // exact tangent distance = 158.78
+  const OF = { x: OE.x, y: OE.y - DEF };     // pallet pivot (234, 313.22)
+  const LP = RE * Math.tan(PALLET_ALPHA);    // pallet arm length = 106.25
+  const L_FORK = 104;
+  const R_ROLLER = 22;
+  const OB = { x: OE.x, y: OF.y - L_FORK - R_ROLLER }; // balance wheel (234, 187.22)
+  const RB = 116;
+
+  // Intermediate harmonic rocker bridge
+  const OR = { x: 432, y: 230 };
+
+  // Compound Double Pendulum (right side of stage)
+  const OP = { x: 668, y: 266 };
+  const L1_PX = 140;
+  const L2_PX = 122;
+
+  function getPendulumCoords(t1, t2) {
+    const x1 = OP.x + L1_PX * Math.sin(t1);
+    const y1 = OP.y + L1_PX * Math.cos(t1);
+    const x2 = x1 + L2_PX * Math.sin(t2);
+    const y2 = y1 + L2_PX * Math.cos(t2);
+    return { x1, y1, x2, y2 };
+  }
+
+  // =========================================================================
+  // 5. CANVAS INITIALIZATION & HIGH-DPI CACHED STATIC PLATES
+  // =========================================================================
+  const stagePanel = document.getElementById("stagePanel");
+  const stageCanvas = document.getElementById("stageCanvas");
+  const stageCtx = stageCanvas.getContext("2d");
+
+  const bgCache = document.createElement("canvas");
+  const bgCtx = bgCache.getContext("2d");
+
+  const phaseWrap = document.getElementById("phaseWrap");
+  const phaseCanvas = document.getElementById("phaseCanvas");
+  const phaseCtx = phaseCanvas.getContext("2d");
+
+  const energyWrap = document.getElementById("energyWrap");
+  const energyCanvas = document.getElementById("energyCanvas");
+  const energyCtx = energyCanvas.getContext("2d");
+
+  const layoutMetrics = {
+    dpr: 1,
+    stageW: 1, stageH: 1, stageScale: 1, stageOffX: 0, stageOffY: 0,
+    phaseW: 1, phaseH: 1,
+    energyW: 1, energyH: 1
+  };
+
+  function setupCanvasSize(canvas, ctx, w, h, dpr) {
+    const pw = Math.max(1, Math.round(w * dpr));
+    const ph = Math.max(1, Math.round(h * dpr));
+    if (canvas.width !== pw || canvas.height !== ph) {
+      canvas.width = pw;
+      canvas.height = ph;
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function rebuildStageStaticPlate() {
+    const { stageW, stageH, stageScale, stageOffX, stageOffY, dpr } = layoutMetrics;
+    setupCanvasSize(bgCache, bgCtx, stageW, stageH, dpr);
+
+    bgCtx.clearRect(0, 0, stageW, stageH);
+    bgCtx.save();
+    bgCtx.translate(stageOffX, stageOffY);
+    bgCtx.scale(stageScale, stageScale);
+
+    // Subtle brushed studio Côtes de Genève vertical ribs behind movement
+    bgCtx.save();
+    for (let x = 20; x < WORLD_W - 20; x += 26) {
+      const grad = bgCtx.createLinearGradient(x, 0, x + 26, 0);
+      grad.addColorStop(0, "rgba(255,255,255,0.008)");
+      grad.addColorStop(0.5, "rgba(214,185,132,0.014)");
+      grad.addColorStop(1, "rgba(0,0,0,0.012)");
+      bgCtx.fillStyle = grad;
+      bgCtx.fillRect(x, 22, 26, WORLD_H - 44);
+    }
+    bgCtx.restore();
+
+    // Movement Mainplate Silhouette & Chamfers
+    bgCtx.strokeStyle = "rgba(214, 185, 132, 0.14)";
+    bgCtx.lineWidth = 1;
+    drawRoundedRect(bgCtx, 28, 30, WORLD_W - 56, WORLD_H - 60, 12);
+    bgCtx.stroke();
+
+    // Left Escapement Sub-plate
+    const leftGrad = bgCtx.createRadialGradient(OE.x, 325, 20, OE.x, 325, 240);
+    leftGrad.addColorStop(0, "rgba(28, 31, 37, 0.55)");
+    leftGrad.addColorStop(1, "rgba(15, 16, 19, 0.15)");
+    bgCtx.fillStyle = leftGrad;
+    drawRoundedRect(bgCtx, 68, 52, 332, 542, 166);
+    bgCtx.fill();
+    bgCtx.strokeStyle = "rgba(214, 185, 132, 0.22)";
+    bgCtx.lineWidth = 1.2;
+    bgCtx.stroke();
+
+    // Escapement center vertical axis hairline
+    bgCtx.strokeStyle = "rgba(200, 205, 214, 0.09)";
+    bgCtx.setLineDash([4, 6]);
+    bgCtx.beginPath();
+    bgCtx.moveTo(OE.x, 60);
+    bgCtx.lineTo(OE.x, 600);
+    bgCtx.stroke();
+    bgCtx.setLineDash([]);
+
+    // Right Pendulum Graduated Azimuth Ring
+    const R_DIAL = 258;
+    const dialGrad = bgCtx.createRadialGradient(OP.x, OP.y, 40, OP.x, OP.y, R_DIAL + 18);
+    dialGrad.addColorStop(0, "rgba(22, 25, 30, 0.48)");
+    dialGrad.addColorStop(0.85, "rgba(16, 18, 22, 0.28)");
+    dialGrad.addColorStop(1, "rgba(13, 14, 17, 0)");
+    bgCtx.fillStyle = dialGrad;
+    bgCtx.beginPath();
+    bgCtx.arc(OP.x, OP.y, R_DIAL + 12, 0, Math.PI * 2);
+    bgCtx.fill();
+
+    // Concentric engraved circles
+    [82, 140, 200, R_DIAL, R_DIAL + 12].forEach((r, idx) => {
+      bgCtx.beginPath();
+      bgCtx.arc(OP.x, OP.y, r, 0, Math.PI * 2);
+      bgCtx.strokeStyle = idx === 3 ? "rgba(214, 185, 132, 0.26)" : "rgba(200, 205, 214, 0.08)";
+      bgCtx.lineWidth = idx === 3 ? 1.2 : 0.8;
+      bgCtx.stroke();
+    });
+
+    // Crosshairs for Pendulum Datum
+    bgCtx.strokeStyle = "rgba(200, 205, 214, 0.09)";
+    bgCtx.lineWidth = 0.8;
+    bgCtx.beginPath();
+    bgCtx.moveTo(OP.x - R_DIAL, OP.y);
+    bgCtx.lineTo(OP.x + R_DIAL, OP.y);
+    bgCtx.moveTo(OP.x, OP.y - R_DIAL);
+    bgCtx.lineTo(OP.x, OP.y + R_DIAL);
+    bgCtx.stroke();
+
+    // Degree tick marks on Azimuth Ring (0 deg at bottom straight down)
+    bgCtx.font = '500 10px "SF Mono", ui-monospace, monospace';
+    bgCtx.textAlign = "center";
+    bgCtx.textBaseline = "middle";
+    for (let deg = -180; deg < 180; deg += 5) {
+      const rad = (deg * Math.PI) / 180;
+      const isMajor = deg % 30 === 0;
+      const isMed = deg % 15 === 0;
+      const rIn = isMajor ? R_DIAL - 12 : isMed ? R_DIAL - 7 : R_DIAL - 4;
+      const sx = Math.sin(rad), cy = Math.cos(rad);
+      bgCtx.beginPath();
+      bgCtx.moveTo(OP.x + sx * rIn, OP.y + cy * rIn);
+      bgCtx.lineTo(OP.x + sx * R_DIAL, OP.y + cy * R_DIAL);
+      bgCtx.strokeStyle = isMajor ? "rgba(214, 185, 132, 0.55)" : "rgba(200, 205, 214, 0.20)";
+      bgCtx.lineWidth = isMajor ? 1.2 : 0.8;
+      bgCtx.stroke();
+
+      if (isMajor && deg !== -180) {
+        const lblR = R_DIAL - 24;
+        const lbl = deg === 0 ? "0°" : (deg > 0 ? `+${deg}°` : `${deg}°`);
+        bgCtx.fillStyle = deg === 0 ? "rgba(214, 185, 132, 0.78)" : "rgba(156, 151, 141, 0.65)";
+        bgCtx.fillText(lbl, OP.x + sx * lblR, OP.y + cy * lblR);
+      }
+    }
+
+    // Harmonic Coupling Bridge Plate between OB -> OR -> OP
+    bgCtx.strokeStyle = "rgba(214, 185, 132, 0.22)";
+    bgCtx.fillStyle = "rgba(31, 34, 41, 0.65)";
+    bgCtx.lineWidth = 1.2;
+    bgCtx.beginPath();
+    bgCtx.moveTo(OB.x + 18, OB.y - 11);
+    bgCtx.lineTo(OR.x + 12, OR.y - 16);
+    bgCtx.lineTo(OP.x + 14, OP.y - 14);
+    bgCtx.lineTo(OP.x - 14, OP.y + 14);
+    bgCtx.lineTo(OR.x - 12, OR.y + 16);
+    bgCtx.lineTo(OB.x - 18, OB.y + 11);
+    bgCtx.closePath();
+    bgCtx.fill();
+    bgCtx.stroke();
+
+    // Escapement degree scale around balance wheel
+    for (let deg = -180; deg < 180; deg += 15) {
+      const a = (deg * Math.PI) / 180 - Math.PI / 2;
+      const isMaj = deg % 45 === 0;
+      const r1 = RB + 15;
+      const r2 = isMaj ? RB + 25 : RB + 20;
+      bgCtx.beginPath();
+      bgCtx.moveTo(OB.x + Math.cos(a) * r1, OB.y + Math.sin(a) * r1);
+      bgCtx.lineTo(OB.x + Math.cos(a) * r2, OB.y + Math.sin(a) * r2);
+      bgCtx.strokeStyle = isMaj ? "rgba(214, 185, 132, 0.45)" : "rgba(200, 205, 214, 0.16)";
+      bgCtx.lineWidth = isMaj ? 1.2 : 0.8;
+      bgCtx.stroke();
+    }
+
+    // Blued Steel Bridge Screws at key structural anchors
+    drawBluedScrew(bgCtx, OB.x - 120, OB.y - 66, 5.5, 0.4);
+    drawBluedScrew(bgCtx, OB.x + 120, OB.y - 66, 5.5, -0.7);
+    drawBluedScrew(bgCtx, OR.x, OR.y - 34, 5, 0.9);
+    drawBluedScrew(bgCtx, OP.x - 42, OP.y - 26, 5.5, 0.3);
+    drawBluedScrew(bgCtx, OP.x + 42, OP.y - 26, 5.5, -0.5);
+
+    // Subtle engraved plate markings
+    bgCtx.fillStyle = "rgba(214, 185, 132, 0.42)";
+    bgCtx.font = '600 9.5px "SF Mono", ui-monospace, monospace';
+    bgCtx.textAlign = "center";
+    bgCtx.fillText("15T SWISS LEVER", OE.x, OE.y + RE + 36);
+    bgCtx.fillText("HARMONIC COUPLER", OR.x, OR.y + 42);
+    bgCtx.fillText("COUPLED COMPOUND PENDULUM", OP.x, OP.y + R_DIAL + 28);
+
+    bgCtx.restore();
+  }
+
+  function syncSizes() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    layoutMetrics.dpr = dpr;
+
+    const sRect = stagePanel.getBoundingClientRect();
+    if (sRect.width > 10 && sRect.height > 10) {
+      layoutMetrics.stageW = sRect.width;
+      layoutMetrics.stageH = sRect.height;
+      const sx = sRect.width / WORLD_W;
+      const sy = sRect.height / WORLD_H;
+      const scale = Math.min(sx, sy);
+      layoutMetrics.stageScale = scale;
+      layoutMetrics.stageOffX = (sRect.width - WORLD_W * scale) * 0.5;
+      layoutMetrics.stageOffY = (sRect.height - WORLD_H * scale) * 0.5;
+
+      setupCanvasSize(stageCanvas, stageCtx, sRect.width, sRect.height, dpr);
+      rebuildStageStaticPlate();
+    }
+
+    const pRect = phaseWrap.getBoundingClientRect();
+    if (pRect.width > 10 && pRect.height > 10) {
+      layoutMetrics.phaseW = pRect.width;
+      layoutMetrics.phaseH = pRect.height;
+      setupCanvasSize(phaseCanvas, phaseCtx, pRect.width, pRect.height, dpr);
+    }
+
+    const eRect = energyWrap.getBoundingClientRect();
+    if (eRect.width > 10 && eRect.height > 10) {
+      layoutMetrics.energyW = eRect.width;
+      layoutMetrics.energyH = eRect.height;
+      setupCanvasSize(energyCanvas, energyCtx, eRect.width, eRect.height, dpr);
+    }
+  }
+
+  // =========================================================================
+  // 6. HIGH-CRAFT MECHANICAL RENDERERS (60 FPS)
+  // =========================================================================
+  function drawRoundedRect(ctx, x, y, w, h, r) {
+    const rr = Math.min(r, w * 0.5, h * 0.5);
+    ctx.beginPath();
+    ctx.moveTo(x + rr, y);
+    ctx.arcTo(x + w, y, x + w, y + h, rr);
+    ctx.arcTo(x + w, y + h, x, y + h, rr);
+    ctx.arcTo(x, y + h, x, y, rr);
+    ctx.arcTo(x, y, x + w, y, rr);
+    ctx.closePath();
+  }
+
+  function drawRubyChaton(ctx, x, y, rOuter, rJewel) {
+    ctx.save();
+    ctx.translate(x, y);
+    // Gold chaton ring
+    const chGrad = ctx.createLinearGradient(-rOuter, -rOuter, rOuter, rOuter);
+    chGrad.addColorStop(0, "#ead3a6");
+    chGrad.addColorStop(0.5, "#b7965b");
+    chGrad.addColorStop(1, "#705832");
+    ctx.fillStyle = chGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, rOuter, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Synthetic corundum ruby
+    const rGrad = ctx.createRadialGradient(-rJewel * 0.3, -rJewel * 0.3, 0.5, 0, 0, rJewel);
+    rGrad.addColorStop(0, "#e25d72");
+    rGrad.addColorStop(0.55, "#9c2135");
+    rGrad.addColorStop(1, "#57101c");
+    ctx.fillStyle = rGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, rJewel, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Central steel pivot tip
+    ctx.fillStyle = "#dce1ea";
+    ctx.beginPath();
+    ctx.arc(0, 0, Math.max(1.2, rJewel * 0.36), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawBluedScrew(ctx, x, y, r, angle) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    const sGrad = ctx.createRadialGradient(-r * 0.3, -r * 0.3, 0.5, 0, 0, r);
+    sGrad.addColorStop(0, "#7ea9dc");
+    sGrad.addColorStop(0.6, "#456fa3");
+    sGrad.addColorStop(1, "#233d61");
+    ctx.fillStyle = sGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#16263d";
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+
+    // Screw slot
+    ctx.strokeStyle = "#11161f";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.72, 0);
+    ctx.lineTo(r * 0.72, 0);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // 15-Tooth Involute-Style Club-Tooth Escape Wheel
+  function drawEscapeWheel(ctx, te) {
+    ctx.save();
+    ctx.translate(OE.x, OE.y);
+
+    // Offset so at te = 0, tooth 0 leading edge aligns at -44 deg from straight UP
+    const LOCK_ALIGN = -(44 * Math.PI) / 180;
+    const baseAngle = te + LOCK_ALIGN;
+    const rTip = RE;
+    const rRoot = 91;
+    const rRim = 77;
+    const rHub = 21;
+
+    // Helper: polar from UP (clockwise) -> canvas (x, y)
+    const pt = (r, psi) => [r * Math.sin(psi), -r * Math.cos(psi)];
+
+    // Outer 15 club-tooth involute contour
+    ctx.beginPath();
+    for (let i = 0; i < TOOTH_COUNT; i++) {
+      const aLead = baseAngle + i * TOOTH_PITCH;
+      const aTipBack = aLead - (3.6 * Math.PI) / 180;
+      const aRootLead = aLead - (5.6 * Math.PI) / 180;
+      const aRootTrail = aLead - (12.2 * Math.PI) / 180;
+      const aNextRoot = aLead + TOOTH_PITCH - (5.6 * Math.PI) / 180;
+
+      const pRootTrail = pt(rRoot, aRootTrail);
+      const pTipBack = pt(rTip - 1.6, aTipBack);
+      const pTipLead = pt(rTip, aLead);
+      const pRootLead = pt(rRoot, aRootLead);
+      const pMidFlank = pt((rRoot + rTip) * 0.5, aLead - (2.4 * Math.PI) / 180);
+      const pBackFlank = pt((rRoot + rTip) * 0.52, aTipBack - (3.2 * Math.PI) / 180);
+
+      if (i === 0) {
+        ctx.moveTo(pRootTrail[0], pRootTrail[1]);
+      } else {
+        ctx.lineTo(pRootTrail[0], pRootTrail[1]);
+      }
+      // Concave trailing undercut up to club heel
+      ctx.quadraticCurveTo(pBackFlank[0], pBackFlank[1], pTipBack[0], pTipBack[1]);
+      // Club impulse top plane
+      ctx.lineTo(pTipLead[0], pTipLead[1]);
+      // Involute curved leading flank down to root
+      ctx.quadraticCurveTo(pMidFlank[0], pMidFlank[1], pRootLead[0], pRootLead[1]);
+      // Root gullet arc to next tooth
+      const gStart = aRootLead - Math.PI / 2;
+      const gEnd = aNextRoot - Math.PI / 2;
+      ctx.arc(0, 0, rRoot, gStart, gEnd, false);
+    }
+    ctx.closePath();
+
+    // Inner circular cutout (Even-Odd fill rule creates skeletonized wheel!)
+    ctx.moveTo(rRim, 0);
+    ctx.arc(0, 0, rRim, 0, Math.PI * 2, true);
+
+    const rimGrad = ctx.createRadialGradient(0, -10, rRim * 0.7, 0, 0, rTip);
+    rimGrad.addColorStop(0, "#aeb5c0");
+    rimGrad.addColorStop(0.55, "#d8dde6");
+    rimGrad.addColorStop(1, "#8d94a0");
+    ctx.fillStyle = rimGrad;
+    ctx.fill("evenodd");
+
+    ctx.strokeStyle = "rgba(214, 185, 132, 0.58)";
+    ctx.lineWidth = 1.05;
+    ctx.stroke();
+
+    // 5 Curved Horological Spokes
+    const numSpokes = 5;
+    ctx.fillStyle = "#b9c0cb";
+    ctx.strokeStyle = "rgba(234, 211, 166, 0.35)";
+    ctx.lineWidth = 0.8;
+    for (let s = 0; s < numSpokes; s++) {
+      const a0 = te + (s * Math.PI * 2) / numSpokes;
+      const curve = 0.28;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a0 - 0.14) * rHub, Math.sin(a0 - 0.14) * rHub);
+      ctx.quadraticCurveTo(
+        Math.cos(a0 + curve * 0.5 - 0.08) * (rRim * 0.54),
+        Math.sin(a0 + curve * 0.5 - 0.08) * (rRim * 0.54),
+        Math.cos(a0 + curve - 0.055) * (rRim + 1),
+        Math.sin(a0 + curve - 0.055) * (rRim + 1)
+      );
+      ctx.lineTo(
+        Math.cos(a0 + curve + 0.055) * (rRim + 1),
+        Math.sin(a0 + curve + 0.055) * (rRim + 1)
+      );
+      ctx.quadraticCurveTo(
+        Math.cos(a0 + curve * 0.5 + 0.08) * (rRim * 0.54),
+        Math.sin(a0 + curve * 0.5 + 0.08) * (rRim * 0.54),
+        Math.cos(a0 + 0.14) * rHub,
+        Math.sin(a0 + 0.14) * rHub
+      );
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    // Center hub + blued pinion collar + ruby bearing
+    ctx.fillStyle = "#d6b984";
+    ctx.beginPath();
+    ctx.arc(0, 0, rHub, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#6c5633";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    drawRubyChaton(ctx, 0, 0, 10.5, 6.2);
+    ctx.restore();
+  }
+
+  // Anchor Pallet Fork with Ruby Pallet Stones & Banking Pins
+  function drawPalletFork(ctx, tf) {
+    // Banking pins bracketing fork lever stem
+    const stemMidY = OF.y - 54;
+    const pinOffset = 54 * Math.sin(BANK_ANGLE) + 4.5;
+    for (const side of [-1, 1]) {
+      ctx.save();
+      ctx.translate(OF.x + side * pinOffset, stemMidY);
+      ctx.fillStyle = "#d6b984";
+      ctx.beginPath();
+      ctx.arc(0, 0, 3.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#111214";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    ctx.save();
+    ctx.translate(OF.x, OF.y);
+    ctx.rotate(tf);
+
+    // Local coordinates of entry & exit stone centers relative to OF at tf = 0
+    const sx = RE * Math.sin(PALLET_ALPHA);
+    const sy = DEF - RE * Math.cos(PALLET_ALPHA);
+
+    // Lever arm UP to roller fork horns
+    const leverGrad = ctx.createLinearGradient(-12, -L_FORK, 12, 16);
+    leverGrad.addColorStop(0, "#d7dce3");
+    leverGrad.addColorStop(0.5, "#a9b1be");
+    leverGrad.addColorStop(1, "#79818e");
+    ctx.fillStyle = leverGrad;
+    ctx.strokeStyle = "rgba(214, 185, 132, 0.5)";
+    ctx.lineWidth = 1;
+
+    // Fork lever stem + horns
+    ctx.beginPath();
+    ctx.moveTo(-4.5, 0);
+    ctx.lineTo(-3.4, -(L_FORK - 16));
+    ctx.quadraticCurveTo(-11, -(L_FORK - 8), -11.5, -(L_FORK + 6));
+    ctx.lineTo(-6.2, -(L_FORK + 8));
+    ctx.quadraticCurveTo(-4.8, -(L_FORK - 2), -3.8, -(L_FORK - 6));
+    ctx.lineTo(0, -(L_FORK - 11)); // guard pin notch base
+    ctx.lineTo(3.8, -(L_FORK - 6));
+    ctx.quadraticCurveTo(4.8, -(L_FORK - 2), 6.2, -(L_FORK + 8));
+    ctx.lineTo(11.5, -(L_FORK + 6));
+    ctx.quadraticCurveTo(11, -(L_FORK - 8), 3.4, -(L_FORK - 16));
+    ctx.lineTo(4.5, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Guard dart pin at center of fork
+    ctx.fillStyle = "#d6b984";
+    ctx.beginPath();
+    ctx.moveTo(-1.5, -(L_FORK - 10));
+    ctx.lineTo(0, -(L_FORK + 3));
+    ctx.lineTo(1.5, -(L_FORK - 10));
+    ctx.closePath();
+    ctx.fill();
+
+    // Anchor arms reaching down to Entry (-sx, sy) and Exit (+sx, sy)
+    for (const side of [-1, 1]) {
+      const tx = side * sx;
+      const ty = sy;
+      const armAng = Math.atan2(ty, tx);
+      ctx.save();
+      ctx.rotate(armAng);
+      const armLen = Math.hypot(tx, ty);
+      ctx.fillStyle = leverGrad;
+      ctx.strokeStyle = "rgba(214, 185, 132, 0.45)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, -5.5);
+      ctx.lineTo(armLen - 10, -4.5);
+      ctx.lineTo(armLen + 5, -6.5);
+      ctx.lineTo(armLen + 5, 6.5);
+      ctx.lineTo(armLen - 10, 4.5);
+      ctx.lineTo(0, 5.5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // Synthetic Ruby Pallet Stone
+      // Entry stone locking edge sits near -44 deg; Exit stone locking edge sits near +40 deg
+      ctx.save();
+      ctx.translate(tx, ty);
+      const stoneTilt = side === -1 ? (42 * Math.PI) / 180 : (-42 * Math.PI) / 180;
+      ctx.rotate(stoneTilt);
+
+      ctx.fillStyle = impulseFlash > 0.15 ? "#cf3650" : "#9c2236";
+      ctx.strokeStyle = "#f29ba9";
+      ctx.lineWidth = 0.9;
+      ctx.beginPath();
+      ctx.moveTo(-4.2, -13);
+      ctx.lineTo(4.2, -13);
+      ctx.lineTo(4.2, 9);
+      ctx.lineTo(-4.2, 13); // beveled impulse face!
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Specular ruby facet
+      ctx.strokeStyle = "rgba(255, 220, 228, 0.55)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(-2.5, -10);
+      ctx.lineTo(-2.5, 9);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Center pallet arbor jewel
+    drawRubyChaton(ctx, 0, 0, 9.5, 5.4);
+    ctx.restore();
+  }
+
+  // Coaxial Hairspring Balance Wheel
+  function drawBalanceWheel(ctx, tb) {
+    ctx.save();
+    ctx.translate(OB.x, OB.y);
+
+    // 1. Impulse Roller Jewel Disc underneath wheel
+    ctx.save();
+    ctx.rotate(tb);
+    ctx.fillStyle = "rgba(180, 188, 200, 0.85)";
+    ctx.strokeStyle = "rgba(214, 185, 132, 0.6)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(0, 0, R_ROLLER + 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Ruby impulse pin at bottom (0 rad = pointing down toward fork horns)
+    ctx.fillStyle = "#b82840";
+    ctx.strokeStyle = "#f59caa";
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.arc(0, R_ROLLER, 4.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    // 2. Balance Wheel Rim + 3 Spokes + 12 Gold Timing Screws
+    ctx.save();
+    ctx.rotate(tb);
+
+    // 3 chamfered champagne-brass spokes
+    for (let s = 0; s < 3; s++) {
+      const a = (s * Math.PI * 2) / 3 - Math.PI / 2;
+      ctx.save();
+      ctx.rotate(a);
+      const spGrad = ctx.createLinearGradient(0, -5, 0, 5);
+      spGrad.addColorStop(0, "#ead3a6");
+      spGrad.addColorStop(0.5, "#c5a469");
+      spGrad.addColorStop(1, "#82683d");
+      ctx.fillStyle = spGrad;
+      ctx.beginPath();
+      ctx.moveTo(16, -4.5);
+      ctx.lineTo(RB - 9, -3.2);
+      ctx.lineTo(RB - 9, 3.2);
+      ctx.lineTo(16, 4.5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Timing screws around outer balance rim
+    for (let i = 0; i < 12; i++) {
+      const a = (i * Math.PI * 2) / 12;
+      const sx = Math.cos(a) * (RB + 3.2);
+      const sy = Math.sin(a) * (RB + 3.2);
+      ctx.fillStyle = i % 3 === 0 ? "#ead3a6" : "#b8965c";
+      ctx.beginPath();
+      ctx.arc(sx, sy, i % 3 === 0 ? 3.2 : 2.3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Outer Balance Rim (Glycidur / Glucydur brass ring)
+    ctx.beginPath();
+    ctx.arc(0, 0, RB, 0, Math.PI * 2);
+    ctx.arc(0, 0, RB - 10, 0, Math.PI * 2, true);
+    const rimGrad = ctx.createLinearGradient(-RB, -RB, RB, RB);
+    rimGrad.addColorStop(0, "#f0dbb0");
+    rimGrad.addColorStop(0.45, "#c7a66a");
+    rimGrad.addColorStop(1, "#7b6238");
+    ctx.fillStyle = rimGrad;
+    ctx.fill("evenodd");
+    ctx.strokeStyle = "rgba(255, 240, 210, 0.35)";
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+
+    ctx.restore();
+
+    // 3. Coaxial Breathing Spiral Hairspring (pinned at fixed outer stud!)
+    const turns = 6.5;
+    const rInner = 14;
+    const rOuter = 64;
+    const studAngle = -Math.PI * 0.22; // fixed stud at upper-right
+    const colletStart = tb + Math.PI * 0.5;
+    const totalSpiral = turns * Math.PI * 2;
+    const steps = 190;
+
+    ctx.beginPath();
+    for (let i = 0; i <= steps; i++) {
+      const u = i / steps;
+      // Blend inner rotation (tb) to fixed outer stud (studAngle)
+      const angle = colletStart + u * (totalSpiral + studAngle - colletStart);
+      const breathe = -tb * 2.2 * Math.sin(Math.PI * u);
+      const r = rInner + u * (rOuter - rInner) + breathe;
+      const hx = Math.cos(angle) * r;
+      const hy = Math.sin(angle) * r;
+      if (i === 0) ctx.moveTo(hx, hy);
+      else ctx.lineTo(hx, hy);
+    }
+    ctx.strokeStyle = "#709ed4";
+    ctx.lineWidth = 1.65;
+    ctx.stroke();
+
+    // Outer fixed hairspring stud block
+    const stX = Math.cos(studAngle) * rOuter;
+    const stY = Math.sin(studAngle) * rOuter;
+    ctx.fillStyle = "#d6b984";
+    ctx.strokeStyle = "#111214";
+    ctx.lineWidth = 1;
+    ctx.fillRect(stX - 4, stY - 4, 8, 8);
+    ctx.strokeRect(stX - 4, stY - 4, 8, 8);
+
+    // Central blued collet + Incabloc-style ruby shock chaton
+    ctx.fillStyle = "#456fa3";
+    ctx.beginPath();
+    ctx.arc(0, 0, rInner, 0, Math.PI * 2);
+    ctx.fill();
+    drawRubyChaton(ctx, 0, 0, 9.5, 5.5);
+
+    ctx.restore();
+  }
+
+  // Articulated Coupling Bridge Linkage (Balance -> Rocker -> Double Pendulum)
+  function drawCouplingLinkage(ctx, tb, t1) {
+    const crankR = 20;
+    const crankAngle = GAMMA * tb;
+
+    // Eccentric crank on balance arbor (visualized via coupling collar)
+    const c1x = OB.x + Math.sin(crankAngle) * crankR;
+    const c1y = OB.y + Math.cos(crankAngle) * crankR;
+
+    // Rocker wheel / spring hub at OR
+    const rockAng = (GAMMA * tb + t1) * 0.5;
+    const rPinX = OR.x + Math.sin(rockAng) * 20;
+    const rPinY = OR.y + Math.cos(rockAng) * 20;
+
+    // Drive crank pin on Pendulum Arm 1
+    const pPinX = OP.x + Math.sin(t1) * 24;
+    const pPinY = OP.y + Math.cos(t1) * 24;
+
+    // Connecting rod 1: Balance crank -> Harmonic Rocker
+    ctx.save();
+    ctx.strokeStyle = "#aeb5c2";
+    ctx.lineWidth = 3.2;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(c1x, c1y);
+    ctx.lineTo(rPinX, rPinY);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(234, 211, 166, 0.45)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Connecting rod 2: Harmonic Rocker -> Pendulum Upper Crank
+    ctx.strokeStyle = "#aeb5c2";
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.moveTo(rPinX, rPinY);
+    ctx.lineTo(pPinX, pPinY);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(234, 211, 166, 0.45)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Harmonic Rocker Hub & Visual Torsion Spring
+    ctx.save();
+    ctx.translate(OR.x, OR.y);
+    ctx.fillStyle = "#1b1d23";
+    ctx.strokeStyle = "#d6b984";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.arc(0, 0, 26, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Inner torsion indicator spring showing spring deflection (GAMMA*tb - t1)
+    const twist = GAMMA * tb - t1;
+    ctx.beginPath();
+    for (let i = 0; i <= 60; i++) {
+      const u = i / 60;
+      const a = u * Math.PI * 4.5 + twist * 1.4 * u;
+      const r = 6 + u * 16;
+      const sx = Math.cos(a) * r;
+      const sy = Math.sin(a) * r;
+      if (i === 0) ctx.moveTo(sx, sy);
+      else ctx.lineTo(sx, sy);
+    }
+    ctx.strokeStyle = "#628fc6";
+    ctx.lineWidth = 1.3;
+    ctx.stroke();
+    drawRubyChaton(ctx, 0, 0, 6.5, 3.6);
+    ctx.restore();
+
+    // Linkage pivot pins
+    for (const [px, py] of [[c1x, c1y], [rPinX, rPinY], [pPinX, pPinY]]) {
+      ctx.fillStyle = "#ead3a6";
+      ctx.strokeStyle = "#111214";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // Articulated Compound Double Pendulum + Fading Harmonic Trajectory Trace
+  function drawDoublePendulumAndTrace(ctx, t1, t2) {
+    // 1. Subtle elbow joint ghost trace
+    if (traceElbow.length > 2) {
+      ctx.save();
+      ctx.lineWidth = 1;
+      for (let i = 1; i < traceElbow.length; i++) {
+        const alpha = (i / traceElbow.length) * 0.22;
+        ctx.strokeStyle = `rgba(214, 185, 132, ${alpha.toFixed(3)})`;
+        ctx.beginPath();
+        ctx.moveTo(traceElbow[i - 1].x, traceElbow[i - 1].y);
+        ctx.lineTo(traceElbow[i].x, traceElbow[i].y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // 2. Primary Compound Pendulum Tip Harmonic Trace (chunked color ramp)
+    const n = traceTip.length;
+    if (n > 2) {
+      ctx.save();
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      const chunks = 16;
+      const step = Math.max(1, Math.floor(n / chunks));
+      for (let c = 0; c < n - 1; c += step) {
+        const end = Math.min(n - 1, c + step);
+        const u = (c + end) / (2 * n); // 0 = oldest, 1 = newest
+        // Smooth editorial color transition: faded blued steel -> bright blued -> champagne brass tip
+        let r, g, b;
+        if (u < 0.7) {
+          const k = u / 0.7;
+          r = Math.round(52 + k * 26);
+          g = Math.round(88 + k * 42);
+          b = Math.round(135 + k * 55);
+        } else {
+          const k = (u - 0.7) / 0.3;
+          r = Math.round(78 + k * 144);
+          g = Math.round(130 + k * 62);
+          b = Math.round(190 - k * 48);
+        }
+        const alpha = 0.06 + Math.pow(u, 1.4) * 0.86;
+        ctx.strokeStyle = `rgba(${r},${g},${b},${alpha.toFixed(3)})`;
+        ctx.lineWidth = 0.9 + u * 1.5;
+        ctx.beginPath();
+        ctx.moveTo(traceTip[c].x, traceTip[c].y);
+        for (let i = c + 1; i <= end; i++) {
+          ctx.lineTo(traceTip[i].x, traceTip[i].y);
+        }
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // 3. Articulated Compound Pendulum Arms
+    const { x1, y1, x2, y2 } = getPendulumCoords(t1, t2);
+
+    // Arm 1: Skeletonized Champagne Brass Tapered Beam
+    ctx.save();
+    ctx.translate(OP.x, OP.y);
+    ctx.rotate(-t1); // canvas y-down: angle t1 from straight down (+y) rotates CCW by -t1!
+    const arm1Grad = ctx.createLinearGradient(-10, 0, 10, L1_PX);
+    arm1Grad.addColorStop(0, "#ead3a6");
+    arm1Grad.addColorStop(0.5, "#c5a368");
+    arm1Grad.addColorStop(1, "#7c633a");
+    ctx.fillStyle = arm1Grad;
+    ctx.strokeStyle = "rgba(255, 240, 205, 0.35)";
+    ctx.lineWidth = 0.9;
+
+    ctx.beginPath();
+    ctx.moveTo(-11, -14);
+    ctx.lineTo(11, -14);
+    ctx.lineTo(7.5, L1_PX + 8);
+    ctx.lineTo(-7.5, L1_PX + 8);
+    ctx.closePath();
+    // Skeletonized weight-relief slots
+    ctx.moveTo(0, 32);
+    ctx.arc(0, 32, 4.2, 0, Math.PI * 2, true);
+    ctx.moveTo(0, 56);
+    ctx.arc(0, 56, 4.0, 0, Math.PI * 2, true);
+    ctx.moveTo(0, 80);
+    ctx.arc(0, 80, 3.6, 0, Math.PI * 2, true);
+    ctx.moveTo(0, 104);
+    ctx.arc(0, 104, 3.2, 0, Math.PI * 2, true);
+    ctx.fill("evenodd");
+    ctx.stroke();
+    ctx.restore();
+
+    // Arm 2: Flame-Blued Steel Counterbalanced Needle & Bob
+    ctx.save();
+    ctx.translate(x1, y1);
+    ctx.rotate(-t2);
+    // Counterweight tail above joint 2
+    ctx.fillStyle = "#d6b984";
+    ctx.beginPath();
+    ctx.arc(0, -18, 7, 0, Math.PI * 2);
+    ctx.fill();
+
+    const arm2Grad = ctx.createLinearGradient(-6, -18, 6, L2_PX);
+    arm2Grad.addColorStop(0, "#75a3d8");
+    arm2Grad.addColorStop(0.55, "#4a77ad");
+    arm2Grad.addColorStop(1, "#2a4970");
+    ctx.fillStyle = arm2Grad;
+    ctx.strokeStyle = "rgba(180, 212, 248, 0.42)";
+    ctx.lineWidth = 0.9;
+
+    ctx.beginPath();
+    ctx.moveTo(-4.5, -18);
+    ctx.lineTo(4.5, -18);
+    ctx.lineTo(2.6, L2_PX);
+    ctx.lineTo(-2.6, L2_PX);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Brass Pendulum Bob & Stylus Jewel at (0, L2_PX)
+    const bobGrad = ctx.createRadialGradient(-4, L2_PX - 4, 1, 0, L2_PX, 13);
+    bobGrad.addColorStop(0, "#f2dfb8");
+    bobGrad.addColorStop(0.6, "#c9a76b");
+    bobGrad.addColorStop(1, "#705934");
+    ctx.fillStyle = bobGrad;
+    ctx.beginPath();
+    ctx.arc(0, L2_PX, 12.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#ead3a6";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    drawRubyChaton(ctx, 0, L2_PX, 5.5, 3.2);
+    ctx.restore();
+
+    // Main Jewel Bearings at OP

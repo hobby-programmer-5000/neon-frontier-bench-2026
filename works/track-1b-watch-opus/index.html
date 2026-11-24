@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chronos Calibre O-5 — Tourbillon Squelette</title>
+  <meta name="description" content="Chronos Calibre O-5: an interactive open-worked 60-second tourbillon movement drawn in procedural SVG and canvas.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="backdrop" aria-hidden="true"></canvas>
+
+  <div class="app" id="app">
+    <header class="masthead">
+      <div class="brand">
+        <h1 class="wordmark">Chronos</h1>
+        <p class="subtitle"><em>Calibre O-5</em><span class="sep">·</span>Tourbillon squelette, remontage manuel</p>
+      </div>
+      <p class="specline">28 800 A/h<span>·</span>4 Hz<span>·</span>72 h<span>·</span>XXI rubis</p>
+    </header>
+
+    <main class="stage" id="stage" aria-label="Movement viewer">
+      <svg class="defs" id="defs" width="0" height="0" aria-hidden="true" focusable="false"></svg>
+      <div class="rig" id="rig"></div>
+      <svg class="leaders" id="leaders" aria-hidden="true"></svg>
+      <div class="xlabels" id="xlabels" aria-hidden="true"></div>
+      <div class="caption" id="caption">
+        <span class="cap-k" id="capK">Studio</span>
+        <span class="cap-v" id="capV">Assembled · sapphire crystal up</span>
+      </div>
+      <div class="hint" id="hint">Drag the crown to wind</div>
+    </main>
+
+    <aside class="panel" id="panel" aria-label="Controls">
+      <section class="card card-display" data-hud-card>
+        <h2>View</h2>
+        <div class="seg" role="group" aria-label="View mode">
+          <button type="button" data-view="hero" class="on" aria-pressed="true">Studio</button>
+          <button type="button" data-view="macro" aria-pressed="false">Macro</button>
+          <button type="button" data-view="alt_mode" aria-pressed="false">Exploded</button>
+        </div>
+        <h2>Time scale</h2>
+        <div class="seg" role="group" aria-label="Time scale">
+          <button type="button" data-scale="0.1" aria-pressed="false">0.1×</button>
+          <button type="button" data-scale="1" class="on" aria-pressed="true">1×</button>
+          <button type="button" data-scale="10" aria-pressed="false">10×</button>
+        </div>
+        <div class="row">
+          <button type="button" class="btn" id="btnPause" aria-pressed="false">Pause</button>
+          <button type="button" class="btn" id="btnStep" title="Advance one beat (1/8 s)">Step</button>
+          <button type="button" class="btn" id="btnSound" aria-pressed="false">Sound</button>
+        </div>
+      </section>
+
+      <section class="card card-spring" data-hud-card>
+        <h2>Mainspring</h2>
+        <div class="pr">
+          <div class="pr-head">
+            <span class="pr-val"><span id="prVal">38.0</span><small>h</small></span>
+            <span class="pr-state" id="prState">running</span>
+          </div>
+          <div class="pr-track" aria-hidden="true"><div class="pr-fill" id="prFill"></div></div>
+          <div class="pr-ticks" aria-hidden="true"><span>0</span><span>24</span><span>48</span><span>72</span></div>
+        </div>
+        <button type="button" class="btn wind" id="btnWind">Hold to wind</button>
+      </section>
+
+      <section class="card card-tele" data-hud-card>
+        <h2>Telemetry</h2>
+        <dl class="tele">
+          <dt>Frequency</dt><dd id="tFreq">28 800 vph</dd>
+          <dt>Balance</dt><dd id="tBal">4.00 Hz · 300°</dd>
+          <dt>Beats</dt><dd id="tBeat">8 /s</dd>
+          <dt>Tourbillon</dt><dd id="tCage">0.0°</dd>
+          <dt>Watch time</dt><dd id="tTime">00:00:00</dd>
+          <dt>Render</dt><dd id="tFps">— fps</dd>
+        </dl>
+      </section>
+
+      <section class="card card-torque" data-hud-card>
+        <h2>Torque cascade</h2>
+        <ol class="torque">
+          <li><span class="tq-n">I</span><span class="tq-k">Barrel</span><span class="tq-v" id="q0">—</span></li>
+          <li><span class="tq-n">II</span><span class="tq-k">Centre wheel <i>÷7.5</i></span><span class="tq-v" id="q1">—</span></li>
+          <li><span class="tq-n">III</span><span class="tq-k">Third wheel <i>÷8</i></span><span class="tq-v" id="q2">—</span></li>
+          <li><span class="tq-n">IV</span><span class="tq-k">Tourbillon <i>÷7.5</i></span><span class="tq-v" id="q3">—</span></li>
+          <li><span class="tq-n">V</span><span class="tq-k">Escape wheel <i>÷16</i></span><span class="tq-v" id="q4">—</span></li>
+        </ol>
+      </section>
+    </aside>
+  </div>
+
+  <script src="js/geometry.js"></script>
+  <script src="js/textures.js"></script>
+  <script src="js/movement.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+[
+  {
+    "trackId": "track-1a-watch-neon",
+    "title": "Chronos Calibre N-4 (Neon Edition)",
+    "domain": "Horology & Precision CAD",
+    "model_label": "Gemini 4 Neon (XHigh)",
+    "effort": "xhigh",
+    "technique": "Clean-Room Specialist Agent",
+    "workers": [
+      {
+        "conversation_id": "9eb7ad74-ac11-49c7-8753-712ee74e0e7c",
+        "models_logged": [
+          "gemini-4-neon-xhigh"
+        ],
+        "planner_turns": 67,
+        "tool_calls": 189,
+        "wall_clock_sec": 7911.0,
+        "raw_input_tokens": 946007,
+        "cache_read_tokens": 11913276,
+        "uncached_input_tokens": 946007,
+        "total_input_tokens": 12859283,
+        "output_tokens": 204568,
+        "total_tokens": 13063851,
+        "cache_hit_pct": 92.6,
+        "est_api_usd": 7.6935,
+        "rate_is_official_gemini_docs": true,
+        "worker_name": "watch-neon",
+        "model": "gemini-4-neon",
+        "effort": "xhigh"
+      }
+    ],
+    "planner_turns": 67,
+    "tool_calls": 189,
+    "wall_clock_sec": 7911.0,
+    "sum_worker_wall_sec": 7911.0,
+    "total_input_tokens": 12859283,
+    "cache_read_tokens": 11913276,
+    "uncached_input_tokens": 946007,
+    "output_tokens": 204568,
+    "total_tokens": 13063851,
+    "est_api_usd": 7.6935,
+    "cache_hit_pct": 92.6
+  },
+  {
+    "trackId": "track-1b-watch-opus",
+    "title": "Chronos Calibre O-5 (Opus Edition)",
+    "domain": "Horology & Precision CAD",
+    "model_label": "Claude Opus 5.5 (High)",
+    "effort": "high",
+    "technique": "Cross-Vendor Single-Agent Control",
+    "workers": [
+      {
+        "conversation_id": "11284fa7-ab11-423d-9645-02817b8fd663",
+        "models_logged": [
+          "claude-opus-5-5-high"
+        ],
+        "planner_turns": 100,
+        "tool_calls": 127,
+        "wall_clock_sec": 7730.0,
+        "raw_input_tokens": 1155192,
+        "cache_read_tokens": 24797335,
+        "uncached_input_tokens": 1155192,
+        "total_input_tokens": 25952527,
+        "output_tokens": 217391,
+        "total_tokens": 26169918,
+        "cache_hit_pct": 95.5,
+        "est_api_usd": 23.6094,
+        "rate_is_official_gemini_docs": false,
+        "worker_name": "watch-opus",
+        "model": "claude-opus-5-5",
+        "effort": "high"
+      }
+    ],
+    "planner_turns": 100,
+    "tool_calls": 127,
+    "wall_clock_sec": 7730.0,
+    "sum_worker_wall_sec": 7730.0,
+    "total_input_tokens": 25952527,
+    "cache_read_tokens": 24797335,
+    "uncached_input_tokens": 1155192,
+    "output_tokens": 217391,
+    "total_tokens": 26169918,
+    "est_api_usd": 23.6094,
+    "cache_hit_pct": 95.5
+  },
+  {
+    "trackId": "track-2-turing-study",
+    "title": "Cambridge Study 1936 \u2014 Universal Tape Machine",
+    "domain": "3D Architecture & Interactive Computing",
+    "model_label": "Gemini 4 Neon (XHigh) \u00d72 Swarm",
+    "effort": "xhigh",
+    "technique": "2-Worker Clean-Room Specialist Swarm",
+    "workers": [
+      {
+        "conversation_id": "1987e487-09ef-4c0a-8a6d-839a2b32a21b",
+        "models_logged": [
+          "gemini-4-neon-xhigh"
+        ],
+        "planner_turns": 74,
+        "tool_calls": 133,
+        "wall_clock_sec": 6412.0,
+        "raw_input_tokens": 3647216,
+        "cache_read_tokens": 9629397,
+        "uncached_input_tokens": 3647216,
+        "total_input_tokens": 13276613,
+        "output_tokens": 171053,
+        "total_tokens": 13447666,
+        "cache_hit_pct": 72.5,
+        "est_api_usd": 14.9519,
+        "rate_is_official_gemini_docs": true,
+        "worker_name": "turing-arch",
+        "model": "gemini-4-neon",
+        "effort": "xhigh"
+      },
+      {
+        "conversation_id": "c55da36a-5296-4b8d-8c65-f684d8a8e91b",
+        "models_logged": [
+          "gemini-4-neon-xhigh"
+        ],
+        "planner_turns": 48,
+        "tool_calls": 81,
+        "wall_clock_sec": 6486.0,
+        "raw_input_tokens": 513128,
+        "cache_read_tokens": 5198995,
+        "uncached_input_tokens": 513128,
+        "total_input_tokens": 5712123,
+        "output_tokens": 95819,
+        "total_tokens": 5807942,
+        "cache_hit_pct": 91.0,
+        "est_api_usd": 3.7565,
+        "rate_is_official_gemini_docs": true,
+        "worker_name": "turing-utm",
+        "model": "gemini-4-neon",
+        "effort": "xhigh"
+      }
+    ],
+    "planner_turns": 122,
+    "tool_calls": 214,
+    "wall_clock_sec": 6486.0,
+    "sum_worker_wall_sec": 12898.0,
+    "total_input_tokens": 18988736,
+    "cache_read_tokens": 14828392,
+    "uncached_input_tokens": 4160344,
+    "output_tokens": 266872,
+    "total_tokens": 19255608,
+    "est_api_usd": 18.7084,
+    "cache_hit_pct": 78.1
+  },
+  {
+    "trackId": "track-3-turbofan-cad",
+    "title": "AeroFan X-900 \u2014 Cutaway Turbofan CAD",
+    "domain": "Aerospace Engineering & CAD",
+    "model_label": "Gemini 4 Carbon (High)",
+    "effort": "high",
+    "technique": "One-Shot Master Spec",
+    "workers": [
+      {
+        "conversation_id": "4c4e71e1-416d-4404-b904-7af299dd0811",
+        "models_logged": [
+          "gemini-4-carbon-high"
+        ],
+        "planner_turns": 49,
+        "tool_calls": 117,
+        "wall_clock_sec": 5724.0,
+        "raw_input_tokens": 1941968,
+        "cache_read_tokens": 4874224,
+        "uncached_input_tokens": 1941968,
+        "total_input_tokens": 6816192,
+        "output_tokens": 152803,
+        "total_tokens": 6968995,
+        "cache_hit_pct": 71.5,
+        "est_api_usd": 5.8994,
+        "rate_is_official_gemini_docs": true,
+        "worker_name": "turbofan-carbon",
+        "model": "gemini-4-carbon",
+        "effort": "high"
+      }
+    ],
+    "planner_turns": 49,
+    "tool_calls": 117,
+    "wall_clock_sec": 5724.0,
+    "sum_worker_wall_sec": 5724.0,
+    "total_input_tokens": 6816192,
+    "cache_read_tokens": 4874224,
+    "uncached_input_tokens": 1941968,
+    "output_tokens": 152803,
+    "total_tokens": 6968995,
+    "est_api_usd": 5.8994,
+    "cache_hit_pct": 71.5
+  },
+  {
+    "trackId": "track-4-chroma-forge",
+    "title": "ChromaForge \u2014 Hex Flame & 57.6K Formula Relight",
+    "domain": "Generative Shader Art & Spreadsheet CV",
+    "model_label": "Gemini 4 Argon (High)",
+    "effort": "high",
+    "technique": "Iterative Visual-Refinement Agent",
+    "workers": [
+      {
+        "conversation_id": "9440c4e4-956a-4f16-9dba-437c9618e4b3",
+        "models_logged": [
+          "gemini-4-argon-high"
+        ],
+        "planner_turns": 25,
+        "tool_calls": 66,
+        "wall_clock_sec": 4470.0,
+        "raw_input_tokens": 439894,
+        "cache_read_tokens": 1934924,
+        "uncached_input_tokens": 439894,
+        "total_input_tokens": 2374818,
+        "output_tokens": 79172,
+        "total_tokens": 2453990,
+        "cache_hit_pct": 81.5,
+        "est_api_usd": 1.865,
+        "rate_is_official_gemini_docs": true,
+        "worker_name": "chroma-argon",
+        "model": "gemini-4-argon",
+        "effort": "high"
+      }
+    ],
+    "planner_turns": 25,
+    "tool_calls": 66,
+    "wall_clock_sec": 4470.0,
+    "sum_worker_wall_sec": 4470.0,
+    "total_input_tokens": 2374818,
+    "cache_read_tokens": 1934924,
+    "uncached_input_tokens": 439894,
+    "output_tokens": 79172,
+    "total_tokens": 2453990,
+    "est_api_usd": 1.865,
+    "cache_hit_pct": 81.5
+  },
+  {
+    "trackId": "track-5-kinetic-cloth",
+    "title": "Kinetic Atelier \u2014 3D Rube Goldberg + XPBD Cloth",
+    "domain": "120Hz Physics & Real-Time Cloth",
+    "model_label": "Neon (High) \u2192 Hydrogen (XHigh)",
+    "effort": "high \u2192 xhigh",
+    "technique": "Orchestrator \u2192 Executor Pipeline",
+    "workers": [
+      {
+        "conversation_id": "ec97e306-6caf-43b6-bbef-9f3026b13dda",
+        "models_logged": [
+          "gemini-4-neon-high"
+        ],
+        "planner_turns": 18,
+        "tool_calls": 23,
+        "wall_clock_sec": 502.0,
+        "raw_input_tokens": 107872,
+        "cache_read_tokens": 980664,
+        "uncached_input_tokens": 107872,
+        "total_input_tokens": 1088536,
+        "output_tokens": 36196,
+        "total_tokens": 1124732,
+        "cache_hit_pct": 90.1,
+        "est_api_usd": 1.0137,
+        "rate_is_official_gemini_docs": true,
+        "worker_name": "kinetic-arch",
+        "model": "gemini-4-neon",
+        "effort": "high"
+      },
+      {
+        "conversation_id": "6c4605d6-cf41-4963-ac56-9cbb32861382",
+        "models_logged": [
+          "gemini-4-hydrogen-xhigh"
+        ],
+        "planner_turns": 75,
+        "tool_calls": 141,
+        "wall_clock_sec": 4484.0,
+        "raw_input_tokens": 361328,
+        "cache_read_tokens": 11657695,
+        "uncached_input_tokens": 361328,
+        "total_input_tokens": 12019023,
+        "output_tokens": 169080,
+        "total_tokens": 12188103,
+        "cache_hit_pct": 97.0,
+        "est_api_usd": 2.6844,
+        "rate_is_official_gemini_docs": true,
+        "worker_name": "kinetic-exec",
+        "model": "gemini-4-hydrogen",
+        "effort": "xhigh"
+      }
+    ],
+    "planner_turns": 93,
+    "tool_calls": 164,
+    "wall_clock_sec": 4484.0,
+    "sum_worker_wall_sec": 4986.0,
+    "total_input_tokens": 13107559,
+    "cache_read_tokens": 12638359,
+    "uncached_input_tokens": 469200,
+    "output_tokens": 205276,
+    "total_tokens": 13312835,
+    "est_api_usd": 3.6981,
+    "cache_hit_pct": 96.4
+  }
+]

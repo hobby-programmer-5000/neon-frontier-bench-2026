@@ -1,0 +1,661 @@
+/*
+ * AeroFan X-900 — Siemens-NX / Aerospace Test-Cell Studio Instrumentation Stylesheet
+ * Strict Anti-AI-Slop & Zero-Overlap Responsive Grid (1440x900 & 700x900 verified)
+ */
+
+:root {
+  --bg-deep: #0e131a;
+  --bg-panel: rgba(16, 22, 30, 0.88);
+  --bg-panel-elevated: rgba(23, 31, 42, 0.92);
+  --bg-pill: rgba(30, 40, 54, 0.85);
+  --border-hairline: rgba(148, 173, 204, 0.20);
+  --border-strong: rgba(168, 196, 228, 0.36);
+
+  --text-primary: #e8eef6;
+  --text-secondary: #9aaaba;
+  --text-muted: #697a8d;
+
+  --accent-cad: #4da3ff;
+  --accent-amber: #e28736;
+  --accent-toga: #f05848;
+  --accent-nominal: #32c48d;
+
+  --font-sans: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(circle at 52% 44%, #1e2836 0%, #121821 58%, #0b0f15 100%);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.35;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+#webgl-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+}
+
+/* 2D CAD Exploded Stage Callout Layer (confined strictly inside clear viewport area) */
+#callout-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  overflow: hidden;
+}
+
+.cad-callout {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  padding: 2px 6px;
+  background: rgba(13, 18, 25, 0.86);
+  border: 1px solid rgba(77, 163, 255, 0.45);
+  border-left: 2px solid var(--accent-amber);
+  color: #dce7f5;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  border-radius: 2px;
+  pointer-events: none;
+  transition: opacity 0.16s ease;
+}
+
+/* Master Non-Overlapping CSS Grid HUD Shell */
+.cad-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ======================== TOP INSTRUMENTATION BAR ======================== */
+.topbar {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 14px;
+  background: rgba(13, 18, 25, 0.92);
+  border-bottom: 1px solid var(--border-hairline);
+  backdrop-filter: blur(8px);
+}
+
+.brand-cluster {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.brand-code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #f4f8fc;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.brand-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--accent-amber);
+  border-radius: 1px;
+  display: inline-block;
+}
+
+.brand-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toolbar-clusters {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
+.pill-group {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(9, 13, 18, 0.78);
+  border: 1px solid var(--border-hairline);
+  border-radius: 3px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.group-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  padding: 0 6px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cad-btn {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 4px 8px;
+  border-radius: 2px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.cad-btn:hover {
+  color: var(--text-primary);
+  background: rgba(77, 163, 255, 0.12);
+}
+
+.cad-btn.active {
+  color: #ffffff;
+  background: rgba(77, 163, 255, 0.24);
+  border-color: rgba(77, 163, 255, 0.58);
+}
+
+.cad-btn.mode-thermal.active {
+  background: rgba(226, 135, 54, 0.26);
+  border-color: rgba(226, 135, 54, 0.68);
+  color: #ffdcb8;
+}
+
+.cad-btn.action-demo {
+  background: rgba(226, 135, 54, 0.16);
+  border-color: rgba(226, 135, 54, 0.48);
+  color: #f6c28b;
+}
+
+.cad-btn.action-demo:hover {
+  background: rgba(226, 135, 54, 0.28);
+  color: #ffffff;
+}
+
+.cad-btn.audio-live {
+  background: rgba(50, 196, 141, 0.20);
+  border-color: rgba(50, 196, 141, 0.58);
+  color: #9ef2d0;
+}
+
+/* ======================== MIDDLE WORKSPACE GRID ======================== */
+.workspace-grid {
+  display: grid;
+  grid-template-columns: 266px 1fr 270px;
+  grid-template-rows: 1fr;
+  gap: 12px;
+  padding: 10px 14px;
+  min-height: 0;
+  align-items: start;
+}
+
+.viewport-window {
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+  pointer-events: none;
+}
+
+.dock-panel {
+  pointer-events: auto;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-hairline);
+  border-radius: 3px;
+  padding: 10px 11px;
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.cad-shell.hud-collapsed .dock-panel {
+  display: none;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-hairline);
+  padding-bottom: 5px;
+}
+
+.panel-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #c8d6e6;
+  text-transform: uppercase;
+}
+
+.regime-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+  background: rgba(77, 163, 255, 0.16);
+  border: 1px solid rgba(77, 163, 255, 0.42);
+  color: #9ecbff;
+}
+
+.regime-badge.toga {
+  background: rgba(240, 88, 72, 0.20);
+  border-color: rgba(240, 88, 72, 0.55);
+  color: #ffb0a6;
+}
+
+/* Primary 6-KPI Telemetry Matrix */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.kpi-cell {
+  background: rgba(10, 14, 20, 0.66);
+  border: 1px solid rgba(148, 173, 204, 0.14);
+  border-radius: 2px;
+  padding: 5px 7px;
+}
+
+.kpi-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.kpi-val {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #f2f7fc;
+  margin-top: 1px;
+}
+
+.kpi-unit {
+  font-size: 9.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-left: 2px;
+}
+
+.kpi-sub {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 9px;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+
+.spool-bar {
+  height: 3px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  margin-top: 4px;
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.spool-fill {
+  height: 100%;
+  background: var(--accent-cad);
+  transition: width 0.08s linear;
+}
+
+.spool-fill.n2 {
+  background: var(--accent-amber);
+}
+
+/* Brayton Station Table */
+.station-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 10px;
+}
+
+.station-table th {
+  text-align: left;
+  font-size: 8.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 2px 3px 4px;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.station-table th.num,
+.station-table td.num {
+  text-align: right;
+}
+
+.station-table td {
+  padding: 3.5px 3px;
+  border-bottom: 1px solid rgba(148, 173, 204, 0.08);
+  color: #d6e2f0;
+}
+
+.station-table tr.hot-row td {
+  color: #ffbe86;
+}
+
+.stn-code {
+  font-weight: 700;
+  color: #90b8e8;
+}
+
+/* Live Axial Temperature Spark Diagram */
+.thermo-spark-box {
+  background: rgba(9, 13, 19, 0.70);
+  border: 1px solid rgba(148, 173, 204, 0.14);
+  border-radius: 2px;
+  padding: 5px 7px;
+}
+
+.spark-caption {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  color: var(--text-muted);
+  margin-bottom: 3px;
+}
+
+#thermo-spark-svg {
+  width: 100%;
+  height: 44px;
+  display: block;
+}
+
+/* ======================== RIGHT CONTROL DOCK ======================== */
+.preset-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.preset-btn {
+  appearance: none;
+  background: rgba(11, 16, 23, 0.78);
+  border: 1px solid var(--border-hairline);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 5px 4px;
+  border-radius: 2px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.preset-btn:hover {
+  color: #ffffff;
+  border-color: var(--border-strong);
+}
+
+.preset-btn.active {
+  background: rgba(77, 163, 255, 0.22);
+  border-color: var(--accent-cad);
+  color: #ffffff;
+}
+
+.preset-btn.toga-btn.active {
+  background: rgba(240, 88, 72, 0.24);
+  border-color: var(--accent-toga);
+  color: #ffd0ca;
+}
+
+.control-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.control-label-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.ctrl-name {
+  font-size: 9.5px;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+}
+
+.ctrl-readout {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #eef5fc;
+}
+
+input[type="range"].cad-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"].cad-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: #dce8f6;
+  border: 1px solid #2b6cb0;
+  cursor: pointer;
+}
+
+input[type="range"].cad-slider.explode-slider::-webkit-slider-thumb {
+  background: var(--accent-amber);
+  border-color: #7c3f10;
+}
+
+.sub-toggles {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.stream-legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  color: var(--text-muted);
+  padding-top: 2px;
+}
+
+.leg-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.leg-swatch {
+  width: 7px;
+  height: 7px;
+  border-radius: 1px;
+  display: inline-block;
+}
+
+/* ======================== BOTTOM CAD STATUS STRIP ======================== */
+.statusbar {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 14px;
+  background: rgba(11, 15, 21, 0.92);
+  border-top: 1px solid var(--border-hairline);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 9.5px;
+  color: var(--text-muted);
+}
+
+.status-metrics {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.status-kv strong {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* ======================== NARROW / 700x900 RESPONSIVE LAYOUT ======================== */
+@media (max-width: 1060px) {
+  .topbar {
+    flex-wrap: wrap;
+    padding: 6px 10px;
+    gap: 5px;
+  }
+
+  .brand-sub {
+    display: none;
+  }
+
+  .toolbar-clusters {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .group-tag {
+    display: none;
+  }
+
+  .cad-btn {
+    padding: 3px 6px;
+    font-size: 9.5px;
+  }
+
+  /* At 700x900: Huge unobstructed 3D viewport on top, neat 2-column instrumentation deck docked below! */
+  .workspace-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto;
+    gap: 8px;
+    padding: 6px 10px;
+    align-items: end;
+  }
+
+  .viewport-window {
+    grid-column: 1 / -1;
+    grid-row: 1 / 2;
+    min-height: 200px;
+  }
+
+  #telemetry-dock {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+    max-height: 300px;
+    padding: 6px 8px;
+    gap: 5px;
+  }
+
+  #control-dock {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    max-height: 300px;
+    padding: 6px 8px;
+    gap: 5px;
+  }
+
+  .kpi-cell {
+    padding: 4px 6px;
+  }
+
+  .thermo-spark-box {
+    display: none;
+  }
+
+  .kpi-val {
+    font-size: 11.5px;
+  }
+
+  .kpi-sub {
+    display: none;
+  }
+
+  .station-table td,
+  .station-table th {
+    padding: 2px 2px;
+    font-size: 9px;
+  }
+
+  .statusbar {
+    padding: 3px 10px;
+    font-size: 9px;
+  }
+
+  .status-hint {
+    display: none;
+  }
+}

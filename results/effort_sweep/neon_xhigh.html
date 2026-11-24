@@ -1,0 +1,2623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swiss Escapement &amp; Double-Pendulum Harmonic Phase-Space Studio</title>
+<style>
+  :root {
+    --bg-obsidian: #111214;
+    --bg-recess: #0d0e10;
+    --bg-plate: #16181c;
+    --bg-elevated: #1b1e23;
+    --brass: #d6b984;
+    --brass-light: #ebd5aa;
+    --brass-dim: #8f774d;
+    --brass-hairline: rgba(214, 185, 132, 0.16);
+    --brass-hairline-strong: rgba(214, 185, 132, 0.34);
+    --silver: #d4d8df;
+    --silver-muted: #8a919e;
+    --silver-dim: #545b66;
+    --blued: #4e7cb2;
+    --blued-bright: #78a5d8;
+    --blued-dim: rgba(78, 124, 178, 0.24);
+    --ruby: #a82c42;
+    --font-sans: 'SF Pro Display', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    --font-mono: 'SF Mono', ui-monospace, 'Menlo', 'Monaco', 'Consolas', monospace;
+    --header-h: 42px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-obsidian);
+    color: var(--silver);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+  }
+
+  .tabular {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Editorial Top Bar */
+  .studio-header {
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    background: var(--bg-plate);
+    border-bottom: 1px solid var(--brass-hairline);
+    gap: 12px;
+  }
+
+  .brand-group {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .brand-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brass);
+    white-space: nowrap;
+  }
+
+  .brand-sep {
+    width: 1px;
+    height: 11px;
+    background: var(--brass-hairline-strong);
+    align-self: center;
+    flex-shrink: 0;
+  }
+
+  .brand-sub {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--silver-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+
+  .meta-chip {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--silver-muted);
+    white-space: nowrap;
+  }
+
+  .meta-chip strong {
+    color: var(--silver);
+    font-weight: 500;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--silver);
+    padding: 3px 8px;
+    border: 1px solid var(--brass-hairline);
+    background: var(--bg-obsidian);
+  }
+
+  .status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--brass);
+    transition: background 0.15s ease;
+  }
+
+  .status-pill.paused .status-dot {
+    background: var(--blued);
+  }
+
+  /* Main 65% / 35% Split Workspace */
+  .workspace {
+    display: grid;
+    grid-template-columns: 65% 35%;
+    width: 100%;
+    height: calc(100vh - var(--header-h));
+    overflow: hidden;
+  }
+
+  /* Left 65% Horological Stage */
+  .stage-panel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-obsidian);
+    border-right: 1px solid var(--brass-hairline);
+    overflow: hidden;
+  }
+
+  #caliberCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: default;
+  }
+
+  #caliberCanvas.can-grab {
+    cursor: grab;
+  }
+
+  #caliberCanvas.grabbing {
+    cursor: grabbing;
+  }
+
+  .stage-hud {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .hud-tl {
+    top: 14px;
+    left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .hud-kicker {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brass-dim);
+  }
+
+  .hud-heading {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--silver);
+    font-weight: 500;
+  }
+
+  .hud-beat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+    font-size: 10px;
+    color: var(--silver-muted);
+  }
+
+  .beat-jewel {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #441822;
+    border: 1px solid rgba(168, 44, 66, 0.7);
+    transition: background 0.08s ease;
+  }
+
+  .beat-jewel.pulse {
+    background: #d84b64;
+  }
+
+  .hud-tr {
+    top: 14px;
+    right: 16px;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .hud-stat {
+    font-size: 10px;
+    color: var(--silver-muted);
+    letter-spacing: 0.06em;
+  }
+
+  .hud-stat span {
+    color: var(--brass);
+  }
+
+  .hud-bl {
+    bottom: 12px;
+    left: 16px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: nowrap;
+  }
+
+  .angle-readout {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .angle-label {
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--silver-dim);
+  }
+
+  .angle-val {
+    font-size: 11px;
+    color: var(--silver);
+  }
+
+  .angle-val.accent-brass { color: var(--brass); }
+  .angle-val.accent-blue { color: var(--blued-bright); }
+
+  .hud-br {
+    bottom: 12px;
+    right: 16px;
+    text-align: right;
+    font-size: 9.5px;
+    color: var(--silver-dim);
+    letter-spacing: 0.08em;
+  }
+
+  /* Right 35% Telemetry & Controls Panel */
+  .telemetry-panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-plate);
+    overflow: hidden;
+  }
+
+  .sub-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-bottom: 1px solid var(--brass-hairline);
+    padding: 10px 14px 10px;
+  }
+
+  .panel-phase {
+    flex: 1.18 1 0;
+  }
+
+  .panel-energy {
+    flex: 0.78 1 0;
+  }
+
+  .panel-controls {
+    flex: 0 0 auto;
+    border-bottom: none;
+    padding: 11px 14px 12px;
+    background: #14161a;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-shrink: 0;
+    min-height: 18px;
+  }
+
+  .section-title {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brass);
+    white-space: nowrap;
+  }
+
+  .section-readout {
+    font-size: 10.5px;
+    color: var(--silver);
+    white-space: nowrap;
+  }
+
+  /* Phase-Space Mode Switcher */
+  .mode-switch {
+    display: inline-flex;
+    border: 1px solid var(--brass-hairline);
+    background: var(--bg-obsidian);
+    flex-shrink: 0;
+  }
+
+  .mode-btn {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--silver-muted);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.05em;
+    padding: 2px 7px;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+
+  .mode-btn + .mode-btn {
+    border-left: 1px solid var(--brass-hairline);
+  }
+
+  .mode-btn:hover {
+    color: var(--silver);
+  }
+
+  .mode-btn.active {
+    background: rgba(214, 185, 132, 0.14);
+    color: var(--brass-light);
+  }
+
+  .plot-frame {
+    position: relative;
+    flex: 1 1 0;
+    min-height: 80px;
+    width: 100%;
+    background: var(--bg-recess);
+    border: 1px solid var(--brass-hairline);
+    overflow: hidden;
+  }
+
+  .plot-frame canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .plot-corner-meta {
+    position: absolute;
+    top: 5px;
+    right: 7px;
+    font-size: 9px;
+    color: var(--silver-muted);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  /* Energy Legend Strip */
+  .energy-legend {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-shrink: 0;
+    font-size: 9.5px;
+  }
+
+  .legend-items {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--silver-muted);
+    white-space: nowrap;
+  }
+
+  .legend-swatch {
+    width: 9px;
+    height: 2px;
+    flex-shrink: 0;
+  }
+
+  .sw-tot { background: var(--silver); }
+  .sw-ke { background: var(--brass); }
+  .sw-pe { background: var(--blued-bright); }
+
+  .energy-split-vals {
+    color: var(--silver-dim);
+    white-space: nowrap;
+  }
+
+  /* Controls Deck */
+  .control-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .control-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .control-label-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .control-name {
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--silver-muted);
+    white-space: nowrap;
+  }
+
+  .control-value {
+    font-size: 10.5px;
+    color: var(--brass-light);
+    white-space: nowrap;
+  }
+
+  /* Precision Horology Range Slider */
+  input[type="range"].vernier-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 16px;
+    background: transparent;
+    cursor: pointer;
+    outline: none;
+  }
+
+  input[type="range"].vernier-slider::-webkit-slider-runnable-track {
+    height: 2px;
+    background: linear-gradient(
+      to right,
+      var(--brass) 0%,
+      var(--brass) var(--fill, 50%),
+      #2b2f37 var(--fill, 50%),
+      #2b2f37 100%
+    );
+  }
+
+  input[type="range"].vernier-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 11px;
+    height: 14px;
+    margin-top: -6px;
+    background: linear-gradient(180deg, #eceef2 0%, #c6cbd4 50%, #98a0ad 100%);
+    border: 1px solid #353942;
+    border-radius: 1px;
+    transition: border-color 0.12s ease;
+  }
+
+  input[type="range"].vernier-slider:hover::-webkit-slider-thumb,
+  input[type="range"].vernier-slider:focus-visible::-webkit-slider-thumb {
+    border-color: var(--brass);
+    background: linear-gradient(180deg, var(--brass-light) 0%, var(--brass) 100%);
+  }
+
+  input[type="range"].vernier-slider::-moz-range-track {
+    height: 2px;
+    background: #2b2f37;
+    border: none;
+  }
+
+  input[type="range"].vernier-slider::-moz-range-progress {
+    height: 2px;
+    background: var(--brass);
+  }
+
+  input[type="range"].vernier-slider::-moz-range-thumb {
+    width: 10px;
+    height: 13px;
+    background: linear-gradient(180deg, #eceef2 0%, #c6cbd4 50%, #98a0ad 100%);
+    border: 1px solid #353942;
+    border-radius: 1px;
+  }
+
+  /* Time Scale Preset Bar */
+  .preset-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    margin-top: 1px;
+  }
+
+  .preset-btn {
+    appearance: none;
+    background: var(--bg-obsidian);
+    border: 1px solid var(--brass-hairline);
+    color: var(--silver-muted);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    padding: 3px 0;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+  }
+
+  .preset-btn:hover {
+    color: var(--silver);
+    border-color: var(--brass-hairline-strong);
+  }
+
+  .preset-btn.active {
+    background: rgba(78, 124, 178, 0.22);
+    border-color: var(--blued);
+    color: var(--silver);
+  }
+
+  /* Transport Controls */
+  .transport-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 2px;
+    padding-top: 9px;
+    border-top: 1px solid var(--brass-hairline);
+  }
+
+  .ctrl-btn {
+    appearance: none;
+    background: var(--bg-elevated);
+    border: 1px solid var(--brass-hairline-strong);
+    color: var(--silver);
+    font-family: var(--font-sans);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 7px 4px;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+    white-space: nowrap;
+  }
+
+  .ctrl-btn:hover {
+    background: #23272e;
+    border-color: var(--brass);
+    color: var(--brass-light);
+  }
+
+  .ctrl-btn:active {
+    background: #181b20;
+  }
+
+  .ctrl-btn.primary-active {
+    background: rgba(78, 124, 178, 0.24);
+    border-color: var(--blued-bright);
+    color: #e9eef5;
+  }
+
+  /* Responsive Compactness for 700x900 and narrow widths — zero overlap */
+  @media (max-width: 960px) {
+    :root {
+      --header-h: 38px;
+    }
+
+    .studio-header {
+      padding: 0 10px;
+    }
+
+    .brand-sep,
+    .brand-sub,
+    .meta-chip-rk4 {
+      display: none;
+    }
+
+    .brand-title {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+    }
+
+    .header-meta {
+      gap: 8px;
+    }
+
+    .sub-panel {
+      padding: 8px 9px 8px;
+    }
+
+    .panel-controls {
+      padding: 9px 9px 10px;
+    }
+
+    .section-title {
+      font-size: 8.5px;
+      letter-spacing: 0.11em;
+    }
+
+    .section-title-ext {
+      display: none;
+    }
+
+    .section-readout {
+      font-size: 9.5px;
+    }
+
+    .mode-btn {
+      font-size: 8.5px;
+      padding: 2px 5px;
+    }
+
+    .energy-split-vals {
+      display: none;
+    }
+
+    .legend-items {
+      gap: 7px;
+      font-size: 8.5px;
+    }
+
+    .control-stack {
+      gap: 7px;
+    }
+
+    .control-name {
+      font-size: 8.5px;
+      letter-spacing: 0.09em;
+    }
+
+    .control-value {
+      font-size: 9.5px;
+    }
+
+    .preset-btn {
+      font-size: 8.5px;
+      padding: 2px 0;
+    }
+
+    .transport-grid {
+      gap: 4px;
+      padding-top: 7px;
+    }
+
+    .ctrl-btn {
+      font-size: 8.5px;
+      letter-spacing: 0.08em;
+      padding: 6px 2px;
+    }
+
+    .hud-tl { top: 10px; left: 10px; }
+    .hud-tr { top: 10px; right: 10px; }
+    .hud-bl { bottom: 9px; left: 10px; gap: 9px; }
+    .hud-br { bottom: 9px; right: 10px; font-size: 8.5px; }
+    .hud-heading { font-size: 9.5px; }
+    .hud-kicker { font-size: 8px; }
+    .hud-beat-row, .hud-stat { font-size: 9px; }
+    .angle-val { font-size: 9.5px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="studio-header">
+  <div class="brand-group">
+    <span class="brand-title">Swiss Horology Studio</span>
+    <span class="brand-sep" aria-hidden="true"></span>
+    <span class="brand-sub">Cal. H-15 Escapement &amp; Compound Double-Pendulum Phase Space</span>
+  </div>
+  <div class="header-meta">
+    <span class="meta-chip meta-chip-rk4 tabular">RK4 <strong>&Delta;t = 1/240 s</strong></span>
+    <span class="meta-chip tabular"><strong id="hdrFps">60</strong> FPS</span>
+    <span class="status-pill" id="statusPill">
+      <span class="status-dot"></span>
+      <span id="statusText">Running</span>
+    </span>
+  </div>
+</header>
+
+<main class="workspace">
+  <!-- Left 65%: Precision Horological Mechanism & Harmonic Trace -->
+  <section class="stage-panel" aria-label="Swiss Escapement and Double-Pendulum Mechanism">
+    <canvas id="caliberCanvas"></canvas>
+
+    <div class="stage-hud hud-tl">
+      <div class="hud-kicker">Calibre H-15 &middot; 15-Tooth Lever</div>
+      <div class="hud-heading">Coaxial Balance &amp; Harmonic Pendulum</div>
+      <div class="hud-beat-row tabular">
+        <span class="beat-jewel" id="beatJewel"></span>
+        <span>BEATS <strong id="hudBeats">0</strong></span>
+        <span>&middot;</span>
+        <span id="hudCadence">0.00 Hz</span>
+      </div>
+    </div>
+
+    <div class="stage-hud hud-tr tabular">
+      <div class="hud-stat">TORSION <span id="hudTorque">+0.00 N&middot;m</span></div>
+      <div class="hud-stat">AMP <span id="hudAmp">95&deg;</span></div>
+    </div>
+
+    <div class="stage-hud hud-bl">
+      <div class="angle-readout">
+        <span class="angle-label">Balance &phi;</span>
+        <span class="angle-val accent-brass tabular" id="hudPhi">+94.5&deg;</span>
+      </div>
+      <div class="angle-readout">
+        <span class="angle-label">Arm I &theta;&#8321;</span>
+        <span class="angle-val accent-blue tabular" id="hudTheta1">+44.7&deg;</span>
+      </div>
+      <div class="angle-readout">
+        <span class="angle-label">Arm II &theta;&#8322;</span>
+        <span class="angle-val tabular" id="hudTheta2">-29.8&deg;</span>
+      </div>
+    </div>
+
+    <div class="stage-hud hud-br tabular">
+      <div id="hudSteps">STEPS 0</div>
+    </div>
+  </section>
+
+  <!-- Right 35%: Phase Space, Energy Conservation & Controls -->
+  <aside class="telemetry-panel" aria-label="Phase Space Telemetry and Controls">
+    <!-- Phase-Space Portrait -->
+    <div class="sub-panel panel-phase">
+      <div class="section-head">
+        <span class="section-title">Phase Space <span class="section-title-ext">&middot; &theta; vs &omega;</span></span>
+        <div class="mode-switch" role="group" aria-label="Phase space channel">
+          <button type="button" class="mode-btn active" data-mode="pendulum">&theta;&#8321;&middot;&theta;&#8322;</button>
+          <button type="button" class="mode-btn" data-mode="balance">&phi;</button>
+        </div>
+      </div>
+      <div class="plot-frame">
+        <canvas id="phaseCanvas"></canvas>
+        <div class="plot-corner-meta tabular" id="phaseReadout">&theta; +0.00 &middot; &omega; +0.00</div>
+      </div>
+    </div>
+
+    <!-- Kinetic / Potential Energy Conservation Sparkline -->
+    <div class="sub-panel panel-energy">
+      <div class="section-head">
+        <span class="section-title">Energy <span class="section-title-ext">Conservation</span></span>
+        <span class="section-readout tabular" id="energyTotalVal">1.050 J</span>
+      </div>
+      <div class="energy-legend">
+        <div class="legend-items">
+          <span class="legend-item"><span class="legend-swatch sw-tot"></span>TOT</span>
+          <span class="legend-item"><span class="legend-swatch sw-ke"></span>KE</span>
+          <span class="legend-item"><span class="legend-swatch sw-pe"></span>PE</span>
+        </div>
+        <span class="energy-split-vals tabular" id="energySplitVal">KE 0.01 &middot; PE 1.04 J</span>
+      </div>
+      <div class="plot-frame">
+        <canvas id="energyCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- Compact Precision Controls -->
+    <div class="sub-panel panel-controls">
+      <div class="control-stack">
+        <div class="control-row">
+          <div class="control-label-line">
+            <label class="control-name" for="torqueSlider">Drive Torque</label>
+            <span class="control-value tabular" id="torqueVal">0.36 N&middot;m</span>
+          </div>
+          <input type="range" id="torqueSlider" class="vernier-slider" min="0" max="0.80" step="0.01" value="0.36">
+        </div>
+
+        <div class="control-row">
+          <div class="control-label-line">
+            <label class="control-name" for="dampingSlider">Damping</label>
+            <span class="control-value tabular" id="dampingVal">0.020</span>
+          </div>
+          <input type="range" id="dampingSlider" class="vernier-slider" min="0" max="0.100" step="0.001" value="0.020">
+        </div>
+
+        <div class="control-row">
+          <div class="control-label-line">
+            <label class="control-name" for="timeScaleSlider">Time Scale</label>
+            <span class="control-value tabular" id="timeScaleVal">1.00&times;</span>
+          </div>
+          <input type="range" id="timeScaleSlider" class="vernier-slider" min="0.25" max="2.00" step="0.05" value="1.00">
+          <div class="preset-grid" role="group" aria-label="Time scale presets">
+            <button type="button" class="preset-btn" data-scale="0.25">0.25&times;</button>
+            <button type="button" class="preset-btn" data-scale="0.5">0.5&times;</button>
+            <button type="button" class="preset-btn active" data-scale="1">1&times;</button>
+            <button type="button" class="preset-btn" data-scale="2">2&times;</button>
+          </div>
+        </div>
+
+        <div class="transport-grid">
+          <button type="button" class="ctrl-btn" id="btnPause">Pause</button>
+          <button type="button" class="ctrl-btn" id="btnStep">Step</button>
+          <button type="button" class="ctrl-btn" id="btnReset">Reset</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  /* =========================================================================
+     PHYSICAL CONSTANTS & COUPLED LAGRANGIAN PARAMETERS
+     Fixed-timestep RK4 (dt = 1/240 s) for 3-DOF Coupled Horological System:
+       q = [phi (balance), theta1 (upper arm), theta2 (lower arm)]
+       v = [omegaB, omega1, omega2]
+     ========================================================================= */
+  const DT = 1 / 240;
+  const TWO_PI = Math.PI * 2;
+  const DEG = 180 / Math.PI;
+
+  const PHYS = {
+    Ib: 0.0050,        // Balance wheel moment of inertia (kg*m^2)
+    kb: 0.450,         // Hairspring torsional stiffness (N*m/rad) -> f0 ~ 1.51 Hz
+    kc: 0.220,         // Coaxial elastic coupling stiffness (N*m/rad)
+    lambda: 0.55,      // Lever coupling ratio between balance and upper arm
+    m1: 0.32,          // Upper pendulum bob mass (kg)
+    m2: 0.22,          // Lower pendulum bob mass (kg)
+    L1: 0.24,          // Upper arm physical length (m)
+    L2: 0.20,          // Lower arm physical length (m)
+    I1: 0.0025,        // Upper compound truss inertia (kg*m^2)
+    I2: 0.0015,        // Lower compound strut inertia (kg*m^2)
+    g: 9.81,           // Gravity (m/s^2)
+    sigmaImp: 0.28,    // Swiss lever impulse zone half-width (rad)
+    omegaTh: 0.45,     // Smooth directional engagement scale (rad/s)
+    omegaCap: 26.0,    // Mainspring train velocity ceiling (rad/s)
+    M11: 0,
+    M22: 0,
+    m2L1L2: 0,
+    g1Coeff: 0,
+    g2Coeff: 0
+  };
+  PHYS.M11 = (PHYS.m1 + PHYS.m2) * PHYS.L1 * PHYS.L1 + PHYS.I1;
+  PHYS.M22 = PHYS.m2 * PHYS.L2 * PHYS.L2 + PHYS.I2;
+  PHYS.m2L1L2 = PHYS.m2 * PHYS.L1 * PHYS.L2;
+  PHYS.g1Coeff = (PHYS.m1 + PHYS.m2) * PHYS.g * PHYS.L1;
+  PHYS.g2Coeff = PHYS.m2 * PHYS.g * PHYS.L2;
+
+  /* Exact Straight-Line 15-Tooth Swiss Lever Caliber Geometry (normalized units) */
+  const GEO = {
+    teeth: 15,
+    toothPitch: TWO_PI / 15,      // 24 deg
+    halfPitch: Math.PI / 15,      // 12 deg per beat
+    E: { x: 0, y: -0.76 },        // Escape wheel center
+    Re: 0.255,                    // Escape wheel tip radius
+    Rroot: 0.186,                 // Escape wheel root radius
+    P: { x: 0, y: -0.417 },       // Anchor pallet pivot (d_EP = Re / cos(42 deg))
+    B: { x: 0, y: 0.00 },         // Coaxial balance wheel & pendulum pivot
+    RbOuter: 0.345,               // Balance wheel outer rim radius
+    RbInner: 0.305,               // Balance wheel inner rim radius
+    Rroller: 0.115,               // Balance roller table radius
+    rJewel: 0.102,                // Ruby impulse jewel radius on roller
+    Lfork: 0.315,                 // Distance from P to fork notch (0.417 - 0.102)
+    alphaMax: 0.115,              // Banking pin half-angle (~6.6 deg)
+    phiLift: 0.362,               // Balance half-lift angle (~20.7 deg)
+    L1Vis: 0.55,                  // Visual upper arm length
+    L2Vis: 0.45                   // Visual lower arm length
+  };
+
+  /* Default Simulation Controls */
+  const DEFAULTS = {
+    driveTorque: 0.36,
+    damping: 0.020,
+    timeScale: 1.00
+  };
+
+  const params = {
+    driveTorque: DEFAULTS.driveTorque,
+    damping: DEFAULTS.damping,
+    timeScale: DEFAULTS.timeScale,
+    paused: false,
+    phaseMode: 'pendulum' // 'pendulum' | 'balance'
+  };
+
+  /* Dynamical State Vector: [phi, omegaB, theta1, omega1, theta2, omega2] */
+  const state = new Float64Array(6);
+
+  /* Escapement Kinematic Indexer (synchronized with balance wheel zero-crossings) */
+  const esc = {
+    beatIndex: 0,        // Even = locked on right/entry pallet (48 deg), Odd = left/exit (132 deg)
+    forkSide: -1,        // -1 = parked right (-alphaMax), +1 = parked left (+alphaMax)
+    alpha: -GEO.alphaMax,
+    psi: 0,              // Escape wheel angle (rad)
+    beatPulse: 0,        // Subtle visual beat glint decay [0..1]
+    lastBeatSimTime: 0,
+    cadenceHz: 3.0,
+    peakPhiWindow: 1.65,
+    peakPhiDisplay: 1.65,
+    prevPhi: 1.65
+  };
+
+  /* Simulation Counters & Ring Buffers */
+  let simTime = 0;
+  let totalSteps = 0;
+  let accumulator = 0;
+  let lastFrameTs = 0;
+  let fpsSmoothed = 60;
+  let firstFrameDone = false;
+
+  const TRACE_MAX = 1500;
+  const traceX2 = new Float32Array(TRACE_MAX);
+  const traceY2 = new Float32Array(TRACE_MAX);
+  const traceSpd = new Float32Array(TRACE_MAX);
+  const traceX1 = new Float32Array(TRACE_MAX);
+  const traceY1 = new Float32Array(TRACE_MAX);
+  let traceHead = 0;
+  let traceCount = 0;
+
+  const PHASE_MAX = 720;
+  const phaseT1 = new Float32Array(PHASE_MAX);
+  const phaseW1 = new Float32Array(PHASE_MAX);
+  const phaseT2 = new Float32Array(PHASE_MAX);
+  const phaseW2 = new Float32Array(PHASE_MAX);
+  const phasePhi = new Float32Array(PHASE_MAX);
+  const phaseWb = new Float32Array(PHASE_MAX);
+  let phaseHead = 0;
+  let phaseCount = 0;
+  let phaseOmegaScale = 9.0;
+
+  const ENERGY_MAX = 320;
+  const histTot = new Float32Array(ENERGY_MAX);
+  const histKe = new Float32Array(ENERGY_MAX);
+  const histPe = new Float32Array(ENERGY_MAX);
+  let energyHead = 0;
+  let energyCount = 0;
+  let energyYMax = 1.4;
+
+  /* Pointer Drag Interaction on Lower Pendulum Bob */
+  const drag = {
+    active: false,
+    hover: false,
+    normX: 0,
+    normY: 0,
+    lastLayout: { cx: 0, cy: 0, scale: 1 }
+  };
+
+  /* =========================================================================
+     LAGRANGIAN ENERGY & RK4 INTEGRATOR
+     ========================================================================= */
+  function computeEnergies(s) {
+    const phi = s[0], wb = s[1], t1 = s[2], w1 = s[3], t2 = s[4], w2 = s[5];
+    const delta = t1 - t2;
+
+    const keB = 0.5 * PHYS.Ib * wb * wb;
+    const keP = 0.5 * PHYS.M11 * w1 * w1
+              + 0.5 * PHYS.M22 * w2 * w2
+              + PHYS.m2L1L2 * w1 * w2 * Math.cos(delta);
+    const ke = keB + keP;
+
+    const twist = t1 - PHYS.lambda * phi;
+    const peB = 0.5 * PHYS.kb * phi * phi;
+    const peC = 0.5 * PHYS.kc * twist * twist;
+    const peG = PHYS.g1Coeff * (1 - Math.cos(t1)) + PHYS.g2Coeff * (1 - Math.cos(t2));
+    const pe = peB + peC + peG;
+
+    return { ke, pe, total: ke + pe };
+  }
+
+  /* Pre-allocated RK4 scratch arrays (zero GC churn per substep) */
+  const k1 = new Float64Array(6);
+  const k2 = new Float64Array(6);
+  const k3 = new Float64Array(6);
+  const k4 = new Float64Array(6);
+  const tmpS = new Float64Array(6);
+
+  function derivatives(s, out) {
+    const phi = s[0], wb = s[1], t1 = s[2], w1 = s[3], t2 = s[4], w2 = s[5];
+    const delta = t1 - t2;
+    const sinD = Math.sin(delta);
+    const cosD = Math.cos(delta);
+
+    const d = params.damping;
+    const cb = 0.068 * d;
+    const c1 = 0.250 * d;
+    const c2 = 0.095 * d;
+    const c12 = 0.038 * d;
+
+    // Smooth Swiss lever escapement impulse torque (exact 0 when driveTorque === 0)
+    let tauEsc = 0;
+    if (params.driveTorque > 0) {
+      const ratioW = wb / PHYS.omegaCap;
+      if (Math.abs(ratioW) < 1) {
+        const wCapFactor = 1 - ratioW * ratioW;
+        // Energy governor ensures strict boundedness even when damping === 0
+        const eNow = computeEnergies(s).total;
+        const eBarrel = 3.1 + 2.6 * params.driveTorque;
+        const eFactor = eNow < eBarrel ? (1 - (eNow / eBarrel) * (eNow / eBarrel)) : 0;
+        const liftEnvelope = Math.exp(-(phi * phi) / (2 * PHYS.sigmaImp * PHYS.sigmaImp));
+        tauEsc = params.driveTorque
+          * liftEnvelope
+          * Math.tanh(wb / PHYS.omegaTh)
+          * (wCapFactor * wCapFactor)
+          * eFactor;
+      }
+    }
+
+    const twist = t1 - PHYS.lambda * phi;
+
+    // Balance wheel angular acceleration
+    const accB = (-PHYS.kb * phi + PHYS.kc * PHYS.lambda * twist + tauEsc - cb * wb) / PHYS.Ib;
+
+    // Coupled compound double pendulum mass matrix solve
+    const M12 = PHYS.m2L1L2 * cosD;
+    const det = PHYS.M11 * PHYS.M22 - M12 * M12;
+
+    const R1 = -PHYS.m2L1L2 * w2 * w2 * sinD
+               - PHYS.kc * twist
+               - PHYS.g1Coeff * Math.sin(t1)
+               - c1 * w1
+               - c12 * (w1 - w2);
+
+    const R2 = PHYS.m2L1L2 * w1 * w1 * sinD
+               - PHYS.g2Coeff * Math.sin(t2)
+               - c2 * w2
+               - c12 * (w2 - w1);
+
+    const acc1 = (PHYS.M22 * R1 - M12 * R2) / det;
+    const acc2 = (PHYS.M11 * R2 - M12 * R1) / det;
+
+    out[0] = wb;
+    out[1] = accB;
+    out[2] = w1;
+    out[3] = acc1;
+    out[4] = w2;
+    out[5] = acc2;
+  }
+
+  function stepRK4() {
+    derivatives(state, k1);
+
+    for (let i = 0; i < 6; i++) tmpS[i] = state[i] + 0.5 * DT * k1[i];
+    derivatives(tmpS, k2);
+
+    for (let i = 0; i < 6; i++) tmpS[i] = state[i] + 0.5 * DT * k2[i];
+    derivatives(tmpS, k3);
+
+    for (let i = 0; i < 6; i++) tmpS[i] = state[i] + DT * k3[i];
+    derivatives(tmpS, k4);
+
+    const dt6 = DT / 6;
+    for (let i = 0; i < 6; i++) {
+      state[i] += dt6 * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]);
+    }
+
+    simTime += DT;
+    totalSteps++;
+    updateEscapementKinematics();
+  }
+
+  function smoothStep(x) {
+    const t = Math.max(0, Math.min(1, x));
+    return t * t * (3 - 2 * t);
+  }
+
+  function updateEscapementKinematics() {
+    const phi = state[0];
+    const wb = state[1];
+
+    // Track rolling peak balance amplitude
+    const absPhi = Math.abs(phi);
+    if (absPhi > esc.peakPhiWindow) esc.peakPhiWindow = absPhi;
+    if ((esc.prevPhi >= 0 && phi < 0) || (esc.prevPhi <= 0 && phi > 0)) {
+      esc.peakPhiDisplay = 0.65 * esc.peakPhiDisplay + 0.35 * esc.peakPhiWindow;
+      esc.peakPhiWindow = 0;
+    }
+    esc.prevPhi = phi;
+
+    const basePsi = esc.beatIndex * GEO.halfPitch;
+    const L = GEO.phiLift;
+
+    if (esc.forkSide === -1) {
+      // Parked right (-alphaMax), waiting for balance swing from +L toward -L
+      if (phi <= -L) {
+        // Completed leftwards unlock -> lock on exit stone (odd beat)
+        esc.beatIndex++;
+        esc.forkSide = 1;
+        esc.alpha = GEO.alphaMax;
+        esc.psi = esc.beatIndex * GEO.halfPitch;
+        triggerBeat();
+      } else if (phi < L && wb < 0) {
+        const s = (L - phi) / (2 * L);
+        const exactAlpha = Math.asin(Math.max(-1, Math.min(1, -(GEO.rJewel / GEO.Lfork) * Math.sin(phi))));
+        esc.alpha = Math.max(-GEO.alphaMax, Math.min(GEO.alphaMax, exactAlpha));
+        // Tooth slides smoothly during impulse, then drops cleanly onto opposite locking plane
+        esc.psi = basePsi + GEO.halfPitch * smoothStep(Math.pow(s, 0.85));
+      } else {
+        esc.alpha = -GEO.alphaMax;
+        esc.psi = basePsi;
+      }
+    } else {
+      // Parked left (+alphaMax), waiting for balance swing from -L toward +L
+      if (phi >= L) {
+        // Completed rightwards unlock -> lock on entry stone (even beat)
+        esc.beatIndex++;
+        esc.forkSide = -1;
+        esc.alpha = -GEO.alphaMax;
+        esc.psi = esc.beatIndex * GEO.halfPitch;
+        triggerBeat();
+      } else if (phi > -L && wb > 0) {
+        const s = (phi + L) / (2 * L);
+        const exactAlpha = Math.asin(Math.max(-1, Math.min(1, -(GEO.rJewel / GEO.Lfork) * Math.sin(phi))));
+        esc.alpha = Math.max(-GEO.alphaMax, Math.min(GEO.alphaMax, exactAlpha));
+        esc.psi = basePsi + GEO.halfPitch * smoothStep(Math.pow(s, 0.85));
+      } else {
+        esc.alpha = GEO.alphaMax;
+        esc.psi = basePsi;
+      }
+    }
+  }
+
+  function triggerBeat() {
+    esc.beatPulse = 1.0;
+    const dtBeat = simTime - esc.lastBeatSimTime;
+    if (dtBeat > 0.04 && dtBeat < 4.0) {
+      esc.cadenceHz = 0.75 * esc.cadenceHz + 0.25 * (1 / dtBeat);
+    }
+    esc.lastBeatSimTime = simTime;
+  }
+
+  function wrapPi(a) {
+    let r = (a + Math.PI) % TWO_PI;
+    if (r < 0) r += TWO_PI;
+    return r - Math.PI;
+  }
+
+  function recordSamples() {
+    const phi = state[0], wb = state[1], t1 = state[2], w1 = state[3], t2 = state[4], w2 = state[5];
+
+    // Pendulum harmonic trace coordinates (in normalized caliber space)
+    const x1 = GEO.B.x + GEO.L1Vis * Math.sin(t1);
+    const y1 = GEO.B.y + GEO.L1Vis * Math.cos(t1);
+    const x2 = x1 + GEO.L2Vis * Math.sin(t2);
+    const y2 = y1 + GEO.L2Vis * Math.cos(t2);
+
+    const vx2 = GEO.L1Vis * Math.cos(t1) * w1 + GEO.L2Vis * Math.cos(t2) * w2;
+    const vy2 = -GEO.L1Vis * Math.sin(t1) * w1 - GEO.L2Vis * Math.sin(t2) * w2;
+    const spd = Math.hypot(vx2, vy2);
+
+    traceX1[traceHead] = x1;
+    traceY1[traceHead] = y1;
+    traceX2[traceHead] = x2;
+    traceY2[traceHead] = y2;
+    traceSpd[traceHead] = spd;
+    traceHead = (traceHead + 1) % TRACE_MAX;
+    if (traceCount < TRACE_MAX) traceCount++;
+
+    // Phase-space history
+    phaseT1[phaseHead] = wrapPi(t1);
+    phaseW1[phaseHead] = w1;
+    phaseT2[phaseHead] = wrapPi(t2);
+    phaseW2[phaseHead] = w2;
+    phasePhi[phaseHead] = wrapPi(phi);
+    phaseWb[phaseHead] = wb;
+    phaseHead = (phaseHead + 1) % PHASE_MAX;
+    if (phaseCount < PHASE_MAX) phaseCount++;
+
+    // Energy history
+    const en = computeEnergies(state);
+    histTot[energyHead] = en.total;
+    histKe[energyHead] = en.ke;
+    histPe[energyHead] = en.pe;
+    energyHead = (energyHead + 1) % ENERGY_MAX;
+    if (energyCount < ENERGY_MAX) energyCount++;
+  }
+
+  function resetSimulation(resetParams = true) {
+    if (resetParams) {
+      params.driveTorque = DEFAULTS.driveTorque;
+      params.damping = DEFAULTS.damping;
+      params.timeScale = DEFAULTS.timeScale;
+      params.paused = false;
+      syncControlsFromParams();
+    }
+
+    // Curated asymmetrical horological starting posture
+    state[0] = 1.65;    // phi (~94.5 deg)
+    state[1] = 0.0;     // omegaB
+    state[2] = 0.78;    // theta1 (~44.7 deg)
+    state[3] = 0.25;    // omega1
+    state[4] = -0.52;   // theta2 (~-29.8 deg)
+    state[5] = 1.35;    // omega2
+
+    esc.beatIndex = 0;
+    esc.forkSide = -1;
+    esc.alpha = -GEO.alphaMax;
+    esc.psi = 0;
+    esc.beatPulse = 0;
+    esc.lastBeatSimTime = 0;
+    esc.cadenceHz = 3.02;
+    esc.peakPhiWindow = 1.65;
+    esc.peakPhiDisplay = 1.65;
+    esc.prevPhi = 1.65;
+
+    simTime = 0;
+    totalSteps = 0;
+    accumulator = 0;
+    traceHead = 0;
+    traceCount = 0;
+    phaseHead = 0;
+    phaseCount = 0;
+    energyHead = 0;
+    energyCount = 0;
+    phaseOmegaScale = 9.0;
+    energyYMax = 1.4;
+
+    recordSamples();
+  }
+
+  /* =========================================================================
+     DOM REFERENCES & CANVAS HIGH-DPI MANAGEMENT
+     ========================================================================= */
+  const caliberCanvas = document.getElementById('caliberCanvas');
+  const phaseCanvas = document.getElementById('phaseCanvas');
+  const energyCanvas = document.getElementById('energyCanvas');
+  const ctxCal = caliberCanvas.getContext('2d');
+  const ctxPhase = phaseCanvas.getContext('2d');
+  const ctxEnergy = energyCanvas.getContext('2d');
+
+  const ui = {
+    hdrFps: document.getElementById('hdrFps'),
+    statusPill: document.getElementById('statusPill'),
+    statusText: document.getElementById('statusText'),
+    beatJewel: document.getElementById('beatJewel'),
+    hudBeats: document.getElementById('hudBeats'),
+    hudCadence: document.getElementById('hudCadence'),
+    hudTorque: document.getElementById('hudTorque'),
+    hudAmp: document.getElementById('hudAmp'),
+    hudPhi: document.getElementById('hudPhi'),
+    hudTheta1: document.getElementById('hudTheta1'),
+    hudTheta2: document.getElementById('hudTheta2'),
+    hudSteps: document.getElementById('hudSteps'),
+    phaseReadout: document.getElementById('phaseReadout'),
+    energyTotalVal: document.getElementById('energyTotalVal'),
+    energySplitVal: document.getElementById('energySplitVal'),
+    torqueSlider: document.getElementById('torqueSlider'),
+    torqueVal: document.getElementById('torqueVal'),
+    dampingSlider: document.getElementById('dampingSlider'),
+    dampingVal: document.getElementById('dampingVal'),
+    timeScaleSlider: document.getElementById('timeScaleSlider'),
+    timeScaleVal: document.getElementById('timeScaleVal'),
+    btnPause: document.getElementById('btnPause'),
+    btnStep: document.getElementById('btnStep'),
+    btnReset: document.getElementById('btnReset'),
+    modeBtns: Array.from(document.querySelectorAll('.mode-btn')),
+    presetBtns: Array.from(document.querySelectorAll('.preset-btn'))
+  };
+
+  const canvasMetrics = new Map();
+
+  function resizeCanvas(canvas) {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const w = Math.max(1, Math.round(rect.width));
+    const h = Math.max(1, Math.round(rect.height));
+    const pw = Math.round(w * dpr);
+    const ph = Math.round(h * dpr);
+    if (canvas.width !== pw || canvas.height !== ph) {
+      canvas.width = pw;
+      canvas.height = ph;
+    }
+    canvasMetrics.set(canvas, { w, h, dpr });
+  }
+
+  function resizeAllCanvases() {
+    resizeCanvas(caliberCanvas);
+    resizeCanvas(phaseCanvas);
+    resizeCanvas(energyCanvas);
+  }
+
+  const ro = new ResizeObserver(() => resizeAllCanvases());
+  ro.observe(caliberCanvas);
+  ro.observe(phaseCanvas);
+  ro.observe(energyCanvas);
+  window.addEventListener('resize', resizeAllCanvases);
+  resizeAllCanvases();
+
+  /* =========================================================================
+     UI CONTROLS WIRING
+     ========================================================================= */
+  function updateSliderFill(slider) {
+    const min = parseFloat(slider.min);
+    const max = parseFloat(slider.max);
+    const val = parseFloat(slider.value);
+    const pct = ((val - min) / (max - min)) * 100;
+    slider.style.setProperty('--fill', `${pct.toFixed(1)}%`);
+  }
+
+  function syncControlsFromParams() {
+    ui.torqueSlider.value = params.driveTorque.toFixed(2);
+    ui.torqueVal.textContent = `${params.driveTorque.toFixed(2)} N·m`;
+    updateSliderFill(ui.torqueSlider);
+
+    ui.dampingSlider.value = params.damping.toFixed(3);
+    ui.dampingVal.textContent = params.damping.toFixed(3);
+    updateSliderFill(ui.dampingSlider);
+
+    ui.timeScaleSlider.value = params.timeScale.toFixed(2);
+    ui.timeScaleVal.textContent = `${params.timeScale.toFixed(2)}×`;
+    updateSliderFill(ui.timeScaleSlider);
+
+    ui.presetBtns.forEach(btn => {
+      const s = parseFloat(btn.dataset.scale);
+      btn.classList.toggle('active', Math.abs(s - params.timeScale) < 0.015);
+    });
+
+    ui.btnPause.textContent = params.paused ? 'Resume' : 'Pause';
+    ui.btnPause.classList.toggle('primary-active', params.paused);
+    ui.statusPill.classList.toggle('paused', params.paused);
+    ui.statusText.textContent = params.paused ? 'Paused' : 'Running';
+  }
+
+  ui.torqueSlider.addEventListener('input', () => {
+    params.driveTorque = parseFloat(ui.torqueSlider.value);
+    ui.torqueVal.textContent = `${params.driveTorque.toFixed(2)} N·m`;
+    updateSliderFill(ui.torqueSlider);
+  });
+
+  ui.dampingSlider.addEventListener('input', () => {
+    params.damping = parseFloat(ui.dampingSlider.value);
+    ui.dampingVal.textContent = params.damping.toFixed(3);
+    updateSliderFill(ui.dampingSlider);
+  });
+
+  ui.timeScaleSlider.addEventListener('input', () => {
+    params.timeScale = parseFloat(ui.timeScaleSlider.value);
+    syncControlsFromParams();
+  });
+
+  ui.presetBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      params.timeScale = parseFloat(btn.dataset.scale);
+      syncControlsFromParams();
+    });
+  });
+
+  ui.modeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      params.phaseMode = btn.dataset.mode;
+      ui.modeBtns.forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+
+  ui.btnPause.addEventListener('click', () => {
+    params.paused = !params.paused;
+    accumulator = 0;
+    syncControlsFromParams();
+  });
+
+  ui.btnStep.addEventListener('click', () => {
+    if (!params.paused) {
+      params.paused = true;
+      accumulator = 0;
+      syncControlsFromParams();
+    }
+    // Advance exactly 4 fixed RK4 substeps (1/60 s) cleanly
+    for (let i = 0; i < 4; i++) stepRK4();
+    recordSamples();
+  });
+
+  ui.btnReset.addEventListener('click', () => {
+    resetSimulation(true);
+  });
+
+  /* Subtle direct pointer drag on the lower pendulum bob */
+  function clientToCaliber(evt) {
+    const rect = caliberCanvas.getBoundingClientRect();
+    const px = evt.clientX - rect.left;
+    const py = evt.clientY - rect.top;
+    const L = drag.lastLayout;
+    return {
+      x: (px - L.cx) / L.scale,
+      y: (py - L.cy) / L.scale
+    };
+  }
+
+  function getBobPositions() {
+    const x1 = GEO.B.x + GEO.L1Vis * Math.sin(state[2]);
+    const y1 = GEO.B.y + GEO.L1Vis * Math.cos(state[2]);
+    const x2 = x1 + GEO.L2Vis * Math.sin(state[4]);
+    const y2 = y1 + GEO.L2Vis * Math.cos(state[4]);
+    return { x1, y1, x2, y2 };
+  }
+
+  caliberCanvas.addEventListener('pointerdown', evt => {
+    const pt = clientToCaliber(evt);
+    const bobs = getBobPositions();
+    if (Math.hypot(pt.x - bobs.x2, pt.y - bobs.y2) < 0.14) {
+      drag.active = true;
+      drag.normX = pt.x;
+      drag.normY = pt.y;
+      caliberCanvas.classList.add('grabbing');
+      caliberCanvas.setPointerCapture(evt.pointerId);
+    }
+  });
+
+  caliberCanvas.addEventListener('pointermove', evt => {
+    const pt = clientToCaliber(evt);
+    if (drag.active) {
+      drag.normX = pt.x;
+      drag.normY = pt.y;
+      const bobs = getBobPositions();
+      const dx = pt.x - bobs.x1;
+      const dy = pt.y - bobs.y1;
+      if (Math.hypot(dx, dy) > 0.02) {
+        state[4] = Math.atan2(dx, dy);
+        state[5] = 0;
+        // Also gently incline upper arm toward pull direction
+        const dTot = Math.hypot(pt.x - GEO.B.x, pt.y - GEO.B.y);
+        if (dTot > GEO.L1Vis + GEO.L2Vis * 0.85) {
+          state[2] = Math.atan2(pt.x - GEO.B.x, pt.y - GEO.B.y);
+          state[3] = 0;
+        }
+      }
+      return;
+    }
+    const bobs = getBobPositions();
+    const near = Math.hypot(pt.x - bobs.x2, pt.y - bobs.y2) < 0.14;
+    if (near !== drag.hover) {
+      drag.hover = near;
+      caliberCanvas.classList.toggle('can-grab', near);
+    }
+  });
+
+  function endDrag() {
+    if (drag.active) {
+      drag.active = false;
+      caliberCanvas.classList.remove('grabbing');
+      recordSamples();
+    }
+  }
+  caliberCanvas.addEventListener('pointerup', endDrag);
+  caliberCanvas.addEventListener('pointercancel', endDrag);
+
+  /* =========================================================================
+     PRECISION RENDERER 1: LEFT 65% HOROLOGY CALIBER STAGE
+     ========================================================================= */
+  function drawBluedScrew(ctx, x, y, r, slotAngle) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(slotAngle);
+    const g = ctx.createRadialGradient(-r * 0.3, -r * 0.3, r * 0.1, 0, 0, r);
+    g.addColorStop(0, '#88b4e3');
+    g.addColorStop(0.55, '#4e7cb2');
+    g.addColorStop(1, '#223a59');
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, TWO_PI);
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(220, 232, 248, 0.35)';
+    ctx.lineWidth = r * 0.14;
+    ctx.stroke();
+
+    // Machined screw slot
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.82, 0);
+    ctx.lineTo(r * 0.82, 0);
+    ctx.strokeStyle = '#121c2a';
+    ctx.lineWidth = r * 0.28;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawRubyJewel(ctx, x, y, r, chatonRatio) {
+    ctx.save();
+    ctx.translate(x, y);
+    // Gold/brass chaton bezel
+    const outerR = r * (chatonRatio || 1.48);
+    const bg = ctx.createLinearGradient(-outerR, -outerR, outerR, outerR);
+    bg.addColorStop(0, '#ebd5aa');
+    bg.addColorStop(0.5, '#c4a46a');
+    bg.addColorStop(1, '#7a633b');
+    ctx.beginPath();
+    ctx.arc(0, 0, outerR, 0, TWO_PI);
+    ctx.fillStyle = bg;
+    ctx.fill();
+
+    // Corundum ruby stone
+    const rg = ctx.createRadialGradient(-r * 0.28, -r * 0.28, r * 0.08, 0, 0, r);
+    rg.addColorStop(0, '#e5657d');
+    rg.addColorStop(0.45, '#a82c42');
+    rg.addColorStop(1, '#4f101d');
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, TWO_PI);
+    ctx.fillStyle = rg;
+    ctx.fill();
+
+    // Steel pivot center dot
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 0.34, 0, TWO_PI);
+    ctx.fillStyle = '#cfd5df';
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawCaliberBackground(ctx, w, h, cx, cy, s) {
+    // Warm obsidian ground with restrained studio plate vignette
+    const bg = ctx.createRadialGradient(cx, cy - 0.12 * s, 0.08 * s, cx, cy, Math.max(w, h) * 0.72);
+    bg.addColorStop(0, '#16181d');
+    bg.addColorStop(0.55, '#111214');
+    bg.addColorStop(1, '#0c0d0f');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.save();
+    ctx.translate(cx, cy);
+
+    // Architectural drafting crosshairs
+    ctx.strokeStyle = 'rgba(214, 185, 132, 0.065)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-w * 0.5, 0);
+    ctx.lineTo(w * 0.5, 0);
+    ctx.moveTo(0, -h * 0.5);
+    ctx.lineTo(0, h * 0.5);
+    ctx.moveTo(-0.48 * s, GEO.E.y * s);
+    ctx.lineTo(0.48 * s, GEO.E.y * s);
+    ctx.stroke();
+
+    // Concentric fine guilloche / engine-turned calibration rings
+    const ringRadii = [0.46, 0.68, 0.90, 1.03];
+    for (let i = 0; i < ringRadii.length; i++) {
+      ctx.beginPath();
+      ctx.arc(0, 0, ringRadii[i] * s, 0, TWO_PI);
+      ctx.strokeStyle = i === 3 ? 'rgba(214, 185, 132, 0.17)' : 'rgba(214, 185, 132, 0.05)';
+      ctx.lineWidth = i === 3 ? 1 : 0.8;
+      ctx.stroke();
+    }
+
+    // Outer protractor degree vernier scale around caliber perimeter
+    const rTickOut = 1.055 * s;
+    for (let deg = 0; deg < 360; deg += 5) {
+      const a = (deg - 90) * Math.PI / 180;
+      const isMajor = deg % 30 === 0;
+      const isMed = deg % 15 === 0;
+      const len = isMajor ? 0.032 * s : (isMed ? 0.020 * s : 0.011 * s);
+      const rIn = rTickOut - len;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a) * rIn, Math.sin(a) * rIn);
+      ctx.lineTo(Math.cos(a) * rTickOut, Math.sin(a) * rTickOut);
+      ctx.strokeStyle = isMajor ? 'rgba(214, 185, 132, 0.34)' : 'rgba(214, 185, 132, 0.13)';
+      ctx.lineWidth = isMajor ? 1.1 : 0.7;
+      ctx.stroke();
+    }
+
+    // Sculpted movement escapement bridge plate connecting E, P, B
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(0, GEO.E.y * s, 0.315 * s, Math.PI * 0.95, Math.PI * 2.05, false);
+    ctx.quadraticCurveTo(0.28 * s, -0.45 * s, 0.24 * s, -0.18 * s);
+    ctx.arc(0, 0, 0.385 * s, -0.58, Math.PI + 0.58, false);
+    ctx.quadraticCurveTo(-0.28 * s, -0.45 * s, -0.31 * s, GEO.E.y * s);
+    ctx.closePath();
+
+    const plateGrad = ctx.createLinearGradient(-0.35 * s, -1.05 * s, 0.35 * s, 0.35 * s);
+    plateGrad.addColorStop(0, 'rgba(27, 30, 36, 0.88)');
+    plateGrad.addColorStop(0.5, 'rgba(20, 22, 26, 0.82)');
+    plateGrad.addColorStop(1, 'rgba(15, 17, 20, 0.72)');
+    ctx.fillStyle = plateGrad;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(214, 185, 132, 0.22)';
+    ctx.lineWidth = 1.1;
+    ctx.stroke();
+
+    // Recessed circular wheel wells
+    ctx.beginPath();
+    ctx.arc(0, GEO.E.y * s, 0.282 * s, 0, TWO_PI);
+    ctx.fillStyle = 'rgba(10, 11, 13, 0.78)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(214, 185, 132, 0.14)';
+    ctx.lineWidth = 0.9;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(0, 0, 0.362 * s, 0, TWO_PI);
+    ctx.fillStyle = 'rgba(10, 11, 13, 0.65)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(214, 185, 132, 0.14)';
+    ctx.lineWidth = 0.9;
+    ctx.stroke();
+
+    // Four blued movement bridge screws
+    drawBluedScrew(ctx, -0.245 * s, -0.505 * s, 0.022 * s, 0.42);
+    drawBluedScrew(ctx, 0.245 * s, -0.505 * s, 0.022 * s, -0.65);
+    drawBluedScrew(ctx, -0.275 * s, 0.275 * s, 0.022 * s, 1.12);
+    drawBluedScrew(ctx, 0.275 * s, 0.275 * s, 0.022 * s, 0.18);
+    ctx.restore();
+
+    ctx.restore();
+  }
+
+  function drawHarmonicTrace(ctx, cx, cy, s) {
+    if (traceCount < 2) return;
+    ctx.save();
+    ctx.translate(cx, cy);
+
+    // Subtle elbow J1 ghost locus
+    const startIdx = (traceHead - traceCount + TRACE_MAX) % TRACE_MAX;
+    ctx.beginPath();
+    for (let i = 0; i < traceCount; i += 2) {
+      const idx = (startIdx + i) % TRACE_MAX;
+      const x = traceX1[idx] * s;
+      const y = traceY1[idx] * s;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(78, 124, 178, 0.13)';
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+
+    // Primary compound bob J2 trace batched into smooth aged bands
+    const bands = 24;
+    const stepPerBand = Math.max(1, Math.floor(traceCount / bands));
+    for (let b = 0; b < bands; b++) {
+      const iStart = b * stepPerBand;
+      const iEnd = (b === bands - 1) ? traceCount - 1 : Math.min(traceCount - 1, (b + 1) * stepPerBand);
+      if (iStart >= iEnd) continue;
+
+      const ageFrac = (b + 0.5) / bands; // 0 = oldest, 1 = newest
+      // Sample representative speed at band midpoint
+      const midIdx = (startIdx + Math.floor((iStart + iEnd) * 0.5)) % TRACE_MAX;
+      const spdNorm = Math.min(1, traceSpd[midIdx] / 5.0);
+
+      // Interpolate restrained horology palette: blued steel (#4e7cb2) -> champagne brass (#d6b984)
+      const r = Math.round(78 + (214 - 78) * spdNorm);
+      const g = Math.round(124 + (185 - 124) * spdNorm);
+      const bl = Math.round(178 + (132 - 178) * spdNorm);
+      const alpha = Math.pow(ageFrac, 1.55) * 0.82;
+
+      ctx.beginPath();
+      for (let i = iStart; i <= iEnd; i++) {
+        const idx = (startIdx + i) % TRACE_MAX;
+        const x = traceX2[idx] * s;
+        const y = traceY2[idx] * s;
+        if (i === iStart) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = `rgba(${r}, ${g}, ${bl}, ${alpha.toFixed(3)})`;
+      ctx.lineWidth = 0.75 + ageFrac * 1.1;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  function drawEscapeWheel(ctx, cx, cy, s) {
+    ctx.save();
+    ctx.translate(cx + GEO.E.x * s, cy + GEO.E.y * s);
+    ctx.rotate(esc.psi);
+
+    const Re = GEO.Re * s;
+    const Rr = GEO.Rroot * s;
+    const RrimIn = 0.146 * s;
+    const Rhub = 0.056 * s;
+    const N = GEO.teeth;
+    const pitch = GEO.toothPitch;
+
+    // Outer 15-tooth involute/club-tooth silhouette
+    ctx.beginPath();
+    for (let i = 0; i < N; i++) {
+      const a0 = i * pitch;
+      // Forward-raked involute leading flank -> club impulse tip -> scooped trailing flank
+      const aLeadRoot = a0 - pitch * 0.36;
+      const aLeadMid  = a0 - pitch * 0.14;
+      const aTipLead  = a0;                  // Exact locking tip at a0!
+      const aTipTrail = a0 - pitch * 0.11;   // Club-tooth impulse plane
+      const aBackMid  = a0 - pitch * 0.30;
+      const aNextRoot = a0 - pitch * 0.62;
+
+      const xLeadRoot = Math.cos(aLeadRoot) * Rr;
+      const yLeadRoot = Math.sin(aLeadRoot) * Rr;
+
+      if (i === 0) {
+        ctx.moveTo(xLeadRoot, yLeadRoot);
+      } else {
+        ctx.lineTo(xLeadRoot, yLeadRoot);
+      }
+
+      // Curved involute-style leading locking flank
+      ctx.quadraticCurveTo(
+        Math.cos(aLeadMid) * (Rr + (Re - Rr) * 0.58),
+        Math.sin(aLeadMid) * (Rr + (Re - Rr) * 0.58),
+        Math.cos(aTipLead) * Re,
+        Math.sin(aTipLead) * Re
+      );
+
+      // Club-tooth impulse bevel face
+      ctx.lineTo(
+        Math.cos(aTipTrail) * (Re - 0.008 * s),
+        Math.sin(aTipTrail) * (Re - 0.008 * s)
+      );
+
+      // Concave trailing flank returning cleanly to root circle
+      ctx.quadraticCurveTo(
+        Math.cos(aBackMid) * (Rr + (Re - Rr) * 0.34),
+        Math.sin(aBackMid) * (Rr + (Re - Rr) * 0.34),
+        Math.cos(aNextRoot) * Rr,
+        Math.sin(aNextRoot) * Rr
+      );
+    }
+    ctx.closePath();
+
+    // Carve 5 interior crossing windows (even-odd fill rule for authentic spoked brass wheel!)
+    const spokes = 5;
+    const spokePitch = TWO_PI / spokes;
+    const halfSpokeOuter = 0.085;
+    const halfSpokeInner = 0.185;
+    for (let k = 0; k < spokes; k++) {
+      const sa0 = k * spokePitch + halfSpokeOuter;
+      const sa1 = (k + 1) * spokePitch - halfSpokeOuter;
+      const ia0 = k * spokePitch + halfSpokeInner;
+      const ia1 = (k + 1) * spokePitch - halfSpokeInner;
+
+      ctx.moveTo(Math.cos(sa0) * RrimIn, Math.sin(sa0) * RrimIn);
+      ctx.arc(0, 0, RrimIn, sa0, sa1, false);
+      ctx.lineTo(Math.cos(ia1) * Rhub, Math.sin(ia1) * Rhub);
+      ctx.arc(0, 0, Rhub, ia1, ia0, true);
+      ctx.closePath();
+    }
+
+    const brassGrad = ctx.createRadialGradient(-0.07 * s, -0.07 * s, 0.02 * s, 0, 0, Re);
+    brassGrad.addColorStop(0, '#ebd5aa');
+    brassGrad.addColorStop(0.55, '#d6b984');
+    brassGrad.addColorStop(1, '#9b7f4d');
+    ctx.fillStyle = brassGrad;
+    ctx.fill('evenodd');
+
+    ctx.strokeStyle = 'rgba(244, 228, 194, 0.55)';
+    ctx.lineWidth = 0.85;
+    ctx.stroke();
+
+    // Chamfered inner rim hairline
+    ctx.beginPath();
+    ctx.arc(0, 0, (Rr + RrimIn) * 0.5, 0, TWO_PI);
+    ctx.strokeStyle = 'rgba(72, 56, 28, 0.45)';
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+
+    // Central blued steel pinion collar + ruby bearing
+    ctx.beginPath();
+    ctx.arc(0, 0, 0.036 * s, 0, TWO_PI);
+    ctx.fillStyle = '#4e7cb2';
+    ctx.fill();
+    drawRubyJewel(ctx, 0, 0, 0.017 * s, 1.5);
+
+    ctx.restore();
+  }
+
+  function drawAnchorPalletFork(ctx, cx, cy, s) {
+    const px = cx + GEO.P.x * s;
+    const py = cy + GEO.P.y * s;
+
+    // Stationary brass banking pins limiting fork travel at +-alphaMax
+    const pinDist = 0.215 * s;
+    const pinSpread = GEO.alphaMax + 0.068;
+    for (const dir of [-1, 1]) {
+      const bx = px + Math.sin(dir * pinSpread) * pinDist;
+      const by = py + Math.cos(dir * pinSpread) * pinDist;
+      ctx.beginPath();
+      ctx.arc(bx, by, 0.0125 * s, 0, TWO_PI);
+      ctx.fillStyle = '#d6b984';
+      ctx.fill();
+      ctx.strokeStyle = '#332917';
+      ctx.lineWidth = 0.9;
+      ctx.stroke();
+    }
+
+    ctx.save();
+    ctx.translate(px, py);
+    ctx.rotate(esc.alpha);
+
+    // Exact contact vectors from P to wheel circle at 48 deg (entry, right) and 132 deg (exit, left)
+    const armX = 0.1706 * s;
+    const armY = -0.1535 * s;
+    const forkLen = GEO.Lfork * s;
+
+    // Sculpted rhodium-silver anchor body
+    const steelGrad = ctx.createLinearGradient(-armX, armY, armX, forkLen);
+    steelGrad.addColorStop(0, '#e3e7ee');
+    steelGrad.addColorStop(0.5, '#b6becb');
+    steelGrad.addColorStop(1, '#8b94a3');
+
+    ctx.beginPath();
+    // Top T-crossbar connecting entry and exit pallet arms
+    ctx.moveTo(-armX * 0.94, armY * 0.96);
+    ctx.quadraticCurveTo(-armX * 0.48, armY * 0.42, 0, -0.052 * s);
+    ctx.quadraticCurveTo(armX * 0.48, armY * 0.42, armX * 0.94, armY * 0.96);
+    ctx.lineTo(armX * 0.80, armY * 0.72);
+    ctx.quadraticCurveTo(armX * 0.36, armY * 0.16, 0.030 * s, 0.012 * s);
+    // Downward fork lever stem
+    ctx.lineTo(0.017 * s, forkLen - 0.036 * s);
+    // Right fork horn
+    ctx.lineTo(0.044 * s, forkLen + 0.008 * s);
+    ctx.lineTo(0.029 * s, forkLen + 0.015 * s);
+    // Precision U-notch engaging the ruby impulse jewel
+    ctx.lineTo(0.013 * s, forkLen - 0.016 * s);
+    ctx.lineTo(-0.013 * s, forkLen - 0.016 * s);
+    // Left fork horn
+    ctx.lineTo(-0.029 * s, forkLen + 0.015 * s);
+    ctx.lineTo(-0.044 * s, forkLen + 0.008 * s);
+    ctx.lineTo(-0.017 * s, forkLen - 0.036 * s);
+    ctx.lineTo(-0.030 * s, 0.012 * s);
+    ctx.quadraticCurveTo(-armX * 0.36, armY * 0.16, -armX * 0.80, armY * 0.72);
+    ctx.closePath();
+
+    ctx.fillStyle = steelGrad;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(240, 244, 250, 0.55)';
+    ctx.lineWidth = 0.85;
+    ctx.stroke();
+
+    // Fine guard dart at fork tip
+    ctx.beginPath();
+    ctx.moveTo(0, forkLen - 0.016 * s);
+    ctx.lineTo(0, forkLen + 0.016 * s);
+    ctx.strokeStyle = '#d6b984';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+
+    // Entry (right) & Exit (left) Synthetic Ruby Pallet Stones
+    const pulse = esc.beatPulse;
+    const entryEngaged = esc.forkSide === -1;
+    const exitEngaged = esc.forkSide === 1;
+
+    function drawPalletStone(sx, sy, tiltAngle, engaged) {
+      ctx.save();
+      ctx.translate(sx, sy);
+      ctx.rotate(tiltAngle);
+      const pw = 0.024 * s;
+      const ph = 0.056 * s;
+      ctx.beginPath();
+      ctx.moveTo(-pw * 0.5, ph * 0.45);
+      ctx.lineTo(-pw * 0.5, -ph * 0.48);
+      ctx.lineTo(pw * 0.5, -ph * 0.25); // Angled impulse plane!
+      ctx.lineTo(pw * 0.5, ph * 0.45);
+      ctx.closePath();
+
+      const flash = engaged ? pulse * 0.45 : 0;
+      const rr = Math.min(255, Math.round(176 + flash * 75));
+      const rg = Math.min(255, Math.round(46 + flash * 85));
+      const rb = Math.min(255, Math.round(70 + flash * 75));
+      ctx.fillStyle = `rgb(${rr}, ${rg}, ${rb})`;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 175, 192, 0.65)';
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    drawPalletStone(armX * 0.97, armY * 1.00, 0.56, entryEngaged);
+    drawPalletStone(-armX * 0.97, armY * 1.00, -0.56, exitEngaged);
+
+    // Anchor pivot ruby bearing
+    drawRubyJewel(ctx, 0, 0, 0.016 * s, 1.55);
+
+    ctx.restore();
+  }
+
+  function drawBalanceWheelAndHairspring(ctx, cx, cy, s) {
+    const bx = cx + GEO.B.x * s;
+    const by = cy + GEO.B.y * s;
+    const phi = state[0];
+    const t1 = state[2];
+
+    ctx.save();
+    ctx.translate(bx, by);
+
+    // 1. Torsion Coupling Vernier Arc between lambda*phi (balance reference) and theta1 (arm I)
+    const aBalRef = Math.PI * 0.5 - PHYS.lambda * phi;
+    const aArm1 = Math.PI * 0.5 - t1;
+    let diff = aArm1 - aBalRef;
+    while (diff > Math.PI) diff -= TWO_PI;
+    while (diff < -Math.PI) diff += TWO_PI;
+    if (Math.abs(diff) > 0.005) {
+      ctx.beginPath();
+      ctx.arc(0, 0, 0.378 * s, aBalRef, aBalRef + diff, diff < 0);
+      ctx.strokeStyle = 'rgba(78, 124, 178, 0.65)';
+      ctx.lineWidth = 2.0;
+      ctx.stroke();
+    }
+
+    // 2. Balance Wheel Rim, 3 Spokes, 16 Timing Poising Screws & Roller Table (rotates by phi)
+    ctx.save();
+    ctx.rotate(phi);
+
+    const Ro = GEO.RbOuter * s;
+    const Ri = GEO.RbInner * s;
+
+    // 3 chamfered balance arms
+    const spokeGrad = ctx.createLinearGradient(-Ri, -Ri, Ri, Ri);
+    spokeGrad.addColorStop(0, '#ebd5aa');
+    spokeGrad.addColorStop(0.5, '#c6a76f');
+    spokeGrad.addColorStop(1, '#8f7546');
+    for (let k = 0; k < 3; k++) {
+      ctx.save();
+      ctx.rotate(k * (TWO_PI / 3) + Math.PI / 6);
+      ctx.beginPath();
+      ctx.moveTo(-0.022 * s, 0.04 * s);
+      ctx.lineTo(-0.013 * s, Ri + 0.005 * s);
+      ctx.lineTo(0.013 * s, Ri + 0.005 * s);
+      ctx.lineTo(0.022 * s, 0.04 * s);
+      ctx.closePath();
+      ctx.fillStyle = spokeGrad;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(242, 224, 186, 0.35)';
+      ctx.lineWidth = 0.7;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Balance outer champagne-brass rim
+    ctx.beginPath();
+    ctx.arc(0, 0, Ro, 0, TWO_PI);
+    ctx.arc(0, 0, Ri, 0, TWO_PI, true);
+    const rimGrad = ctx.createLinearGradient(-Ro, -Ro, Ro, Ro);
+    rimGrad.addColorStop(0, '#f0dbb0');
+    rimGrad.addColorStop(0.35, '#d6b984');
+    rimGrad.addColorStop(0.75, '#a88c58');
+    rimGrad.addColorStop(1, '#e3c995');
+    ctx.fillStyle = rimGrad;
+    ctx.fill('evenodd');
+    ctx.strokeStyle = 'rgba(250, 236, 206, 0.5)';
+    ctx.lineWidth = 0.9;
+    ctx.beginPath();
+    ctx.arc(0, 0, Ro, 0, TWO_PI);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0, 0, Ri, 0, TWO_PI);
+    ctx.strokeStyle = 'rgba(60, 48, 26, 0.6)';
+    ctx.stroke();
+
+    // 16 precision radial gold poising screws around circumference
+    const screwCount = 16;
+    for (let i = 0; i < screwCount; i++) {
+      const a = (i / screwCount) * TWO_PI;
+      const isQuarter = i % 4 === 0;
+      const headR = (isQuarter ? 0.016 : 0.0115) * s;
+      const baseR = Ro + 0.002 * s;
+      const tipR = Ro + (isQuarter ? 0.024 : 0.017) * s;
+      const ca = Math.cos(a), sa = Math.sin(a);
+      ctx.beginPath();
+      ctx.moveTo(ca * baseR, sa * baseR);
+      ctx.lineTo(ca * tipR, sa * tipR);
+      ctx.strokeStyle = '#d6b984';
+      ctx.lineWidth = headR * 0.8;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(ca * tipR, sa * tipR, headR * 0.55, 0, TWO_PI);
+      ctx.fillStyle = isQuarter ? '#f0dbb0' : '#c9ab74';
+      ctx.fill();
+    }
+
+    // Inner roller table & Ruby Impulse Jewel (at top -pi/2 when phi = 0!)
+    const Rrol = GEO.Rroller * s;
+    ctx.beginPath();
+    ctx.arc(0, 0, Rrol, 0, TWO_PI);
+    ctx.fillStyle = 'rgba(24, 27, 33, 0.85)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(214, 185, 132, 0.45)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Ruby impulse pin engaging the anchor fork slot
+    const jx = 0;
+    const jy = -GEO.rJewel * s;
+    ctx.beginPath();
+    ctx.arc(jx, jy, 0.012 * s, 0, TWO_PI);
+    ctx.fillStyle = '#cf3854';
+    ctx.fill();
+    ctx.strokeStyle = '#ffb2c0';
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+
+    ctx.restore(); // end balance wheel rotation
+
+    // 3. Coaxial Heat-Blued Steel Hairspring (6.5 breathing concentric coils)
+    // Inner collet rotates with phi; outer terminal pinned fixed at stud holder!
+    const turns = 6.5;
+    const rInner = 0.044 * s;
+    const rOuter = 0.242 * s;
+    const thetaCollet0 = -Math.PI * 0.25;
+    const totalSpan0 = TWO_PI * turns;
+    const steps = 250;
+    const breathScale = 0.022 * s * (phi / Math.PI);
+
+    ctx.beginPath();
+    for (let i = 0; i <= steps; i++) {
+      const u = i / steps;
+      const theta = thetaCollet0 + phi + u * (totalSpan0 - phi);
+      const r = rInner + (rOuter - rInner) * u + breathScale * Math.sin(Math.PI * u);
+      const hx = Math.cos(theta) * r;
+      const hy = Math.sin(theta) * r;
+      if (i === 0) ctx.moveTo(hx, hy);
+      else ctx.lineTo(hx, hy);
+    }
+    ctx.strokeStyle = '#4e7cb2';
+    ctx.lineWidth = Math.max(1.2, 0.0058 * s);
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Specular highlight hairline along blued steel spiral
+    ctx.strokeStyle = 'rgba(155, 198, 245, 0.45)';
+    ctx.lineWidth = Math.max(0.55, 0.0022 * s);
+    ctx.stroke();
+
+    // Fixed stationary brass hairspring stud clamp at outer end (u = 1)
+    const studTheta = thetaCollet0 + totalSpan0;
+    const studX = Math.cos(studTheta) * rOuter;
+    const studY = Math.sin(studTheta) * rOuter;
+    ctx.beginPath();
+    ctx.arc(studX, studY, 0.015 * s, 0, TWO_PI);
+    ctx.fillStyle = '#d6b984';
+    ctx.fill();
+    ctx.strokeStyle = '#241e12';
+    ctx.lineWidth = 0.9;
+    ctx.stroke();
+
+    // Central Incabloc Ruby Shock Jewel + Lyre Spring
+    drawRubyJewel(ctx, 0, 0, 0.022 * s, 1.55);
+
+    ctx.restore();
+  }
+
+  function drawDoublePendulum(ctx, cx, cy, s) {
+    const t1 = state[2];
+    const t2 = state[4];
+    const bx = cx + GEO.B.x * s;
+    const by = cy + GEO.B.y * s;
+    const L1 = GEO.L1Vis * s;
+    const L2 = GEO.L2Vis * s;
+
+    const j1x = bx + L1 * Math.sin(t1);
+    const j1y = by + L1 * Math.cos(t1);
+    const j2x = j1x + L2 * Math.sin(t2);
+    const j2y = j1y + L2 * Math.cos(t2);
+
+    // --- Arm I: Openworked Tapered Champagne-Brass Truss ---
+    ctx.save();
+    ctx.translate(bx, by);
+    ctx.rotate(-t1); // Canvas +y is downward; +theta1 swings right -> rotate(-theta1)
+
+    // Subtle balanced counterweight crescent above pivot
+    ctx.beginPath();
+    ctx.moveTo(-0.024 * s, 0);
+    ctx.lineTo(-0.018 * s, -0.088 * s);
+    ctx.quadraticCurveTo(0, -0.106 * s, 0.018 * s, -0.088 * s);
+    ctx.lineTo(0.024 * s, 0);
+    ctx.closePath();
+    ctx.fillStyle = '#a88c58';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(235, 213, 170, 0.45)';
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+
+    // Main tapered arm body with milled lightening cutouts
+    const armGrad = ctx.createLinearGradient(-0.03 * s, 0, 0.03 * s, L1);
+    armGrad.addColorStop(0, '#ebd5aa');
+    armGrad.addColorStop(0.5, '#d6b984');
+    armGrad.addColorStop(1, '#9f8250');
+
+    ctx.beginPath();
+    ctx.moveTo(-0.028 * s, 0);
+    ctx.lineTo(-0.017 * s, L1);
+    ctx.lineTo(0.017 * s, L1);
+    ctx.lineTo(0.028 * s, 0);
+    ctx.closePath();
+
+    // 3 milled lightening slots
+    const slots = [
+      { y0: 0.11, y1: 0.21, w: 0.0095 },
+      { y0: 0.25, y1: 0.36, w: 0.0080 },
+      { y0: 0.40, y1: 0.48, w: 0.0065 }
+    ];
+    for (const sl of slots) {
+      const sy0 = sl.y0 * s, sy1 = sl.y1 * s, sw = sl.w * s;
+      ctx.moveTo(-sw, sy0);
+      ctx.lineTo(sw, sy0);
+      ctx.lineTo(sw, sy1);
+      ctx.lineTo(-sw, sy1);
+      ctx.closePath();
+    }
+
+    ctx.fillStyle = armGrad;
+    ctx.fill('evenodd');
+    ctx.strokeStyle = 'rgba(248, 232, 198, 0.58)';
+    ctx.lineWidth = 0.85;
+    ctx.stroke();
+
+    ctx.restore();
+
+    // Coaxial top bridge pivot cap at B
+    drawRubyJewel(ctx, bx, by, 0.016 * s, 1.55);
+
+    // --- Arm II: Brushed Silver & Blued-Steel Articulated Vane ---
+    ctx.save();
+    ctx.translate(j1x, j1y);
+    ctx.rotate(-t2);
+
+    const vaneGrad = ctx.createLinearGradient(-0.02 * s, 0, 0.02 * s, L2);
+    vaneGrad.addColorStop(0, '#e5e9f0');
+    vaneGrad.addColorStop(0.5, '#b8c0cd');
+    vaneGrad.addColorStop(1, '#848d9b');
+
+    ctx.beginPath();
+    ctx.moveTo(-0.017 * s, 0);
+    ctx.lineTo(-0.010 * s, L2);
+    ctx.lineTo(0.010 * s, L2);
+    ctx.lineTo(0.017 * s, 0);
+    ctx.closePath();
+    ctx.fillStyle = vaneGrad;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(240, 244, 250, 0.55)';
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+
+    // Blued-steel central flute rib
+    ctx.beginPath();
+    ctx.moveTo(0, 0.04 * s);
+    ctx.lineTo(0, L2 - 0.045 * s);
+    ctx.strokeStyle = '#4e7cb2';
+    ctx.lineWidth = Math.max(1.3, 0.005 * s);
+    ctx.stroke();
+
+    ctx.restore();
+
+    // --- Primary Elbow Bearing at J1 ---
+    ctx.beginPath();
+    ctx.arc(j1x, j1y, 0.036 * s, 0, TWO_PI);
+    ctx.fillStyle = '#1b1e24';
+    ctx.fill();
+    ctx.strokeStyle = '#d6b984';
+    ctx.lineWidth = 1.6;
+    ctx.stroke();
+    drawRubyJewel(ctx, j1x, j1y, 0.015 * s, 1.5);
+
+    // --- Compensated Harmonic Pendulum Bob at J2 ---
+    ctx.save();
+    ctx.translate(j2x, j2y);
+
+    // Subtle interactive drag reticle on hover/drag
+    if (drag.hover || drag.active) {
+      ctx.beginPath();
+      ctx.setLineDash([3, 3]);
+      ctx.arc(0, 0, 0.078 * s, 0, TWO_PI);
+      ctx.strokeStyle = 'rgba(214, 185, 132, 0.55)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Outer champagne-brass inertia ring
+    const bobR = 0.052 * s;
+    const bobGrad = ctx.createRadialGradient(-bobR * 0.3, -bobR * 0.3, bobR * 0.1, 0, 0, bobR);
+    bobGrad.addColorStop(0, '#f1ddb4');
+    bobGrad.addColorStop(0.55, '#d6b984');
+    bobGrad.addColorStop(1, '#8c7243');
+    ctx.beginPath();
+    ctx.arc(0, 0, bobR, 0, TWO_PI);
+    ctx.fillStyle = bobGrad;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(250, 236, 206, 0.65)';
+    ctx.lineWidth = 0.9;
+    ctx.stroke();
+
+    // Inner obsidian & blued-steel compensation collar
+    ctx.beginPath();
+    ctx.arc(0, 0, bobR * 0.64, 0, TWO_PI);
+    ctx.fillStyle = '#15181d';
+    ctx.fill();
+    ctx.strokeStyle = '#4e7cb2';
+    ctx.lineWidth = 1.6;
+    ctx.stroke();
+
+    // Stylus ruby center jewel
+    drawRubyJewel(ctx, 0, 0, bobR * 0.28, 1.45);
+    ctx.restore();
+  }
+
+  function renderCaliber() {
+    const m = canvasMetrics.get(caliberCanvas);
+    if (!m || m.w < 2 || m.h < 2) return;
+    const { w, h, dpr } = m;
+
+    ctxCal.save();
+    ctxCal.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    // Fit full caliber cleanly in both 1440x900 (936x858) and 700x900 (455x862)
+    const padX = w < 520 ? 18 : 34;
+    const padTop = w < 520 ? 52 : 34;
+    const padBot = w < 520 ? 44 : 34;
+    const availW = Math.max(100, w - padX * 2);
+    const availH = Math.max(100, h - padTop - padBot);
+    const scale = Math.min(availW / 2.22, availH / 2.28);
+    const cx = w * 0.5;
+    // Slight downward shift so Escape Wheel (-1.03) and lower swing (+1.06) center optically
+    const cy = padTop + availH * 0.505;
+
+    drag.lastLayout.cx = cx;
+    drag.lastLayout.cy = cy;
+    drag.lastLayout.scale = scale;
+
+    drawCaliberBackground(ctxCal, w, h, cx, cy, scale);
+    drawHarmonicTrace(ctxCal, cx, cy, scale);
+    drawEscapeWheel(ctxCal, cx, cy, scale);
+    drawAnchorPalletFork(ctxCal, cx, cy, scale);
+    drawBalanceWheelAndHairspring(ctxCal, cx, cy, scale);
+    drawDoublePendulum(ctxCal, cx, cy, scale);
+
+    ctxCal.restore();
+  }
+
+  /* =========================================================================
+     PRECISION RENDERER 2: PHASE-SPACE PORTRAIT (theta vs omega)
+     ========================================================================= */
+  function renderPhaseSpace() {
+    const m = canvasMetrics.get(phaseCanvas);
+    if (!m || m.w < 2 || m.h < 2) return;
+    const { w, h, dpr } = m;
+    const ctx = ctxPhase;
+
+    ctx.save();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = '#0d0e10';
+    ctx.fillRect(0, 0, w, h);
+
+    const padL = w < 240 ? 28 : 34;
+    const padR = 10;
+    const padT = 18;
+    const padB = 20;
+    const pw = Math.max(20, w - padL - padR);
+    const ph = Math.max(20, h - padT - padB);
+    const ox = padL + pw * 0.5;
+    const oy = padT + ph * 0.5;
+
+    // Smooth dynamic omega range so curve stays framed cleanly
+    let peakW = 7.5;
+    const isBal = params.phaseMode === 'balance';
+    const startIdx = (phaseHead - phaseCount + PHASE_MAX) % PHASE_MAX;
+    for (let i = 0; i < phaseCount; i += 3) {
+      const idx = (startIdx + i) % PHASE_MAX;
+      const wSample = isBal
+        ? Math.abs(phaseWb[idx])
+        : Math.max(Math.abs(phaseW1[idx]), Math.abs(phaseW2[idx]));
+      if (wSample > peakW) peakW = wSample;
+    }
+    const targetOmegaMax = Math.max(8, peakW * 1.16);
+    phaseOmegaScale += (targetOmegaMax - phaseOmegaScale) * 0.08;
+    const wMax = phaseOmegaScale;
+    const aMax = Math.PI;
+
+    // Subtle drafting grid
+    ctx.strokeStyle = 'rgba(214, 185, 132, 0.07)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let f = -1; f <= 1; f += 0.5) {
+      const gx = ox + f * (pw * 0.5);
+      ctx.moveTo(gx, padT);
+      ctx.lineTo(gx, padT + ph);
+      const gy = oy - f * (ph * 0.5);
+      ctx.moveTo(padL, gy);
+      ctx.lineTo(padL + pw, gy);
+    }
+    ctx.stroke();
+
+    // Principal origin crosshairs
+    ctx.strokeStyle = 'rgba(214, 185, 132, 0.22)';
+    ctx.beginPath();
+    ctx.moveTo(padL, oy);
+    ctx.lineTo(padL + pw, oy);
+    ctx.moveTo(ox, padT);
+    ctx.lineTo(ox, padT + ph);
+    ctx.stroke();
+
+    // Axis ticks & labels
+    ctx.fillStyle = '#737b88';
+    ctx.font = '9px "SF Mono", ui-monospace, Menlo, Consolas, monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('-\u03C0', padL + 4, padT + ph + 4);
+    ctx.fillText('0', ox, padT + ph + 4);
+    ctx.fillText('+\u03C0', padL + pw - 5, padT + ph + 4);
+
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`+${wMax.toFixed(0)}`, padL - 4, padT + 4);
+    ctx.fillText('0', padL - 4, oy);
+    ctx.fillText(`-${wMax.toFixed(0)}`, padL - 4, padT + ph - 3);
+
+    // Axis unit identifiers
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = '#8f774d';
+    ctx.fillText('\u03C9 (rad/s)', padL + 4, 4);
+
+    // Clip to plotting region
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(padL, padT, pw, ph);
+    ctx.clip();
+
+    function drawOrbit(arrA, arrW, rgb, maxAlpha, lw) {
+      if (phaseCount < 2) return;
+      const bands = 16;
+      const chunk = Math.max(1, Math.floor(phaseCount / bands));
+      for (let b = 0; b < bands; b++) {
+        const i0 = b * chunk;
+        const i1 = b === bands - 1 ? phaseCount - 1 : Math.min(phaseCount - 1, (b + 1) * chunk);
+        if (i0 >= i1) continue;
+        const frac = (b + 0.5) / bands;
+        ctx.beginPath();
+        let prevA = null;
+        for (let i = i0; i <= i1; i++) {
+          const idx = (startIdx + i) % PHASE_MAX;
+          const a = arrA[idx];
+          const om = arrW[idx];
+          const x = ox + (a / aMax) * (pw * 0.5);
+          const y = oy - (om / wMax) * (ph * 0.5);
+          // Break line cleanly across +-pi branch cut
+          if (prevA === null || Math.abs(a - prevA) > Math.PI) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+          prevA = a;
+        }
+        ctx.strokeStyle = `rgba(${rgb}, ${(Math.pow(frac, 1.45) * maxAlpha).toFixed(3)})`;
+        ctx.lineWidth = lw * (0.65 + 0.45 * frac);
+        ctx.stroke();
+      }
+
+      // Live head marker
+      const lastIdx = (phaseHead - 1 + PHASE_MAX) % PHASE_MAX;
+      const hx = ox + (arrA[lastIdx] / aMax) * (pw * 0.5);
+      const hy = oy - (arrW[lastIdx] / wMax) * (ph * 0.5);
+      ctx.beginPath();
+      ctx.arc(hx, hy, 2.8, 0, TWO_PI);
+      ctx.fillStyle = `rgb(${rgb})`;
+      ctx.fill();
+      ctx.strokeStyle = '#0d0e10';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    if (isBal) {
+      drawOrbit(phasePhi, phaseWb, '214, 185, 132', 0.92, 1.5);
+    } else {
+      // Secondary: Arm I (blued steel), Primary: Arm II (champagne brass)
+      drawOrbit(phaseT1, phaseW1, '106, 152, 206', 0.72, 1.25);
+      drawOrbit(phaseT2, phaseW2, '214, 185, 132', 0.92, 1.45);
+    }
+
+    ctx.restore();
+    ctx.restore();
+  }
+
+  /* =========================================================================
+     PRECISION RENDERER 3: ENERGY CONSERVATION SPARKLINE
+     ========================================================================= */
+  function renderEnergySparkline() {
+    const m = canvasMetrics.get(energyCanvas);
+    if (!m || m.w < 2 || m.h < 2) return;
+    const { w, h, dpr } = m;
+    const ctx = ctxEnergy;
+
+    ctx.save();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = '#0d0e10';
+    ctx.fillRect(0, 0, w, h);
+
+    const padL = w < 240 ? 30 : 36;
+    const padR = 8;
+    const padT = 10;
+    const padB = 12;
+    const pw = Math.max(20, w - padL - padR);
+    const ph = Math.max(20, h - padT - padB);
+
+    // Smooth auto-scaled upper bound in Joules
+    let maxE = 0.25;
+    const startIdx = (energyHead - energyCount + ENERGY_MAX) % ENERGY_MAX;
+    for (let i = 0; i < energyCount; i++) {
+      const v = histTot[(startIdx + i) % ENERGY_MAX];
+      if (v > maxE) maxE = v;
+    }
+    const targetMax = Math.max(0.35, maxE * 1.22);
+    energyYMax += (targetMax - energyYMax) * 0.08;
+    const yMax = energyYMax;
+
+    // Horizontal scale gridlines
+    ctx.strokeStyle = 'rgba(214, 185, 132, 0.08)';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = '#737b88';
+    ctx.font = '8.5px "SF Mono", ui-monospace, Menlo, Consolas, monospace';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+
+    const ticks = [0, 0.5, 1.0];
+    for (const f of ticks) {
+      const gy = padT + ph * (1 - f);
+      ctx.beginPath();
+      ctx.moveTo(padL, gy);
+      ctx.lineTo(padL + pw, gy);
+      ctx.stroke();
+      const val = f * yMax;
+      ctx.fillText(val >= 10 ? val.toFixed(1) : val.toFixed(2), padL - 4, gy);
+    }
+
+    if (energyCount < 2) {
+      ctx.restore();
+      return;
+    }
+
+    // Dynamic span grows gracefully to full width during first second, then scrolls
+    const denom = Math.max(energyCount - 1, 60);
+
+    function traceSeries(arr, color, width, fillAlpha) {
+      ctx.beginPath();
+      for (let i = 0; i < energyCount; i++) {
+        const idx = (startIdx + i) % ENERGY_MAX;
+        const x = padL + (i / denom) * pw;
+        const norm = Math.max(0, Math.min(1.05, arr[idx] / yMax));
+        const y = padT + ph * (1 - norm);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+
+      if (fillAlpha > 0) {
+        const lastX = padL + ((energyCount - 1) / denom) * pw;
+        ctx.save();
+        ctx.lineTo(lastX, padT + ph);
+        ctx.lineTo(padL, padT + ph);
+        ctx.closePath();
+        ctx.fillStyle = fillAlpha;
+        ctx.fill();
+        ctx.restore();
+
+        // Re-stroke top path cleanly
+        ctx.beginPath();
+        for (let i = 0; i < energyCount; i++) {
+          const idx = (startIdx + i) % ENERGY_MAX;
+          const x = padL + (i / denom) * pw;
+          const norm = Math.max(0, Math.min(1.05, arr[idx] / yMax));
+          const y = padT + ph * (1 - norm);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+      }
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+    }
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(padL, padT - 2, pw, ph + 4);
+    ctx.clip();
+
+    traceSeries(histPe, '#5f8ec4', 1.25, 0);
+    traceSeries(histKe, '#d6b984', 1.30, 'rgba(214, 185, 132, 0.075)');
+    traceSeries(histTot, '#e1e5ec', 1.65, 0);
+
+    // Live Total Energy dot at right end
+    const lastIdx = (energyHead - 1 + ENERGY_MAX) % ENERGY_MAX;
+    const lx = padL + ((energyCount - 1) / denom) * pw;
+    const ly = padT + ph * (1 - Math.max(0, Math.min(1.05, histTot[lastIdx] / yMax)));
+    ctx.beginPath();
+    ctx.arc(lx, ly, 2.3, 0, TWO_PI);
+    ctx.fillStyle = '#e8ecf2';
+    ctx.fill();
+
+    ctx.restore();
+    ctx.restore();
+  }
+
+  /* =========================================================================
+     HUD & INSTRUMENTATION UPDATES
+     ========================================================================= */
+  function fmtSignedDeg(rad) {
+    const d = wrapPi(rad) * DEG;
+    return `${d >= 0 ? '+' : ''}${d.toFixed(1)}\u00B0`;
+  }
+
+  let hudThrottle = 0;
+
+  function updateHUD(en) {
+    ui.beatJewel.classList.toggle('pulse', esc.beatPulse > 0.25);
+
+    hudThrottle++;
+    if (hudThrottle % 2 !== 0 && firstFrameDone) return;
+
+    const twistTorque = PHYS.kc * (state[2] - PHYS.lambda * state[0]);
+    ui.hdrFps.textContent = Math.round(fpsSmoothed);
+    ui.hudBeats.textContent = esc.beatIndex;
+    ui.hudCadence.textContent = `${esc.cadenceHz.toFixed(2)} Hz`;
+    ui.hudTorque.textContent = `${twistTorque >= 0 ? '+' : ''}${twistTorque.toFixed(2)} N\u00B7m`;
+    ui.hudAmp.textContent = `${Math.round(esc.peakPhiDisplay * DEG)}\u00B0`;
+    ui.hudPhi.textContent = fmtSignedDeg(state[0]);
+    ui.hudTheta1.textContent = fmtSignedDeg(state[2]);
+    ui.hudTheta2.textContent = fmtSignedDeg(state[4]);
+    ui.hudSteps.textContent = `STEPS ${totalSteps}`;
+
+    if (params.phaseMode === 'balance') {
+      ui.phaseReadout.textContent =
+        `\u03C6 ${wrapPi(state[0]) >= 0 ? '+' : ''}${wrapPi(state[0]).toFixed(2)} \u00B7 \u03C9 ${state[1] >= 0 ? '+' : ''}${state[1].toFixed(2)}`;
+    } else {
+      ui.phaseReadout.textContent =
+        `\u03B8\u2082 ${wrapPi(state[4]) >= 0 ? '+' : ''}${wrapPi(state[4]).toFixed(2)} \u00B7 \u03C9\u2082 ${state[5] >= 0 ? '+' : ''}${state[5].toFixed(2)}`;
+    }
+
+    ui.energyTotalVal.textContent = `${en.total.toFixed(3)} J`;
+    ui.energySplitVal.textContent = `KE ${en.ke.toFixed(2)} \u00B7 PE ${en.pe.toFixed(2)} J`;
+  }
+
+  /* =========================================================================
+     MAIN 60 FPS ANIMATION & FIXED-TIMESTEP RK4 LOOP
+     ========================================================================= */
+  function frame(ts) {
+    if (!lastFrameTs) lastFrameTs = ts;
+    const rawDtSec = Math.max(0, (ts - lastFrameTs) / 1000);
+    lastFrameTs = ts;
+
+    if (rawDtSec > 0.001 && rawDtSec < 0.25) {
+      const instFps = 1 / rawDtSec;
+      fpsSmoothed = 0.90 * fpsSmoothed + 0.10 * instFps;
+    }
+
+    // Beat visual glint decay
+    esc.beatPulse = Math.max(0, esc.beatPulse - rawDtSec * 6.5);
+
+    if (!params.paused && !drag.active) {
+      // Ensure frame 1 executes a clean deterministic tick even when rawDtSec === 0
+      const clampedDt = !firstFrameDone ? (1 / 60) : Math.min(rawDtSec, 0.05);
+      accumulator += clampedDt * params.timeScale;
+
+      let substeps = 0;
+      const maxSubsteps = 32;
+      while (accumulator >= DT && substeps < maxSubsteps) {
+        stepRK4();
+        accumulator -= DT;
+        substeps++;
+      }
+      if (substeps > 0) recordSamples();
+    }
+
+    renderCaliber();
+    renderPhaseSpace();
+    renderEnergySparkline();
+
+    const en = computeEnergies(state);
+    updateHUD(en);
+
+    firstFrameDone = true;
+    window.__SWEEP_META__ = {
+      ready: true,
+      fps: Number(fpsSmoothed.toFixed(1)),
+      energyJ: Number(en.total.toFixed(6)),
+      steps: totalSteps
+    };
+
+    requestAnimationFrame(frame);
+  }
+
+  /* Initialize state & launch */
+  resetSimulation(true);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

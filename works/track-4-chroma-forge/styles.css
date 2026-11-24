@@ -1,0 +1,746 @@
+/* ============================================================================
+   ChromaForge — Swiss Museum Gallery & Computational Optics Studio Frame
+   Track 04 · Gemini 4 Argon (High) · Zero-Slop Industrial Minimalism
+   ============================================================================ */
+
+:root {
+  --bg-frame: #0b0c0f;
+  --bg-panel: #101217;
+  --bg-elevated: #15181f;
+  --bg-input: #0d0f13;
+  --border-hairline: #1f232d;
+  --border-focus: #383f4f;
+  --text-primary: #eceef2;
+  --text-secondary: #9aa1b0;
+  --text-muted: #626978;
+  --accent-amber: #f08c2b;
+  --accent-gold: #f6c46a;
+  --accent-emerald: #3cd08e;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Mono", Consolas, monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-frame);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.35;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+.studio-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-frame);
+}
+
+/* ----------------------------------------------------------------------------
+   1. Top Gallery Header Bar (40px)
+   ---------------------------------------------------------------------------- */
+.topbar {
+  height: 40px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 10px;
+  background: var(--bg-frame);
+  border-bottom: 1px solid var(--border-hairline);
+  overflow: hidden;
+}
+
+.brand-cluster {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex-shrink: 1;
+  overflow: hidden;
+}
+
+.catalogue-id {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--accent-gold);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.divider-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.work-title {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mode Switcher Tabs */
+.mode-switcher {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-input);
+  padding: 2px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.mode-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.mode-tab:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.mode-tab.active {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+}
+
+.tab-code {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  font-size: 9.5px;
+  font-weight: 700;
+  background: rgba(240, 140, 43, 0.16);
+  color: var(--accent-gold);
+  border-radius: 2px;
+}
+
+.mode-tab.active .tab-code {
+  background: var(--accent-amber);
+  color: #0b0c0f;
+}
+
+/* Canonical View & Action Pills */
+.view-cluster {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.view-pill {
+  height: 24px;
+  padding: 0 7px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-hairline);
+  border-radius: 2px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.12s ease;
+}
+
+.view-pill:hover {
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+}
+
+.view-pill.active {
+  background: #1e222c;
+  color: var(--accent-gold);
+  border-color: var(--accent-amber);
+}
+
+.view-pill.accent-pill {
+  background: rgba(240, 140, 43, 0.12);
+  color: var(--accent-gold);
+  border-color: rgba(240, 140, 43, 0.4);
+}
+
+.view-pill.accent-pill:hover {
+  background: rgba(240, 140, 43, 0.22);
+}
+
+/* ----------------------------------------------------------------------------
+   2. Formula & Shader Expression Bar (fx) (30px)
+   ---------------------------------------------------------------------------- */
+.formula-strip {
+  height: 30px;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  background: #0d0f14;
+  border-bottom: 1px solid var(--border-hairline);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+}
+
+.fx-cell-box {
+  min-width: 64px;
+  height: 20px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-focus);
+  border-radius: 2px;
+  color: var(--accent-gold);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.fx-tag {
+  height: 20px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-hairline);
+  border-radius: 2px;
+  color: var(--text-secondary);
+  font-size: 9.5px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.fx-symbol {
+  font-style: italic;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--accent-amber);
+  padding: 0 3px;
+  flex-shrink: 0;
+}
+
+.fx-expression-wrap {
+  flex: 1;
+  min-width: 0;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  background: #08090c;
+  border: 1px solid var(--border-hairline);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.fx-expression {
+  color: #d7e0f0;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: text;
+}
+
+.fx-eval-readout {
+  height: 20px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  background: rgba(60, 208, 142, 0.08);
+  border: 1px solid rgba(60, 208, 142, 0.28);
+  border-radius: 2px;
+  color: var(--accent-emerald);
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ----------------------------------------------------------------------------
+   3. Main Workspace (Canvas Stage + Non-Overlapping Right Studio Drawer)
+   ---------------------------------------------------------------------------- */
+.workspace {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  overflow: hidden;
+}
+
+.canvas-stage {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  position: relative;
+  background: #07080a;
+  overflow: hidden;
+}
+
+.stage-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.stage-layer.active {
+  display: block;
+}
+
+#flame-canvas,
+#sheet-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+/* Museum Placard Caption (Non-Interactive, Bottom-Left) */
+.museum-placard {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 5px 8px;
+  background: rgba(11, 12, 15, 0.82);
+  border-left: 2px solid var(--accent-amber);
+  pointer-events: none;
+  max-width: calc(100% - 24px);
+}
+
+.placard-kicker {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.placard-sub {
+  font-size: 10px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ----------------------------------------------------------------------------
+   4. Right Studio Inspector Drawer (<= 236px, Collapsible, Zero Overlap)
+   ---------------------------------------------------------------------------- */
+.studio-drawer {
+  width: 236px;
+  min-width: 236px;
+  max-width: 236px;
+  height: 100%;
+  background: var(--bg-panel);
+  border-left: 1px solid var(--border-hairline);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.studio-drawer.collapsed {
+  display: none;
+}
+
+.drawer-panel {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.drawer-panel.active {
+  display: flex;
+}
+
+.drawer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.drawer-section:last-child {
+  border-bottom: none;
+  padding-bottom: 2px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.section-title {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.section-meta {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--accent-gold);
+}
+
+.mini-action-btn {
+  height: 19px;
+  padding: 0 6px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-focus);
+  border-radius: 2px;
+  color: var(--accent-gold);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.mini-action-btn:hover {
+  border-color: var(--accent-amber);
+  background: rgba(240, 140, 43, 0.14);
+}
+
+/* Preset 2x2 Grid & Relight Mode Buttons */
+.preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.preset-btn,
+.relight-btn {
+  height: 25px;
+  padding: 0 5px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-hairline);
+  border-radius: 2px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 9.4px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.12s ease;
+}
+
+.preset-btn:hover,
+.relight-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+}
+
+.preset-btn.active,
+.relight-btn.active {
+  background: rgba(240, 140, 43, 0.14);
+  color: var(--accent-gold);
+  border-color: var(--accent-amber);
+  font-weight: 600;
+}
+
+.relight-mode-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3px;
+}
+
+/* Sliders */
+.control-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  row-gap: 3px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.ctrl-name {
+  font-size: 10.5px;
+  color: var(--text-secondary);
+}
+
+.ctrl-val {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.control-row input[type="range"] {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #1d212b;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.control-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  background: var(--accent-gold);
+  border: 1px solid #0b0c0f;
+  cursor: pointer;
+}
+
+/* Spectrum Bar & Telemetry KV Grid */
+.spectrum-bar {
+  height: 8px;
+  width: 100%;
+  border-radius: 2px;
+  border: 1px solid var(--border-hairline);
+  background: linear-gradient(90deg, #0d0c10 0%, #5c0a06 24%, #d92e09 50%, #ff9319 76%, #fff8dc 100%);
+}
+
+.telemetry-kv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.kv-cell {
+  background: var(--bg-input);
+  border: 1px solid var(--border-hairline);
+  border-radius: 2px;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.kv-k {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+}
+
+.kv-v {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mode B Cell Metrics & 3x3 Live Neighborhood Matrix */
+.cell-metrics-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border-hairline);
+  border-radius: 2px;
+  padding: 5px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-secondary);
+}
+
+.cm-row strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.mini-sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.mini-cell {
+  height: 26px;
+  padding: 2px 4px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+}
+
+.mini-cell.center-cell {
+  border-color: var(--accent-gold);
+  box-shadow: inset 0 0 0 1px rgba(246, 196, 106, 0.45);
+}
+
+.mc-coord {
+  opacity: 0.78;
+  font-size: 8px;
+}
+
+.mc-val {
+  font-weight: 700;
+  text-align: right;
+}
+
+/* ----------------------------------------------------------------------------
+   5. Bottom Tabular Telemetry Strip (26px)
+   ---------------------------------------------------------------------------- */
+.statusbar {
+  height: 26px;
+  min-height: 26px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 10px;
+  background: var(--bg-frame);
+  border-top: 1px solid var(--border-hairline);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+}
+
+.status-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.status-right {
+  margin-left: auto;
+}
+
+.st-label {
+  color: var(--text-muted);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+.st-val {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.st-highlight {
+  color: var(--accent-emerald);
+}
+
+/* ----------------------------------------------------------------------------
+   6. Narrow Viewport (700x900) Zero-Overlap & Zero-Clipping Compact Rules
+   ---------------------------------------------------------------------------- */
+@media (max-width: 960px) {
+  .topbar {
+    gap: 5px;
+    padding: 0 8px;
+  }
+  .brand-cluster {
+    flex-shrink: 0;
+  }
+  .work-title,
+  .divider-dot {
+    display: none;
+  }
+  .mode-tab {
+    padding: 0 6px;
+    font-size: 10px;
+  }
+  .view-pill {
+    padding: 0 6px;
+    font-size: 9.5px;
+  }
+  .fx-tag {
+    display: none;
+  }
+  .studio-drawer {
+    width: 232px;
+    min-width: 232px;
+    max-width: 232px;
+  }
+  .drawer-panel {
+    padding: 8px;
+  }
+  .statusbar {
+    gap: 10px;
+    padding: 0 8px;
+  }
+  .status-hide-narrow,
+  .status-right {
+    display: none;
+  }
+}

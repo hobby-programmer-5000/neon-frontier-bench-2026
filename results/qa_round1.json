@@ -1,0 +1,402 @@
+[
+  {
+    "trackId": "track-1a-watch-neon",
+    "pass": true,
+    "readyOk": true,
+    "navReadyMs": 8403,
+    "meta": {
+      "id": "track-1a-watch-neon",
+      "title": "Chronos Calibre N-4",
+      "domain": "Horology & Precision CAD",
+      "model": "gemini-4-neon",
+      "effort": "xhigh",
+      "technique": "Clean-Room Specialist Agent",
+      "ready": true,
+      "bootMs": 7259.7,
+      "shaderPrewarmMs": 0,
+      "drawCalls": 941,
+      "triangles": 6966,
+      "fps": 41.7,
+      "telemetry": {
+        "vph": 28800,
+        "beatRateHz": 8,
+        "powerReserveHrs": 71.8,
+        "tourbillonDeg": 90,
+        "mode": "hero"
+      }
+    },
+    "perf": {
+      "fpsMedian": 29.9,
+      "fpsP10": 14.9,
+      "frameTimeMedianMs": 33.4,
+      "frameTimeMaxMs": 4519.1,
+      "jsHeapMB": 4.3
+    },
+    "hudDesktop": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "hudNarrow": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "actionResult": "demo: wound mainspring (58.0h -> 71.8h) & activated 6-layer isometric CAD + torque flow",
+    "codeStats": {
+      "files": 7,
+      "lines": 4617,
+      "bytes": 167133
+    },
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "httpErrors": [],
+    "screenshots": {
+      "hero": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-1a-watch-neon\\hero_1440x900.png",
+      "macro": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-1a-watch-neon\\macro_1440x900.png",
+      "alt_mode": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-1a-watch-neon\\alt_mode_1440x900.png",
+      "narrow": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-1a-watch-neon\\narrow_700x900.png"
+    }
+  },
+  {
+    "trackId": "track-1b-watch-opus",
+    "pass": true,
+    "readyOk": true,
+    "navReadyMs": 11306,
+    "meta": {
+      "id": "track-1b-watch-opus",
+      "title": "Chronos Calibre O-5",
+      "domain": "Horology & Precision CAD",
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "technique": "Cross-Vendor Single-Agent Control",
+      "ready": true,
+      "bootMs": 9189,
+      "shaderPrewarmMs": 0,
+      "drawCalls": 937,
+      "triangles": 7179,
+      "fps": 41.8,
+      "telemetry": {
+        "vph": 28800,
+        "beatRateHz": 8,
+        "balanceHz": 4,
+        "amplitudeDeg": 303,
+        "powerReserveHrs": 72,
+        "tourbillonDeg": 185.1,
+        "tourbillonPeriodS": 60,
+        "escapeWheelDeg": 37.7,
+        "leverDeg": 7.31,
+        "mode": "hero",
+        "timeScale": 1,
+        "paused": false,
+        "running": true,
+        "beats": 105,
+        "gearTeeth": 488,
+        "jewels": 5,
+        "barrelTorque_mNm": 12,
+        "train": "barrel 90 → centre pinion 12 · centre 80 → third pinion 10 · third 75 → cage pinion 10 · fixed 128 → escape pinion 8 · escape 15"
+      }
+    },
+    "perf": {
+      "fpsMedian": 59.9,
+      "fpsP10": 20,
+      "frameTimeMedianMs": 16.7,
+      "frameTimeMaxMs": 398.7,
+      "jsHeapMB": 7.2
+    },
+    "hudDesktop": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "hudNarrow": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "actionResult": "demo: crown winding 38.4 h → 72.0 h (4.48 arbor turns); view=alt_mode (Z-axis exploded CAD layers + kinematic torque flow); barrel torque 12.00 mN·m → escape 1.247 µN·m; 28800 vph, 60 s tourbillon",
+    "codeStats": {
+      "files": 7,
+      "lines": 2407,
+      "bytes": 107212
+    },
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "httpErrors": [],
+    "screenshots": {
+      "hero": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-1b-watch-opus\\hero_1440x900.png",
+      "macro": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-1b-watch-opus\\macro_1440x900.png",
+      "alt_mode": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-1b-watch-opus\\alt_mode_1440x900.png",
+      "narrow": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-1b-watch-opus\\narrow_700x900.png"
+    }
+  },
+  {
+    "trackId": "track-2-turing-study",
+    "pass": true,
+    "readyOk": true,
+    "navReadyMs": 13896,
+    "meta": {
+      "id": "track-2-turing-study",
+      "title": "Cambridge Study 1936 — Universal Tape Machine",
+      "domain": "3D Architecture & Interactive Computing",
+      "model": "gemini-4-neon",
+      "effort": "xhigh",
+      "technique": "2-Worker Clean-Room Specialist Swarm",
+      "ready": true,
+      "bootMs": 10960.8,
+      "shaderPrewarmMs": 5143.5,
+      "drawCalls": 635,
+      "triangles": 71681,
+      "fps": 29.5,
+      "telemetry": {
+        "programId": "binary_increment",
+        "utmSteps": 12,
+        "utmState": "HALT",
+        "headPos": 0,
+        "halted": true,
+        "activeView": "hero"
+      }
+    },
+    "perf": {
+      "fpsMedian": 30,
+      "fpsP10": 20,
+      "frameTimeMedianMs": 33.3,
+      "frameTimeMaxMs": 116.6,
+      "jsHeapMB": 17.9
+    },
+    "hudDesktop": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "hudNarrow": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "actionResult": "Executed 6 UTM steps (busy_beaver_3: step 0, state A, head 0)",
+    "codeStats": {
+      "files": 6,
+      "lines": 5654,
+      "bytes": 187825
+    },
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "httpErrors": [],
+    "screenshots": {
+      "hero": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-2-turing-study\\hero_1440x900.png",
+      "macro": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-2-turing-study\\macro_1440x900.png",
+      "alt_mode": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-2-turing-study\\alt_mode_1440x900.png",
+      "narrow": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-2-turing-study\\narrow_700x900.png"
+    }
+  },
+  {
+    "trackId": "track-3-turbofan-cad",
+    "pass": true,
+    "readyOk": true,
+    "navReadyMs": 7065,
+    "meta": {
+      "id": "track-3-turbofan-cad",
+      "title": "AeroFan X-900 — Cutaway Turbofan CAD",
+      "domain": "Aerospace Engineering & CAD",
+      "model": "gemini-4-carbon",
+      "effort": "high",
+      "technique": "One-Shot Master Spec",
+      "ready": true,
+      "bootMs": 3974.1,
+      "shaderPrewarmMs": 1902.4,
+      "drawCalls": 73,
+      "triangles": 178166,
+      "fps": 59.3,
+      "telemetry": {
+        "view": "hero",
+        "renderMode": "solid",
+        "regime": "MAX CRUISE",
+        "throttlePct": 78,
+        "altitudeFt": 12000,
+        "mach": 0.48,
+        "explodePct": 0,
+        "n1Pct": 81.6,
+        "n2Pct": 92.9,
+        "n1Rpm": 2186,
+        "n2Rpm": 10636,
+        "thrustKN": 131.8,
+        "bpr": 9.55,
+        "epr": 1.51,
+        "tsfc": 14.27,
+        "T0_K": 264.4,
+        "P0_kPa": 64.4,
+        "T2_K": 348.9,
+        "T3_K": 765,
+        "T4_TIT_K": 1530.3,
+        "T5_EGT_K": 823.9
+      }
+    },
+    "perf": {
+      "fpsMedian": 59.9,
+      "fpsP10": 59.5,
+      "frameTimeMedianMs": 16.7,
+      "frameTimeMaxMs": 83.4,
+      "jsHeapMB": 15.7
+    },
+    "hudDesktop": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "hudNarrow": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "actionResult": "TOGA 100% engaged: Thrust=358.2 kN, TIT=1881 K, Explode=55%, Mode=THERMAL",
+    "codeStats": {
+      "files": 8,
+      "lines": 4473,
+      "bytes": 151869
+    },
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "httpErrors": [],
+    "screenshots": {
+      "hero": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-3-turbofan-cad\\hero_1440x900.png",
+      "macro": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-3-turbofan-cad\\macro_1440x900.png",
+      "alt_mode": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-3-turbofan-cad\\alt_mode_1440x900.png",
+      "narrow": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-3-turbofan-cad\\narrow_700x900.png"
+    }
+  },
+  {
+    "trackId": "track-4-chroma-forge",
+    "pass": false,
+    "readyOk": true,
+    "navReadyMs": 51021,
+    "meta": {
+      "id": "track-4-chroma-forge",
+      "title": "ChromaForge — Hex Flame & 57.6K Formula Relight",
+      "domain": "Generative Shader Art & Spreadsheet CV",
+      "model": "gemini-4-argon",
+      "effort": "high",
+      "technique": "Iterative Visual-Refinement Agent",
+      "ready": true,
+      "bootMs": 49423.6,
+      "shaderPrewarmMs": 47282.2,
+      "drawCalls": 1,
+      "triangles": 2,
+      "fps": 54,
+      "telemetry": {
+        "activeMode": "Mode A · Hex Flame (SOLAR FORGE)",
+        "activeCells": 57600,
+        "liveFormulas": 288000,
+        "relightMode": "4. Dynamic Key Relight",
+        "lightPos": "(0.56, 0.28, 0.72)",
+        "activeCell": "DR84",
+        "activeFormula": "=CLAMP(255*(KA*B84 + KD*MAX(0,DOT(N_DR84,L)) + KS*POW(R_DOT_V,24)),0,255)"
+      }
+    },
+    "perf": {
+      "fpsMedian": 59.9,
+      "fpsP10": 30,
+      "frameTimeMedianMs": 16.7,
+      "frameTimeMaxMs": 50,
+      "jsHeapMB": 6.9
+    },
+    "hudDesktop": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "hudNarrow": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "actionResult": "Moved 3D light source to (0.56, 0.28, 0.72) and inspected cell DR84 (=CLAMP(255*(KA*B84 + KD*MAX(0,DOT(N_DR84,L)) + KS*POW(R_DOT_V,24)),0,255)) across 57,600 cells",
+    "codeStats": {
+      "files": 5,
+      "lines": 2981,
+      "bytes": 103609
+    },
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [
+      "NAV_TIMEOUT: page.goto: Timeout 45000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:54199/works/track-4-chroma-forge/index.html\", waiting until \"domcontentloaded\"\u001b[22m\n"
+    ],
+    "httpErrors": [],
+    "screenshots": {
+      "hero": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-4-chroma-forge\\hero_1440x900.png",
+      "macro": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-4-chroma-forge\\macro_1440x900.png",
+      "alt_mode": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-4-chroma-forge\\alt_mode_1440x900.png",
+      "narrow": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-4-chroma-forge\\narrow_700x900.png"
+    }
+  },
+  {
+    "trackId": "track-5-kinetic-cloth",
+    "pass": true,
+    "readyOk": true,
+    "navReadyMs": 7068,
+    "meta": {
+      "id": "track-5-kinetic-cloth",
+      "title": "Kinetic Atelier — 3D Rube Goldberg + Live XPBD Cloth",
+      "domain": "120 Hz Rigid Mechanics & Real-Time XPBD Cloth",
+      "model": "gemini-4-neon+hydrogen",
+      "effort": "high->xhigh",
+      "technique": "Orchestrator-to-Executor Pipeline",
+      "ready": true,
+      "bootMs": 5278.9,
+      "shaderPrewarmMs": 3841.2,
+      "drawCalls": 143,
+      "triangles": 45072,
+      "fps": 49.7,
+      "telemetry": {
+        "stage": 8,
+        "stageName": "Funnel & Bell",
+        "simTimeSec": 3.86,
+        "fixedHz": 120,
+        "xpbdIterations": 4,
+        "clothNodes": 384,
+        "clothMaxBillowM": 0.163,
+        "totalEnergyJ": 1.598,
+        "leverAMode": "AUTO",
+        "leverBMode": "AUTO",
+        "viewMode": "hero"
+      }
+    },
+    "perf": {
+      "fpsMedian": 59.5,
+      "fpsP10": 29.9,
+      "frameTimeMedianMs": 16.8,
+      "frameTimeMaxMs": 100,
+      "jsHeapMB": 18.8
+    },
+    "hudDesktop": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "hudNarrow": {
+      "overlaps": 0,
+      "overflowX": false,
+      "samplePairs": []
+    },
+    "actionResult": "demo: catapult launched through XPBD silk -> bell chime",
+    "codeStats": {
+      "files": 8,
+      "lines": 3730,
+      "bytes": 112952
+    },
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "httpErrors": [],
+    "screenshots": {
+      "hero": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-5-kinetic-cloth\\hero_1440x900.png",
+      "macro": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-5-kinetic-cloth\\macro_1440x900.png",
+      "alt_mode": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-5-kinetic-cloth\\alt_mode_1440x900.png",
+      "narrow": "C:\\Users\\ckstn\\.gemini\\antigravity\\scratch\\neon-frontier-bench-2026\\results\\screenshots_r1\\track-5-kinetic-cloth\\narrow_700x900.png"
+    }
+  }
+]

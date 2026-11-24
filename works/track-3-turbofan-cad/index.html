@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AeroFan X-900 — Cutaway High-Bypass Turbofan CAD &amp; Brayton Telemetry Studio</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%2310161e'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%234da3ff' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23e28736'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "/node_modules/three/build/three.module.js",
+      "three/addons/": "/node_modules/three/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="webgl-canvas" aria-label="AeroFan X-900 3D Cutaway Turbofan CAD Viewport"></canvas>
+  <div id="callout-layer" aria-hidden="true"></div>
+
+  <div id="cad-shell" class="cad-shell">
+    <!-- TOP SIEMENS-NX INSPIRED INSTRUMENTATION BAR -->
+    <header class="topbar">
+      <div class="brand-cluster">
+        <span class="brand-code"><span class="brand-dot"></span>AEROFAN X-900</span>
+        <span class="brand-sub">DUAL-SPOOL CAD · 135° SECTION</span>
+      </div>
+
+      <div class="toolbar-clusters">
+        <div class="pill-group" role="group" aria-label="Camera Presets">
+          <span class="group-tag">CAM</span>
+          <button type="button" class="cad-btn active" data-view-preset="hero">HERO CUTAWAY</button>
+          <button type="button" class="cad-btn" data-view-preset="macro">COMBUSTOR MACRO</button>
+          <button type="button" class="cad-btn" data-view-preset="alt_mode">EXPLODED CAD</button>
+        </div>
+
+        <div class="pill-group" role="group" aria-label="CAD Render Modes">
+          <span class="group-tag">MODE</span>
+          <button type="button" class="cad-btn active" data-render-mode="solid">SOLID CUTAWAY</button>
+          <button type="button" class="cad-btn" data-render-mode="wireframe">WIREFRAME</button>
+          <button type="button" class="cad-btn" data-render-mode="xray">X-RAY</button>
+          <button type="button" class="cad-btn mode-thermal" data-render-mode="thermal">THERMAL</button>
+        </div>
+
+        <div class="pill-group" role="group" aria-label="Simulation Actions">
+          <button type="button" id="btn-demo" class="cad-btn action-demo" title="Engage TOGA 100% + 55% Axial Explode + Thermal Highlight">DEMO TOGA</button>
+          <button type="button" id="btn-audio" class="cad-btn" title="Toggle synthesized dual-spool turbine &amp; exhaust audio">AUDIO: MUTED</button>
+          <button type="button" id="btn-hud-toggle" class="cad-btn" title="Toggle instrumentation docks">HUD: DOCKED</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- NON-OVERLAPPING 3-REGION WORKSPACE GRID -->
+    <main class="workspace-grid">
+      <!-- LEFT DOCK: BRAYTON CYCLE TELEMETRY & STATION MATRIX -->
+      <section id="telemetry-dock" class="dock-panel" aria-label="Brayton Cycle Telemetry">
+        <div class="panel-header">
+          <span class="panel-title">Brayton Telemetry</span>
+          <span id="regime-badge" class="regime-badge">MAX CRUISE</span>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-cell">
+            <div class="kpi-label"><span>NET THRUST</span><span>Fn</span></div>
+            <div id="val-thrust" class="kpi-val">148.0<span class="kpi-unit">kN</span></div>
+            <div id="val-epr" class="kpi-sub">EPR 1.48</div>
+          </div>
+
+          <div class="kpi-cell">
+            <div class="kpi-label"><span>TSFC</span><span>SFC</span></div>
+            <div id="val-tsfc" class="kpi-val">13.40<span class="kpi-unit">g/kN·s</span></div>
+            <div id="val-fuel" class="kpi-sub">Fuel 1.98 kg/s</div>
+          </div>
+
+          <div class="kpi-cell">
+            <div class="kpi-label"><span>N1 LP SPOOL</span><span>22B</span></div>
+            <div id="val-n1" class="kpi-val">86.4<span class="kpi-unit">%</span></div>
+            <div id="val-n1-rpm" class="kpi-sub">2,316 RPM (LP)</div>
+            <div class="spool-bar"><div id="bar-n1" class="spool-fill" style="width:86%"></div></div>
+          </div>
+
+          <div class="kpi-cell">
+            <div class="kpi-label"><span>N2 HP SPOOL</span><span>CTR</span></div>
+            <div id="val-n2" class="kpi-val">92.8<span class="kpi-unit">%</span></div>
+            <div id="val-n2-rpm" class="kpi-sub">10,626 RPM (HP)</div>
+            <div class="spool-bar"><div id="bar-n2" class="spool-fill n2" style="width:93%"></div></div>
+          </div>
+
+          <div class="kpi-cell" style="grid-column: 1 / -1; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div class="kpi-label"><span>BYPASS RATIO (BPR)</span></div>
+              <div id="val-bpr" class="kpi-val">9.62<span class="kpi-unit">:1</span></div>
+            </div>
+            <div style="text-align:right;">
+              <div class="kpi-label" style="justify-content:flex-end;"><span>PRESSURE RATIO</span></div>
+              <div id="val-opr" class="kpi-val" style="font-size:12px;">OPR 32.4:1</div>
+            </div>
+          </div>
+        </div>
+
+        <table class="station-table" aria-label="Axial Station Temperatures and Pressures">
+          <thead>
+            <tr>
+              <th>STN</th>
+              <th>STAGE</th>
+              <th class="num">TEMP (Tt)</th>
+              <th class="num">Pt (kPa)</th>
+            </tr>
+          </thead>
+          <tbody id="station-tbody"></tbody>
+        </table>
+
+        <div class="thermo-spark-box">
+          <div class="spark-caption">
+            <span>AXIAL Tt PROFILE (0→5)</span>
+            <span id="spark-peak-label">TIT 1520 K</span>
+          </div>
+          <svg id="thermo-spark-svg" viewBox="0 0 220 42" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#4da3ff" stop-opacity="0.35" />
+                <stop offset="52%" stop-color="#ffaa38" stop-opacity="0.45" />
+                <stop offset="76%" stop-color="#ff5e3a" stop-opacity="0.65" />
+                <stop offset="100%" stop-color="#e28736" stop-opacity="0.30" />
+              </linearGradient>
+            </defs>
+            <line x1="8" y1="39" x2="212" y2="39" stroke="rgba(148,173,204,0.22)" stroke-width="1" />
+            <path id="spark-area-path" d="M 8,34 L 58,30 L 110,18 L 162,7 L 212,21 L 212,41 L 8,41 Z" fill="url(#sparkGrad)" />
+            <path id="spark-line-path" d="M 8,34 L 58,30 L 110,18 L 162,7 L 212,21" fill="none" stroke="#ffae52" stroke-width="1.6" />
+          </svg>
+        </div>
+      </section>
+
+      <!-- CENTER CLEAR UNOBSTRUCTED 3D VIEWPORT WINDOW -->
+      <div id="viewport-window" class="viewport-window" aria-hidden="true"></div>
+
+      <!-- RIGHT DOCK: FADEC FLIGHT ENVELOPE & AXIAL CAD CONTROLS -->
+      <section id="control-dock" class="dock-panel" aria-label="Engine and CAD Controls">
+        <div class="panel-header">
+          <span class="panel-title">FADEC &amp; CAD Assembly</span>
+          <span style="font-family:var(--font-mono); font-size:9px; color:var(--text-muted);">MATTINGLY 2006</span>
+        </div>
+
+        <div class="preset-strip" role="group" aria-label="Throttle Regime Presets">
+          <button type="button" class="preset-btn" data-throttle-preset="22">IDLE 22%</button>
+          <button type="button" class="preset-btn active" data-throttle-preset="78">CRUISE 78%</button>
+          <button type="button" class="preset-btn toga-btn" data-throttle-preset="100">TOGA 100%</button>
+        </div>
+
+        <div class="control-row">
+          <div class="control-label-line">
+            <span class="ctrl-name">THROTTLE PLA</span>
+            <span id="lbl-throttle" class="ctrl-readout">78%</span>
+          </div>
+          <input id="slider-throttle" class="cad-slider" type="range" min="22" max="100" step="1" value="78" />
+        </div>
+
+        <div class="control-row">
+          <div class="control-label-line">
+            <span class="ctrl-name">ALTITUDE (ISA)</span>
+            <span id="lbl-alt" class="ctrl-readout">12,000 ft</span>
+          </div>
+          <input id="slider-alt" class="cad-slider" type="range" min="0" max="42000" step="500" value="12000" />
+        </div>
+
+        <div class="control-row">
+          <div class="control-label-line">
+            <span class="ctrl-name">FLIGHT MACH</span>
+            <span id="lbl-mach" class="ctrl-readout">M 0.48</span>
+          </div>
+          <input id="slider-mach" class="cad-slider" type="range" min="0" max="0.88" step="0.01" value="0.48" />
+        </div>
+
+        <div class="control-row">
+          <div class="control-label-line">
+            <span class="ctrl-name" style="color:#f4b678;">AXIAL EXPLODED VIEW</span>
+            <span id="lbl-explode" class="ctrl-readout" style="color:#ffd3a3;">0%</span>
+          </div>
+          <input id="slider-explode" class="cad-slider explode-slider" type="range" min="0" max="100" step="1" value="0" />
+        </div>
+
+        <div class="sub-toggles">
+          <button type="button" id="btn-streamlines" class="cad-btn active">FLOW: ON</button>
+          <div class="pill-group" role="group" aria-label="Rotor Time Scale">
+            <button type="button" class="cad-btn active" data-timescale="1">1.0×</button>
+            <button type="button" class="cad-btn" data-timescale="0.2">0.2×</button>
+            <button type="button" class="cad-btn" data-timescale="0">PAUSE</button>
+          </div>
+        </div>
+
+        <div class="stream-legend" aria-label="Streamline Legend">
+          <span class="leg-chip"><span class="leg-swatch" style="background:#52caff"></span>Intake</span>
+          <span class="leg-chip"><span class="leg-swatch" style="background:#ffaa2e"></span>HPC</span>
+          <span class="leg-chip"><span class="leg-swatch" style="background:#fff0c4"></span>Burner</span>
+          <span class="leg-chip"><span class="leg-swatch" style="background:#ff7638"></span>Plume</span>
+        </div>
+      </section>
+    </main>
+
+    <!-- BOTTOM TECHNICAL CAD STATUS FOOTER -->
+    <footer class="statusbar">
+      <div class="status-metrics">
+        <span class="status-kv">RENDER <strong id="stat-mode">SOLID</strong></span>
+        <span class="status-kv">PERF <strong id="stat-fps">60 FPS</strong></span>
+        <span class="status-kv">BATCHES <strong id="stat-calls">0 calls</strong></span>
+        <span class="status-kv">MESH <strong id="stat-tris">0 tris</strong></span>
+      </div>
+      <div class="status-hint">LMB Orbit · RMB Pan · Scroll Zoom · 135° Dual-Spool Section</div>
+    </footer>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

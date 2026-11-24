@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chronos Calibre N-4 — Swiss Skeleton Mechanical Tourbillon</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230d0e11' stroke='%23d5b074' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23c82b52'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Left / Main Horology Exhibition Stage -->
+    <main class="stage-column" id="stage-column">
+      <header class="stage-header">
+        <div class="exhibition-plaque">
+          <span class="plaque-kicker">Manufacture Horlogère · Genève</span>
+          <h1 class="plaque-title">CHRONOS CALIBRE N-4</h1>
+          <span class="plaque-subtitle">60s Tourbillon Squelette · 28,800 vph · Involute <span class="math-sym">α</span>=20°</span>
+        </div>
+        <div class="stage-mode-readout">
+          <span class="mode-badge-label">Optical Mode</span>
+          <span class="mode-badge-value" id="hud-mode-badge">STUDIO HERO</span>
+        </div>
+      </header>
+
+      <div class="stage-viewport" id="stage-viewport">
+        <canvas id="optics-bg-canvas" class="optics-layer" aria-hidden="true"></canvas>
+        <svg id="watch-svg-defs" class="svg-defs-host" aria-hidden="true"></svg>
+        <svg id="watch-svg-base" class="watch-svg-plane" viewBox="-332 -332 664 664" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+        <svg id="watch-svg-train" class="watch-svg-plane" viewBox="-332 -332 664 664" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+        <svg id="watch-svg" class="watch-svg-plane" viewBox="-332 -332 664 664" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Chronos Calibre N-4 Open-Worked Swiss Tourbillon Mechanical Watch"></svg>
+        <svg id="watch-svg-bridges" class="watch-svg-plane" viewBox="-332 -332 664 664" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+        <svg id="watch-svg-top" class="watch-svg-plane interactive-plane" viewBox="-332 -332 664 664" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+        <canvas id="optics-fg-canvas" class="optics-layer" aria-hidden="true"></canvas>
+      </div>
+
+      <footer class="stage-telemetry" aria-label="Live Horological Telemetry">
+        <div class="telemetry-cell">
+          <span class="telemetry-label">Beat Rate</span>
+          <span class="telemetry-value" id="tel-vph">28,800<span class="unit">vph</span></span>
+        </div>
+        <div class="telemetry-cell">
+          <span class="telemetry-label">Power Reserve</span>
+          <span class="telemetry-value" id="tel-power">64.5<span class="unit">/ 72h</span></span>
+        </div>
+        <div class="telemetry-cell">
+          <span class="telemetry-label">Tourbillon Cage</span>
+          <span class="telemetry-value" id="tel-cage">000.0<span class="unit">deg</span></span>
+        </div>
+        <div class="telemetry-cell">
+          <span class="telemetry-label">Balance Amplitude</span>
+          <span class="telemetry-value" id="tel-amp">295<span class="unit">° · 4.0 Hz</span></span>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Right Docked (Desktop) / Bottom Docked (Narrow 700x900) Studio Atelier Controls -->
+    <aside class="atelier-rail" aria-label="Calibre Controls">
+      <!-- 1. View Perspective -->
+      <section class="rail-section">
+        <div class="section-heading">
+          <span>Perspective</span>
+          <span class="section-meta" id="meta-fps">60 FPS</span>
+        </div>
+        <div class="seg-group" role="group" aria-label="Camera View Mode">
+          <button type="button" class="ctrl-btn active" id="btn-view-hero" data-view="hero">Hero</button>
+          <button type="button" class="ctrl-btn" id="btn-view-macro" data-view="macro">Macro 2.4×</button>
+          <button type="button" class="ctrl-btn" id="btn-view-cad" data-view="alt_mode">CAD Layers</button>
+        </div>
+      </section>
+
+      <!-- 2. Interactive Crown Winding & Mainspring Reserve -->
+      <section class="rail-section">
+        <div class="section-heading">
+          <span>Mainspring &amp; Crown</span>
+          <span class="section-meta" id="rail-power-text">64.5 h</span>
+        </div>
+        <button type="button" class="ctrl-btn primary-wind" id="btn-wind-crown">Hold to Wind Crown</button>
+        <div class="reserve-meter-wrap">
+          <div class="reserve-track">
+            <div class="reserve-fill" id="rail-reserve-fill"></div>
+          </div>
+          <div class="reserve-ticks">
+            <span>0h</span>
+            <span>24h</span>
+            <span>48h</span>
+            <span>72h</span>
+          </div>
+        </div>
+        <p class="crown-hint">Drag the fluted 3 o'clock crown directly or hold to tighten the blued mainspring.</p>
+      </section>
+
+      <!-- 3. Chronometer Drive & 8 Hz Acoustics -->
+      <section class="rail-section">
+        <div class="section-heading">
+          <span>Chronometer Drive</span>
+          <span class="section-meta" id="rail-scale-text">1.0× REAL</span>
+        </div>
+        <div class="seg-group" role="group" aria-label="Time Scale">
+          <button type="button" class="ctrl-btn" id="btn-scale-slow" data-scale="0.1">0.1×</button>
+          <button type="button" class="ctrl-btn active" id="btn-scale-real" data-scale="1">1×</button>
+          <button type="button" class="ctrl-btn" id="btn-scale-fast" data-scale="10">10×</button>
+        </div>
+        <div class="seg-group two-col">
+          <button type="button" class="ctrl-btn" id="btn-pause">Pause</button>
+          <button type="button" class="ctrl-btn" id="btn-step">Step +1 Beat</button>
+        </div>
+      </section>
+
+      <!-- 4. Kinematics, CAD Layer Explode & Audio -->
+      <section class="rail-section">
+        <div class="section-heading">
+          <span>Inspection &amp; Acoustics</span>
+        </div>
+        <div class="seg-group two-col">
+          <button type="button" class="ctrl-btn" id="btn-torque">Torque Flow</button>
+          <button type="button" class="ctrl-btn" id="btn-audio"><span class="status-dot"></span>8 Hz Audio</button>
+        </div>
+        <div class="slider-row">
+          <div class="slider-header">
+            <label for="slider-explode">Z-Layer Explode</label>
+            <span id="rail-explode-text">0%</span>
+          </div>
+          <input type="range" id="slider-explode" class="studio-range" min="0" max="100" step="1" value="0" aria-label="Z-Axis Exploded CAD Layer Spread">
+        </div>
+      </section>
+
+      <!-- 5. Geneva Technical Specification Sheet (Desktop) -->
+      <section class="rail-section spec-section">
+        <div class="section-heading">
+          <span>Calibre N-4 Architecture</span>
+        </div>
+        <div class="spec-grid">
+          <span class="spec-key">Escapement</span><span class="spec-val">15T Swiss Lever</span>
+          <span class="spec-key">Gear Profile</span><span class="spec-val">Involute α = 20°</span>
+          <span class="spec-key">Train Ratio</span><span class="spec-val">80/10 × 75/10 = 60:1</span>
+          <span class="spec-key">Tourbillon</span><span class="spec-val">96/6 = 16:1 Planetary</span>
+          <span class="spec-key">Oscillator</span><span class="spec-val">4.0 Hz · 28,800 vph</span>
+          <span class="spec-key">Bearings</span><span class="spec-val">33 Synthetic Rubies</span>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

@@ -1,0 +1,614 @@
+[
+  {
+    "trackId": "track-1a-watch-neon",
+    "anon_label": "Candidate-A",
+    "round": 2,
+    "decision_rlaif_100": 90.38,
+    "blind_critic_100": 68,
+    "composite_rlaif_100": 81.43,
+    "decision_axes": {
+      "visual_craftsmanship": {
+        "score_0_4": 3.834,
+        "score_0_100": 95.9,
+        "confidence": 0.843,
+        "probabilities": {
+          "0": 0.0003,
+          "2": 0.0067,
+          "1": 0.0004,
+          "3": 0.1494,
+          "4": 0.8431
+        }
+      },
+      "domain_engineering_fidelity": {
+        "score_0_4": 3.835,
+        "score_0_100": 95.9,
+        "confidence": 0.845,
+        "probabilities": {
+          "3": 0.1459,
+          "4": 0.8451,
+          "0": 0.0004,
+          "2": 0.008,
+          "1": 0.0007
+        }
+      },
+      "interactivity_and_ux": {
+        "score_0_4": 3.646,
+        "score_0_100": 91.1,
+        "confidence": 0.685,
+        "probabilities": {
+          "4": 0.6848,
+          "3": 0.2831,
+          "2": 0.0268,
+          "0": 0.0016,
+          "1": 0.0037
+        }
+      },
+      "technical_performance": {
+        "score_0_4": 2.752,
+        "score_0_100": 68.8,
+        "confidence": 0.418,
+        "probabilities": {
+          "3": 0.4179,
+          "1": 0.1273,
+          "4": 0.2416,
+          "2": 0.2024,
+          "0": 0.0108
+        }
+      },
+      "reference_surpassing_depth": {
+        "score_0_4": 3.714,
+        "score_0_100": 92.8,
+        "confidence": 0.755,
+        "probabilities": {
+          "2": 0.0286,
+          "1": 0.0035,
+          "0": 0.0017,
+          "3": 0.2117,
+          "4": 0.7545
+        }
+      },
+      "craft_authenticity_anti_ai_look": {
+        "score_0_4": 3.763,
+        "score_0_100": 94.1,
+        "confidence": 0.786,
+        "probabilities": {
+          "0": 0.001,
+          "3": 0.1957,
+          "4": 0.7857,
+          "2": 0.0155,
+          "1": 0.0021
+        }
+      }
+    },
+    "blind_critique": {
+      "strengths": [
+        "Disciplined luxury-CAD HUD with clean responsive reflow across desktop and 700x900 narrow viewports without overlaps.",
+        "Clear visual storytelling across Hero, annotated Macro, and isometric Exploded CAD modes with convincing Côtes de Genève and perlage surface motifs."
+      ],
+      "defects_and_ai_tells": [
+        "2D/2.5D vector-gradient aesthetic lacks true 3D geometric thickness; exploded CAD layers reveal flat, paper-thin planes instead of extruded mechanical solids.",
+        "High draw-call overhead (927 draw calls for 6,004 triangles) alongside an 8.8s navigation ready time indicates unbatched scene nodes and heavy initialization.",
+        "Macro callout leader lines cross busy high-contrast gear geometry, slightly reducing immediate visual clarity."
+      ],
+      "actionable_r2_fixes": [
+        "Batch or instance static movement components (gear teeth, screws, jewels) to reduce draw calls below 100 and improve frame pacing in Macro/Narrow views.",
+        "Extrude bridges, gears, and bezels with beveled 3D thickness and environment-mapped PBR metals so the exploded CAD view reads as solid precision hardware.",
+        "Optimize startup asset/procedural generation to bring navReadyMs under 2.5 seconds."
+      ],
+      "blind_qualitative_score_100": 68,
+      "verdict_ko": "고급 시계 공학 컨셉의 UI 구성과 반응형 레이아웃, 다각도 분석 모드의 기획력은 준수합니다. 다만 평면적인 2.5D 그래픽 질감과 과도한 드로우콜 및 초기 로딩 지연은 전시급 3D 엔지니어링 기준에 미치지 못하므로 지오메트리 입체감과 렌더링 최적화가 필요합니다.",
+      "critic_model": "gemini-4-carbon (medium, blind)"
+    }
+  },
+  {
+    "trackId": "track-1b-watch-opus",
+    "anon_label": "Candidate-B",
+    "round": 2,
+    "decision_rlaif_100": 90.07,
+    "blind_critic_100": 68,
+    "composite_rlaif_100": 81.24,
+    "decision_axes": {
+      "visual_craftsmanship": {
+        "score_0_4": 3.68,
+        "score_0_100": 92.0,
+        "confidence": 0.712,
+        "probabilities": {
+          "0": 0.0008,
+          "3": 0.2599,
+          "1": 0.002,
+          "4": 0.7119,
+          "2": 0.0254
+        }
+      },
+      "domain_engineering_fidelity": {
+        "score_0_4": 3.79,
+        "score_0_100": 94.7,
+        "confidence": 0.804,
+        "probabilities": {
+          "3": 0.1826,
+          "2": 0.0118,
+          "0": 0.0003,
+          "1": 0.001,
+          "4": 0.8043
+        }
+      },
+      "interactivity_and_ux": {
+        "score_0_4": 3.474,
+        "score_0_100": 86.9,
+        "confidence": 0.552,
+        "probabilities": {
+          "4": 0.5524,
+          "2": 0.0551,
+          "0": 0.0032,
+          "1": 0.0066,
+          "3": 0.3826
+        }
+      },
+      "technical_performance": {
+        "score_0_4": 3.203,
+        "score_0_100": 80.1,
+        "confidence": 0.491,
+        "probabilities": {
+          "2": 0.1097,
+          "4": 0.3724,
+          "3": 0.4908,
+          "0": 0.0052,
+          "1": 0.0219
+        }
+      },
+      "reference_surpassing_depth": {
+        "score_0_4": 3.646,
+        "score_0_100": 91.1,
+        "confidence": 0.705,
+        "probabilities": {
+          "2": 0.0422,
+          "1": 0.0054,
+          "3": 0.2455,
+          "4": 0.7049,
+          "0": 0.0021
+        }
+      },
+      "craft_authenticity_anti_ai_look": {
+        "score_0_4": 3.735,
+        "score_0_100": 93.4,
+        "confidence": 0.762,
+        "probabilities": {
+          "2": 0.0197,
+          "3": 0.2155,
+          "1": 0.0025,
+          "4": 0.7616,
+          "0": 0.0008
+        }
+      }
+    },
+    "blind_critique": {
+      "strengths": [
+        "Refined luxury editorial typography and HUD hierarchy that reflows cleanly without overlap on narrow viewports.",
+        "Clear isometric exploded view with legible callouts and real-time torque cascade telemetry.",
+        "Crisp procedural horological surface treatments, including mainplate perlage and bridge striping."
+      ],
+      "defects_and_ai_tells": [
+        "Components appear as paper-thin 2D planes lacking physical thickness and beveling, most evident in the exploded stack.",
+        "Synthetic 2D linear and radial gradients on the bezel, lugs, and sapphire crystal read as vector illustrations rather than PBR metals and glass.",
+        "Severe draw-call overhead (935 draw calls for 7,179 triangles) degrades live performance, visibly dropping the HUD counter to 33–49 FPS across views.",
+        "The 'DRAG THE CROWN TO WIND' prompt remains visible in Exploded mode despite the case and crown being hidden."
+      ],
+      "actionable_r2_fixes": [
+        "Merge and instance gear/plate geometries to reduce draw calls under 100 and eliminate frame drops in Macro, Exploded, and Narrow views.",
+        "Extrude movement plates, bridges, and wheels in 3D with angled chamfers and HDRI environment reflections to replace flat 2D gradients.",
+        "Synchronize contextual UI prompts with view states so crown interaction hints hide or adapt when the case assembly is hidden."
+      ],
+      "blind_qualitative_score_100": 68,
+      "verdict_ko": "고급스러운 타이포그래피와 반응형 HUD 설계는 안정적이나, 부품의 두께감과 빛 반사가 결여된 평면적 그래픽 한계가 뚜렷합니다. 과도한 드로우 콜 병목을 최적화하고 실제 3D 돌출 형상 및 PBR 재질을 도입해 입체감을 보완해야 합니다.",
+      "critic_model": "gemini-4-carbon (medium, blind)"
+    }
+  },
+  {
+    "trackId": "track-2-turing-study",
+    "anon_label": "Candidate-C",
+    "round": 2,
+    "decision_rlaif_100": 88.07,
+    "blind_critic_100": 66,
+    "composite_rlaif_100": 79.24,
+    "decision_axes": {
+      "visual_craftsmanship": {
+        "score_0_4": 3.689,
+        "score_0_100": 92.2,
+        "confidence": 0.713,
+        "probabilities": {
+          "4": 0.7132,
+          "1": 0.0015,
+          "2": 0.0198,
+          "0": 0.0006,
+          "3": 0.2649
+        }
+      },
+      "domain_engineering_fidelity": {
+        "score_0_4": 3.74,
+        "score_0_100": 93.5,
+        "confidence": 0.763,
+        "probabilities": {
+          "1": 0.0017,
+          "4": 0.7631,
+          "2": 0.0179,
+          "0": 0.0007,
+          "3": 0.2167
+        }
+      },
+      "interactivity_and_ux": {
+        "score_0_4": 3.499,
+        "score_0_100": 87.5,
+        "confidence": 0.587,
+        "probabilities": {
+          "1": 0.0104,
+          "4": 0.5874,
+          "2": 0.0581,
+          "0": 0.0033,
+          "3": 0.3408
+        }
+      },
+      "technical_performance": {
+        "score_0_4": 2.704,
+        "score_0_100": 67.6,
+        "confidence": 0.46,
+        "probabilities": {
+          "0": 0.0131,
+          "2": 0.2184,
+          "4": 0.1926,
+          "1": 0.1153,
+          "3": 0.4605
+        }
+      },
+      "reference_surpassing_depth": {
+        "score_0_4": 3.626,
+        "score_0_100": 90.7,
+        "confidence": 0.687,
+        "probabilities": {
+          "2": 0.0439,
+          "0": 0.0016,
+          "3": 0.2613,
+          "4": 0.6871,
+          "1": 0.0062
+        }
+      },
+      "craft_authenticity_anti_ai_look": {
+        "score_0_4": 3.751,
+        "score_0_100": 93.8,
+        "confidence": 0.773,
+        "probabilities": {
+          "1": 0.0019,
+          "3": 0.2088,
+          "0": 0.0009,
+          "2": 0.0156,
+          "4": 0.7728
+        }
+      }
+    },
+    "blind_critique": {
+      "strengths": [
+        "Cohesive period-inspired HUD design with clean responsive scaling on narrow viewports.",
+        "Clear mechanical readability of the central tape apparatus synchronized with the 2D register.",
+        "Sharp, legible typography on 3D chalkboard diagrams, gauges, and desk documents."
+      ],
+      "defects_and_ai_tells": [
+        "Noticeable shadow map banding and aliasing across the wooden desk and green blotter.",
+        "Blocky, untextured exterior architecture and props lacking grounding contact shadows.",
+        "Slow 12.1s initialization time alongside HUD-reported frame drops (35–41 FPS) in alternate views."
+      ],
+      "actionable_r2_fixes": [
+        "Adjust shadow bias parameters and add screen-space or baked contact shadows to ground desk props.",
+        "Defer off-critical-path texture generation to reduce load time and profile shader bottlenecks.",
+        "Refine PBR roughness variation on wood/brass surfaces and improve exterior window silhouettes."
+      ],
+      "blind_qualitative_score_100": 66,
+      "verdict_ko": "시대적 분위기를 살린 UI와 직관적인 튜링 머신 상호작용이 잘 구현된 준수한 작업물입니다. 다만 책상 위 그림자 아티팩트, 단순한 창밖 기하 구조, 초기 로딩 지연에 대한 기술적 보완이 필요합니다.",
+      "critic_model": "gemini-4-carbon (medium, blind)"
+    }
+  },
+  {
+    "trackId": "track-3-turbofan-cad",
+    "anon_label": "Candidate-D",
+    "round": 2,
+    "decision_rlaif_100": 89.55,
+    "blind_critic_100": 67,
+    "composite_rlaif_100": 80.53,
+    "decision_axes": {
+      "visual_craftsmanship": {
+        "score_0_4": 3.699,
+        "score_0_100": 92.5,
+        "confidence": 0.725,
+        "probabilities": {
+          "1": 0.0013,
+          "4": 0.7253,
+          "0": 0.001,
+          "3": 0.2515,
+          "2": 0.0208
+        }
+      },
+      "domain_engineering_fidelity": {
+        "score_0_4": 3.786,
+        "score_0_100": 94.6,
+        "confidence": 0.795,
+        "probabilities": {
+          "3": 0.1965,
+          "2": 0.0077,
+          "0": 0.0003,
+          "1": 0.0004,
+          "4": 0.7951
+        }
+      },
+      "interactivity_and_ux": {
+        "score_0_4": 3.663,
+        "score_0_100": 91.6,
+        "confidence": 0.703,
+        "probabilities": {
+          "4": 0.7033,
+          "1": 0.0037,
+          "3": 0.2641,
+          "2": 0.0269,
+          "0": 0.002
+        }
+      },
+      "technical_performance": {
+        "score_0_4": 2.89,
+        "score_0_100": 72.3,
+        "confidence": 0.502,
+        "probabilities": {
+          "3": 0.5023,
+          "2": 0.1798,
+          "0": 0.0144,
+          "4": 0.2401,
+          "1": 0.0635
+        }
+      },
+      "reference_surpassing_depth": {
+        "score_0_4": 3.805,
+        "score_0_100": 95.1,
+        "confidence": 0.829,
+        "probabilities": {
+          "3": 0.1517,
+          "2": 0.0164,
+          "0": 0.0009,
+          "1": 0.0022,
+          "4": 0.8288
+        }
+      },
+      "craft_authenticity_anti_ai_look": {
+        "score_0_4": 3.542,
+        "score_0_100": 88.6,
+        "confidence": 0.617,
+        "probabilities": {
+          "2": 0.0486,
+          "0": 0.0027,
+          "3": 0.3223,
+          "4": 0.6172,
+          "1": 0.0092
+        }
+      }
+    },
+    "blind_critique": {
+      "strengths": [
+        "Clean multi-stage turbofan cutaway geometry featuring distinct cross-section hatching and well-proportioned blade arrays.",
+        "Crisp, high-contrast aerospace telemetry HUD that reflows cleanly to the 700x900 narrow viewport without overlap.",
+        "Effective exploded thermal mode with clear 3D spatial callouts and axial temperature mapping."
+      ],
+      "defects_and_ai_tells": [
+        "Airflow particle streamlines ignore collision boundaries, clipping straight through solid rotor hubs and nacelle walls.",
+        "Combustor macro view relies on flat, streaky additive gradients rather than convincing volumetric flame or heat distortion.",
+        "Severe frame-pacing stutter (fpsP10 at 12 FPS, ~32 FPS shown in hero HUD) and sluggish initialization (6938 ms).",
+        "PBR metallic materials lack micro-surface roughness variation and ambient occlusion in tight blade roots."
+      ],
+      "actionable_r2_fixes": [
+        "Constrain streamline paths to the annular gas-path volume so particles wrap around hub/casing contours without clipping.",
+        "Profile CPU/GPU bottlenecks to eliminate the 12 FPS P10 drops and reduce the ~7s load time via asset/shader pre-compilation.",
+        "Upgrade combustor visuals with animated noise-driven volumetric shaders and add SSAO to ground dense blade stages."
+      ],
+      "blind_qualitative_score_100": 67,
+      "verdict_ko": "정밀한 단면 형상과 깔끔한 반응형 엔지니어링 HUD가 돋보이는 터보팬 시각화 결과물입니다. 다만 입자 흐름의 지오메트리 관통 현상과 하위 10% 프레임 저하(12 FPS) 및 긴 초기 로딩 속도는 개선이 필요합니다.",
+      "critic_model": "gemini-4-carbon (medium, blind)"
+    }
+  },
+  {
+    "trackId": "track-4-chroma-forge",
+    "anon_label": "Candidate-E",
+    "round": 2,
+    "decision_rlaif_100": 89.67,
+    "blind_critic_100": 66,
+    "composite_rlaif_100": 80.2,
+    "decision_axes": {
+      "visual_craftsmanship": {
+        "score_0_4": 3.781,
+        "score_0_100": 94.5,
+        "confidence": 0.797,
+        "probabilities": {
+          "2": 0.0118,
+          "0": 0.0007,
+          "3": 0.189,
+          "4": 0.7975,
+          "1": 0.0011
+        }
+      },
+      "domain_engineering_fidelity": {
+        "score_0_4": 3.779,
+        "score_0_100": 94.5,
+        "confidence": 0.8,
+        "probabilities": {
+          "2": 0.0159,
+          "3": 0.1813,
+          "0": 0.0008,
+          "4": 0.8004,
+          "1": 0.0017
+        }
+      },
+      "interactivity_and_ux": {
+        "score_0_4": 3.63,
+        "score_0_100": 90.8,
+        "confidence": 0.684,
+        "probabilities": {
+          "2": 0.0341,
+          "3": 0.273,
+          "1": 0.0056,
+          "0": 0.003,
+          "4": 0.6844
+        }
+      },
+      "technical_performance": {
+        "score_0_4": 3.096,
+        "score_0_100": 77.4,
+        "confidence": 0.461,
+        "probabilities": {
+          "4": 0.35,
+          "0": 0.0099,
+          "2": 0.1338,
+          "3": 0.4611,
+          "1": 0.0452
+        }
+      },
+      "reference_surpassing_depth": {
+        "score_0_4": 3.676,
+        "score_0_100": 91.9,
+        "confidence": 0.73,
+        "probabilities": {
+          "0": 0.0022,
+          "4": 0.7304,
+          "1": 0.0048,
+          "3": 0.2243,
+          "2": 0.0383
+        }
+      },
+      "craft_authenticity_anti_ai_look": {
+        "score_0_4": 3.43,
+        "score_0_100": 85.8,
+        "confidence": 0.554,
+        "probabilities": {
+          "3": 0.3462,
+          "1": 0.0178,
+          "4": 0.5544,
+          "0": 0.0036,
+          "2": 0.078
+        }
+      }
+    },
+    "blind_critique": {
+      "strengths": [
+        "Cohesive single-pass GLSL hex-lattice curl-noise shader with strong blackbody/plasma color grading.",
+        "Well-structured spreadsheet UI metaphor in Mode B featuring live cell inspection, formula bar integration, and zero narrow-viewport overlaps."
+      ],
+      "defects_and_ai_tells": [
+        "Severe P10 frame drops (14.9 FPS) and sluggish initialization (4104ms navReady, 3111ms pre-warm).",
+        "Explicit AI-tell branding hallucination ('MODEL GEMINI-4-ARGON') visible in the bottom-right footer.",
+        "Flat, step-quantized transitions in the Hex Flame macro view lacking true volumetric depth or specular beveling on individual tiles."
+      ],
+      "actionable_r2_fixes": [
+        "Eliminate synchronous pre-warm stalls via progressive frame accumulation to stabilize P10 FPS above 50 and cut load times.",
+        "Strip fabricated model telemetry strings from the HUD footer.",
+        "Add analytical per-hex normal bevels and a lightweight dual-Kawase bloom pass to elevate surface tactility."
+      ],
+      "blind_qualitative_score_100": 66,
+      "verdict_ko": "독창적인 헥스 격자 셰이더와 스프레드시트 UI의 결합이 돋보이나, 초기 로딩 지연과 하위 10% 프레임 저하가 아쉽습니다. 하단의 가상 모델명 표기를 제거하고 타일 입체감 및 연산 최적화를 보완하면 완성도가 크게 향상될 것입니다.",
+      "critic_model": "gemini-4-carbon (medium, blind)"
+    }
+  },
+  {
+    "trackId": "track-5-kinetic-cloth",
+    "anon_label": "Candidate-F",
+    "round": 2,
+    "decision_rlaif_100": 83.92,
+    "blind_critic_100": 63,
+    "composite_rlaif_100": 75.55,
+    "decision_axes": {
+      "visual_craftsmanship": {
+        "score_0_4": 3.566,
+        "score_0_100": 89.1,
+        "confidence": 0.614,
+        "probabilities": {
+          "0": 0.0012,
+          "1": 0.0035,
+          "4": 0.614,
+          "3": 0.3438,
+          "2": 0.0374
+        }
+      },
+      "domain_engineering_fidelity": {
+        "score_0_4": 3.679,
+        "score_0_100": 92.0,
+        "confidence": 0.711,
+        "probabilities": {
+          "4": 0.7114,
+          "0": 0.001,
+          "3": 0.2614,
+          "1": 0.003,
+          "2": 0.0232
+        }
+      },
+      "interactivity_and_ux": {
+        "score_0_4": 3.388,
+        "score_0_100": 84.7,
+        "confidence": 0.512,
+        "probabilities": {
+          "3": 0.3894,
+          "0": 0.0054,
+          "1": 0.0139,
+          "4": 0.5117,
+          "2": 0.0795
+        }
+      },
+      "technical_performance": {
+        "score_0_4": 2.464,
+        "score_0_100": 61.6,
+        "confidence": 0.402,
+        "probabilities": {
+          "0": 0.0437,
+          "3": 0.4019,
+          "2": 0.2281,
+          "1": 0.1679,
+          "4": 0.1584
+        }
+      },
+      "reference_surpassing_depth": {
+        "score_0_4": 3.428,
+        "score_0_100": 85.7,
+        "confidence": 0.566,
+        "probabilities": {
+          "4": 0.5662,
+          "2": 0.0893,
+          "0": 0.0057,
+          "3": 0.3228,
+          "1": 0.0159
+        }
+      },
+      "craft_authenticity_anti_ai_look": {
+        "score_0_4": 3.44,
+        "score_0_100": 86.0,
+        "confidence": 0.552,
+        "probabilities": {
+          "2": 0.071,
+          "4": 0.5517,
+          "3": 0.3588,
+          "1": 0.0144,
+          "0": 0.0041
+        }
+      }
+    },
+    "blind_critique": {
+      "strengths": [
+        "Clean, cohesive brass-and-emerald HUD with proper responsive collapse on narrow viewports and zero console errors.",
+        "Clear XPBD cloth collision deformation paired with an informative wireframe debug mode and real-time energy ledger."
+      ],
+      "defects_and_ai_tells": [
+        "Retro arcade cabinets in the background clash thematically with the brass-and-wood kinetic atelier aesthetic.",
+        "Severe performance stutters (12 FPS P10) and slow initialization (10.8s navReadyMs) despite low geometry counts.",
+        "Flat lighting and missing contact shadows leave dominoes, tracks, and stands looking ungrounded on the wood surface.",
+        "Camera framing in the narrow viewport centers on spent dominoes rather than the active Stage 8/8 funnel and bell."
+      ],
+      "actionable_r2_fixes": [
+        "Profile and optimize the 120 Hz physics/render loop to eliminate 12 FPS P10 frame drops and reduce the 10.8s load time.",
+        "Add contact shadows or SSAO and refine PBR roughness maps to properly ground the brass and wood mechanisms.",
+        "Replace discordant background arcade props with atelier-appropriate scenery and dynamically track active stages on narrow screens."
+      ],
+      "blind_qualitative_score_100": 63,
+      "verdict_ko": "정교한 UI 구성과 XPBD 천 시뮬레이션 시각화는 준수하나, 배경 오브젝트의 테마 부조화와 심각한 하위 10% 프레임 저하(12 FPS)가 완성도를 낮춥니다. 물리 연산 최적화와 접지 그림자 보강을 통해 시각적·기술적 안정성을 확보해야 합니다.",
+      "critic_model": "gemini-4-carbon (medium, blind)"
+    }
+  }
+]

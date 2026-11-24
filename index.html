@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neon Frontier 2026 — Multi-Domain Model Benchmark & RLAIF Exhibition</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23111317'/><path d='M8 24V8l10 16V8' stroke='%23d8b679' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/><circle cx='24' cy='22' r='2.5' fill='%234fb3a2'/></svg>" />
+  <link rel="stylesheet" href="./portal.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Editorial Masthead -->
+    <header class="masthead">
+      <div class="brand">
+        <div class="eyebrow">CLEAN-ROOM FRONTIER BENCHMARK · 2026-11-24 · V3 WORKFLOW + RLAIF R1→R2</div>
+        <h1>NEON FRONTIER <span class="gold">EXHIBITION &amp; BENCHMARK</span></h1>
+      </div>
+      <nav class="main-nav" role="tablist">
+        <button class="nav-btn active" data-tab="gallery">작품 전시관 (6 Works)</button>
+        <button class="nav-btn" data-tab="showdown">정면 대결: Neon vs Opus 5.5</button>
+        <button class="nav-btn" data-tab="effort">Effort 스윕 (Low→XHigh)</button>
+        <button class="nav-btn" data-tab="rlaif">RLAIF R1→R2 &amp; 토큰 실측</button>
+        <button class="nav-btn" data-tab="human">내 정성 평가표 (Human vs AI)</button>
+        <button class="nav-btn" data-tab="refs">리퍼런스·댓글 분석</button>
+      </nav>
+    </header>
+
+    <!-- KPI Ribbon -->
+    <section class="kpi-ribbon" id="kpi-ribbon">
+      <div class="kpi-card">
+        <div class="kpi-label">구현 작품 / 도메인</div>
+        <div class="kpi-val" id="kpi-works">6 Works · 5 Domains</div>
+        <div class="kpi-sub" id="kpi-loc">로딩 중...</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">총 실측 Swarm 토큰</div>
+        <div class="kpi-val" id="kpi-tokens">—</div>
+        <div class="kpi-sub" id="kpi-cache">transcript.jsonl 하드웨어 로깅</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Gate 5.5 QA 통과율</div>
+        <div class="kpi-val" id="kpi-qa">—</div>
+        <div class="kpi-sub" id="kpi-fps">Chrome WebGL2 실측</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">RLAIF R1 → R2 평균 향상</div>
+        <div class="kpi-val gold" id="kpi-rlaif-delta">—</div>
+        <div class="kpi-sub">Decision-1 + Blind Carbon</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Neon vs Opus 동일 과제 비용</div>
+        <div class="kpi-val teal" id="kpi-cost-ratio">—</div>
+        <div class="kpi-sub">Track 1A vs Track 1B 실측</div>
+      </div>
+    </section>
+
+    <!-- TAB 1: GALLERY + LIVE THEATER -->
+    <main class="tab-panel active" id="tab-gallery">
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </main>
+
+    <!-- TAB 2: HEAD-TO-HEAD BLIND / REVEALED SHOWDOWN -->
+    <main class="tab-panel" id="tab-showdown">
+      <div class="section-bar">
+        <div>
+          <h2>호롤로지 정면 대결 · 스켈레톤 투르비용 기계식 시계 (동일 클린룸 스펙)</h2>
+          <p class="muted">YouTube Chase AI 블라인드 테스트 및 댓글(<code>@amok8938</code>: "Gemini는 AI스러워 보이고 Opus가 미감이 좋다")을 직접 검증합니다. 블라인드 모드로 먼저 체감한 뒤 모델을 공개해 보세요.</p>
+        </div>
+        <div class="bar-actions">
+          <button class="btn-outline" id="btn-blind-toggle">블라인드 모드: OFF (모델 공개 중)</button>
+          <button class="btn-gold" id="btn-swap-sides">좌/우 위치 랜덤 섞기</button>
+        </div>
+      </div>
+      <div class="showdown-split" id="showdown-split">
+        <div class="showdown-pane">
+          <div class="pane-head">
+            <span class="pane-title" id="sd-left-title">LEFT CANDIDATE</span>
+            <span class="pane-badge" id="sd-left-badge">—</span>
+          </div>
+          <iframe id="sd-left-frame" src="" title="Left Watch Candidate"></iframe>
+        </div>
+        <div class="showdown-pane">
+          <div class="pane-head">
+            <span class="pane-title" id="sd-right-title">RIGHT CANDIDATE</span>
+            <span class="pane-badge" id="sd-right-badge">—</span>
+          </div>
+          <iframe id="sd-right-frame" src="" title="Right Watch Candidate"></iframe>
+        </div>
+      </div>
+      <div class="showdown-metrics" id="showdown-metrics"></div>
+    </main>
+
+    <!-- TAB 3: CONTROLLED EFFORT SWEEP (LOW -> XHIGH + 32K CAP DISCOVERY) -->
+    <main class="tab-panel" id="tab-effort">
+      <div class="section-bar">
+        <div>
+          <h2>제어된 Model × Effort API 스윕 (동일 단일 프롬프트 · Interactions API v1)</h2>
+          <p class="muted">동일 과제(스위스 이스케이프먼트 &amp; 이중 진자 RK4 위상공간 스튜디오)에 대해 <code>thinking_level</code>별 정확한 사고 토큰(<code>thought_tokens</code>), 출력 토큰, 지연시간, 공식 USD 단가, Chrome FPS 및 <code>gemini-decision-1</code> 캘리브레이션 RLAIF 점수를 측정했습니다.</p>
+        </div>
+      </div>
+      <div class="callout-box">
+        <strong>핵심 실증 발견 — 32K Output Cap 과사고(Overthinking) 절단 절벽:</strong>
+        <code>max_output_tokens = 32,768</code> 설정 시 <code>neon_xhigh</code>(사고 29,701 / 출력 3,067), <code>hydrogen_xhigh</code>(사고 32,213 / 출력 555), <code>carbon_high</code>(사고 32,765 / 출력 3 — 99.99% 사고 소진!)가 코드 출력 직전 절단되었습니다. 아래 주 테이블은 <code>65,536</code> 캡 확장 후 완전 출력된 실측 결과이며, 하단에 32K vs 64K 비교 차트를 함께 제공합니다.
+      </div>
+      <div class="charts-row">
+        <div class="chart-card">
+          <h3>Thought vs Output 토큰 분해 (64K Cap)</h3>
+          <div id="chart-effort-tokens"></div>
+        </div>
+        <div class="chart-card">
+          <h3>비용 대비 RLAIF 품질 Pareto 프론티어 (USD vs Decision-1)</h3>
+          <div id="chart-effort-pareto"></div>
+        </div>
+      </div>
+      <div class="table-wrap" id="effort-table-wrap"></div>
+      <h3 class="sub-h3">32K Cap 절단 절벽 실측 기록 (Overthinking Cliff Verification)</h3>
+      <div class="table-wrap" id="effort-32k-wrap"></div>
+    </main>
+
+    <!-- TAB 4: RLAIF R1 -> R2 & SWARM TOKEN TELEMETRY -->
+    <main class="tab-panel" id="tab-rlaif">
+      <div class="section-bar">
+        <div>
+          <h2>정량(토큰·캐시·시간·FPS) + 정성(RLAIF Round 1 → Round 2) 종합 분석</h2>
+          <p class="muted">모든 토큰·캐시 적중률은 각 Swarm 워커의 <code>transcript.jsonl</code>에서 직접 추출했으며, RLAIF는 <strong>Layer 1 <code>gemini-decision-1</code> (6축 확률 루브릭 60%)</strong> + <strong>Layer 2 블라인드 <code>gemini-4-carbon</code> 정성 비평 (40%)</strong> 합산입니다.</p>
+        </div>
+      </div>
+      <div class="table-wrap" id="swarm-table-wrap"></div>
+      <div class="rlaif-cards" id="rlaif-cards"></div>
+    </main>
+
+    <!-- TAB 5: HUMAN QUALITATIVE EVALUATION SCORECARD -->
+    <main class="tab-panel" id="tab-human">
+      <div class="section-bar">
+        <div>
+          <h2>사용자 직접 정성 평가표 (Human vs RLAIF 상관분석)</h2>
+          <p class="muted">각 작품을 직접 조작해 보신 뒤 4개 정성 축(1~10점)을 입력하시면, AI RLAIF 점수와의 일치도(Pearson <code>r</code>) 및 최종 순위를 실시간 계산해 드립니다. 점수는 브라우저 <code>localStorage</code>에 자동 저장됩니다.</p>
+        </div>
+        <div class="bar-actions">
+          <button class="btn-gold" id="btn-export-eval">평가 결과 Markdown 복사</button>
+          <button class="btn-outline" id="btn-reset-eval">초기화</button>
+        </div>
+      </div>
+      <div class="corr-banner" id="corr-banner">점수를 입력하면 Human vs RLAIF(Decision-1 / Blind Carbon) 상관계수가 실시간 계산됩니다.</div>
+      <div class="human-grid" id="human-grid"></div>
+    </main>
+
+    <!-- TAB 6: PUBLIC REFERENCE & COMMENT ANALYSIS -->
+    <main class="tab-panel" id="tab-refs">
+      <div class="section-bar">
+        <div>
+          <h2>SNS · YouTube · Reddit · 공식 쇼케이스 리퍼런스 및 댓글/답글 심층 분석</h2>
+          <p class="muted">2026년 11월 18일 Gemini 4 Neon 출시 직후 공개된 공식 쇼케이스 11종과 YouTube/Reddit 실전 리뷰·시청자 비판 댓글을 벤치마크 설계에 직접 반영했습니다.</p>
+        </div>
+      </div>
+      <div class="refs-grid" id="refs-grid"></div>
+    </main>
+  </div>
+
+  <!-- Full-Screen Live Work Theater Modal -->
+  <div class="theater-modal" id="theater-modal" aria-hidden="true">
+    <div class="theater-bar">
+      <div class="theater-info">
+        <span class="theater-badge" id="th-model">—</span>
+        <strong id="th-title">—</strong>
+        <span class="muted" id="th-meta">—</span>
+      </div>
+      <div class="theater-actions">
+        <button class="btn-outline" id="th-view-hero">HERO</button>
+        <button class="btn-outline" id="th-view-macro">MACRO</button>
+        <button class="btn-outline" id="th-view-alt">ALT MODE</button>
+        <button class="btn-gold" id="th-demo">DEMO ACTION</button>
+        <a class="btn-outline" id="th-newtab" href="#" target="_blank" rel="noopener">새 탭 열기 ↗</a>
+        <button class="btn-close" id="th-close">닫기 ✕</button>
+      </div>
+    </div>
+    <iframe id="th-iframe" src="" title="Live Benchmark Exhibit"></iframe>
+  </div>
+
+  <script type="module" src="./portal.js"></script>
+</body>
+</html>

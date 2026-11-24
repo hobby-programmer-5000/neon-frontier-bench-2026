@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChromaForge — Hex Flame &amp; 57.6K Formula Relight | Track 04</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230b0c0f'/><polygon points='16,4 27,10 27,22 16,28 5,22 5,10' fill='none' stroke='%23f5a623' stroke-width='2.5'/></svg>" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="studio-shell" class="studio-shell">
+    <!-- Top Swiss Gallery Header Bar -->
+    <header class="topbar" role="banner">
+      <div class="brand-cluster">
+        <span class="catalogue-id">04 // CHROMAFORGE</span>
+        <span class="divider-dot" aria-hidden="true"></span>
+        <h1 class="work-title">Hex-Voxel Curl Flame &amp; 57.6K Formula Relight</h1>
+      </div>
+
+      <nav class="mode-switcher" aria-label="Studio Mode Selection">
+        <button id="btn-mode-a" class="mode-tab active" type="button" data-mode="flame" title="Mode A: WebGL2 Hex-Voxel Curl-Noise Flame &amp; Ethereal Smoke Sculpture">
+          <span class="tab-code">A</span>
+          <span class="tab-label">HEX FLAME</span>
+        </button>
+        <button id="btn-mode-b" class="mode-tab" type="button" data-mode="sheet" title="Mode B: 57,600-Cell Live Formula Spreadsheet Relighting Engine">
+          <span class="tab-code">B</span>
+          <span class="tab-label">57.6K SHEET</span>
+        </button>
+      </nav>
+
+      <div class="view-cluster" aria-label="Canonical Views &amp; Inspector">
+        <button id="btn-view-hero" class="view-pill active" type="button" data-view="hero">HERO</button>
+        <button id="btn-view-macro" class="view-pill" type="button" data-view="macro">MACRO</button>
+        <button id="btn-view-alt" class="view-pill" type="button" data-view="alt_mode">57.6K FX</button>
+        <button id="btn-trigger-demo" class="view-pill accent-pill" type="button">DEMO</button>
+        <button id="btn-toggle-drawer" class="view-pill drawer-toggle" type="button" aria-expanded="true" title="Toggle Studio Drawer">INSPECTOR</button>
+      </div>
+    </header>
+
+    <!-- Formula & Shader Telemetry Bar (fx) -->
+    <section class="formula-strip" aria-label="Live Formula and Shader Expression Bar">
+      <div class="fx-cell-box" id="fx-cell-badge" title="Active Coordinate / Lattice Cell">HEX(0,0)</div>
+      <div class="fx-tag" id="fx-op-tag">GLSL // CURL-2007</div>
+      <div class="fx-symbol" aria-hidden="true">fx</div>
+      <div class="fx-expression-wrap">
+        <code id="fx-expression" class="fx-expression">=PLANCK_BB(CURL_ADVECT_2D(HEX_AXIAL(q,r), Ψ_FBM4, dt) + SPARK_LATTICE + SMOKE_RIBBON_FBM)</code>
+      </div>
+      <div id="fx-eval-readout" class="fx-eval-readout">T: 3,420 K · RGB(255, 196, 108)</div>
+    </section>
+
+    <!-- Main Exhibition Workspace -->
+    <main class="workspace">
+      <!-- Primary Canvas Viewport Stage -->
+      <div class="canvas-stage" id="canvas-stage">
+        <!-- Mode A: WebGL2 Full-Bleed Hexagonal Flame & Smoke Canvas -->
+        <div id="stage-flame" class="stage-layer active">
+          <canvas id="flame-canvas" aria-label="WebGL2 Hex-Voxel Curl-Noise Flame and Smoke Sculpture"></canvas>
+          <div class="museum-placard" aria-hidden="true">
+            <span class="placard-kicker" id="flame-placard-kicker">MODE A · BRIDSON 2007 CURL-NOISE HEX LATTICE + VOLUMETRIC SMOKE</span>
+            <span class="placard-sub" id="flame-placard-sub">Drag across canvas to inject thermal vorticity · Adjust parameters or switch presets in Inspector</span>
+          </div>
+        </div>
+
+        <!-- Mode B: 57,600-Cell Live Spreadsheet Relighting Canvas -->
+        <div id="stage-sheet" class="stage-layer">
+          <canvas id="sheet-canvas" aria-label="57,600-Cell Live Formula-Driven Spreadsheet Relighting Engine"></canvas>
+          <div class="museum-placard" aria-hidden="true">
+            <span class="placard-kicker" id="sheet-placard-kicker">MODE B · 320×180 (57,600 CELLS) · 288,000 LIVE FORMULAS/PASS · PHONG 1975</span>
+            <span class="placard-sub" id="sheet-placard-sub">Drag 3D Light Orb or click any spreadsheet cell (A1..LJ180) to inspect live Sobel, Depth, Normal &amp; Phong formulas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compact Right Studio Inspector Drawer (<= 248px, Zero Overlap) -->
+      <aside id="studio-drawer" class="studio-drawer" aria-label="Studio Parameters Inspector">
+        <!-- MODE A CONTROLS -->
+        <div id="controls-flame" class="drawer-panel active">
+          <div class="drawer-section">
+            <div class="section-header">
+              <span class="section-title">CURATED PRESETS</span>
+              <span class="section-meta" id="preset-active-label">SOLAR FORGE</span>
+            </div>
+            <div class="preset-grid">
+              <button type="button" class="preset-btn active" data-preset="solar_forge">1. Solar Forge</button>
+              <button type="button" class="preset-btn" data-preset="argon_plasma">2. Argon Plasma</button>
+              <button type="button" class="preset-btn" data-preset="ethereal_silk">3. Ethereal Silk</button>
+              <button type="button" class="preset-btn" data-preset="obsidian_ember">4. Obsidian Ember</button>
+            </div>
+          </div>
+
+          <div class="drawer-section">
+            <div class="section-header">
+              <span class="section-title">CURL FLUID &amp; HEX OPTICS</span>
+              <button type="button" id="btn-flame-impulse" class="mini-action-btn">PULSE VORTEX</button>
+            </div>
+
+            <label class="control-row" for="sl-speed">
+              <span class="ctrl-name">Advection Speed</span>
+              <output id="val-speed" class="ctrl-val">1.00</output>
+              <input id="sl-speed" type="range" min="0.20" max="2.40" step="0.05" value="1.00" />
+            </label>
+
+            <label class="control-row" for="sl-turbulence">
+              <span class="ctrl-name">Curl Turbulence</span>
+              <output id="val-turbulence" class="ctrl-val">1.15</output>
+              <input id="sl-turbulence" type="range" min="0.20" max="2.50" step="0.05" value="1.15" />
+            </label>
+
+            <label class="control-row" for="sl-viscosity">
+              <span class="ctrl-name">Smoke Viscosity</span>
+              <output id="val-viscosity" class="ctrl-val">0.85</output>
+              <input id="sl-viscosity" type="range" min="0.10" max="2.00" step="0.05" value="0.85" />
+            </label>
+
+            <label class="control-row" for="sl-flamesize">
+              <span class="ctrl-name">Plume Aperture</span>
+              <output id="val-flamesize" class="ctrl-val">1.05</output>
+              <input id="sl-flamesize" type="range" min="0.45" max="1.80" step="0.05" value="1.05" />
+            </label>
+
+            <label class="control-row" for="sl-sparks">
+              <span class="ctrl-name">Hex Spark Flux</span>
+              <output id="val-sparks" class="ctrl-val">1.10</output>
+              <input id="sl-sparks" type="range" min="0.00" max="2.00" step="0.05" value="1.10" />
+            </label>
+
+            <label class="control-row" for="sl-glow">
+              <span class="ctrl-name">Ambient Blackbody</span>
+              <output id="val-glow" class="ctrl-val">1.00</output>
+              <input id="sl-glow" type="range" min="0.20" max="2.00" step="0.05" value="1.00" />
+            </label>
+
+            <label class="control-row" for="sl-hexscale">
+              <span class="ctrl-name">Hex Lattice Density</span>
+              <output id="val-hexscale" class="ctrl-val">46</output>
+              <input id="sl-hexscale" type="range" min="18" max="84" step="1" value="46" />
+            </label>
+          </div>
+
+          <div class="drawer-section">
+            <div class="section-header">
+              <span class="section-title">BLACKBODY SPECTRUM</span>
+              <span class="section-meta" id="flame-temp-peak">4,800 K</span>
+            </div>
+            <div class="spectrum-bar" id="spectrum-bar"></div>
+            <div class="telemetry-kv-grid">
+              <div class="kv-cell">
+                <span class="kv-k">SOLVER</span>
+                <span class="kv-v">2D/3D Curl Ψ</span>
+              </div>
+              <div class="kv-cell">
+                <span class="kv-k">LATTICE</span>
+                <span class="kv-v" id="kv-hex-count">~4,200 Hexes</span>
+              </div>
+              <div class="kv-cell">
+                <span class="kv-k">SMOKE RIBBONS</span>
+                <span class="kv-v">4-Octave FBM</span>
+              </div>
+              <div class="kv-cell">
+                <span class="kv-k">PRE-WARM</span>
+                <span class="kv-v" id="kv-prewarm-ms">0.0 ms</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODE B CONTROLS -->
+        <div id="controls-sheet" class="drawer-panel">
+          <div class="drawer-section">
+            <div class="section-header">
+              <span class="section-title">CV &amp; RELIGHT PIPELINE</span>
+              <span class="section-meta">320×180</span>
+            </div>
+            <div class="relight-mode-list">
+              <button type="button" class="relight-btn" data-rmode="1">1. Original Matrix</button>
+              <button type="button" class="relight-btn" data-rmode="2">2. Sobel Edges</button>
+              <button type="button" class="relight-btn" data-rmode="3">3. 3D Depth Relief</button>
+              <button type="button" class="relight-btn active" data-rmode="4">4. Dynamic Key Relight</button>
+              <button type="button" class="relight-btn" data-rmode="5">5. Dual Rim Noir</button>
+              <button type="button" class="relight-btn" data-rmode="6">6. Surface Normal Map</button>
+            </div>
+          </div>
+
+          <div class="drawer-section">
+            <div class="section-header">
+              <span class="section-title">3D LIGHT &amp; PHONG PARAMS</span>
+              <button type="button" id="btn-sheet-orbit" class="mini-action-btn">ORBIT L1</button>
+            </div>
+
+            <label class="control-row" for="sl-light-z">
+              <span class="ctrl-name">Light Elevation ($L$Z)</span>
+              <output id="val-light-z" class="ctrl-val">0.62</output>
+              <input id="sl-light-z" type="range" min="0.15" max="1.40" step="0.02" value="0.62" />
+            </label>
+
+            <label class="control-row" for="sl-kd">
+              <span class="ctrl-name">Diffuse Gain ($KD)</span>
+              <output id="val-kd" class="ctrl-val">0.95</output>
+              <input id="sl-kd" type="range" min="0.10" max="1.80" step="0.05" value="0.95" />
+            </label>
+
+            <label class="control-row" for="sl-ks">
+              <span class="ctrl-name">Specular Schlick ($KS)</span>
+              <output id="val-ks" class="ctrl-val">0.85</output>
+              <input id="sl-ks" type="range" min="0.00" max="1.80" step="0.05" value="0.85" />
+            </label>
+
+            <label class="control-row" for="sl-shininess">
+              <span class="ctrl-name">Phong Exponent ($N_S)</span>
+              <output id="val-shininess" class="ctrl-val">24</output>
+              <input id="sl-shininess" type="range" min="4" max="64" step="2" value="24" />
+            </label>
+
+            <label class="control-row" for="sl-neon-emit">
+              <span class="ctrl-name">Tube Self-Emission</span>
+              <output id="val-neon-emit" class="ctrl-val">0.80</output>
+              <input id="sl-neon-emit" type="range" min="0.00" max="1.60" step="0.05" value="0.80" />
+            </label>
+
+            <label class="control-row" for="sl-grid-zoom">
+              <span class="ctrl-name">Cell Loupe Overlay</span>
+              <output id="val-grid-zoom" class="ctrl-val">ON</output>
+              <input id="sl-grid-zoom" type="range" min="0" max="1" step="1" value="1" />
+            </label>
+          </div>
+
+          <div class="drawer-section">
+            <div class="section-header">
+              <span class="section-title">CELL INSPECTOR</span>
+              <span class="section-meta" id="insp-cell-id">DR84</span>
+            </div>
+            <div class="cell-metrics-box">
+              <div class="cm-row"><span>BASE RGB</span><strong id="cm-base-rgb">248, 114, 38</strong></div>
+              <div class="cm-row"><span>RELIT RGB</span><strong id="cm-relit-rgb">255, 184, 96</strong></div>
+              <div class="cm-row"><span>SOBEL |∇I|</span><strong id="cm-sobel">0.842</strong></div>
+              <div class="cm-row"><span>HEIGHT Z(r,c)</span><strong id="cm-depth">+0.784 m</strong></div>
+              <div class="cm-row"><span>NORMAL N(x,y,z)</span><strong id="cm-normal">+0.24, -0.38, +0.89</strong></div>
+            </div>
+            <!-- 3x3 Live Spreadsheet Cell Value Neighborhood Preview -->
+            <div class="mini-sheet-grid" id="mini-sheet-grid" aria-label="3x3 Active Cell Neighborhood Values"></div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Bottom Tabular Telemetry Strip -->
+    <footer class="statusbar" role="contentinfo">
+      <div class="status-item">
+        <span class="st-label">ENGINE</span>
+        <span class="st-val" id="st-engine">WEBGL2 // GLSL 300 ES</span>
+      </div>
+      <div class="status-item">
+        <span class="st-label">ACTIVE CELLS</span>
+        <span class="st-val" id="st-cells">57,600 (320×180)</span>
+      </div>
+      <div class="status-item">
+        <span class="st-label">FORMULAS / PASS</span>
+        <span class="st-val" id="st-formulas">288,000</span>
+      </div>
+      <div class="status-item status-hide-narrow">
+        <span class="st-label">LIGHT POS</span>
+        <span class="st-val" id="st-light">(0.42, 0.36, 0.62)</span>
+      </div>
+      <div class="status-item">
+        <span class="st-label">FPS</span>
+        <span class="st-val st-highlight" id="st-fps">60</span>
+      </div>
+      <div class="status-item status-right">
+        <span class="st-label">MODEL</span>
+        <span class="st-val">GEMINI-4-ARGON · HIGH</span>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
