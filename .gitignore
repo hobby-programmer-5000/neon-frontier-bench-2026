@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Temporary capture frames & intermediate renders
+tmp_video/
+*.webm
+*.log
+
+# Python caches
+__pycache__/
+*.pyc
+.venv/
+
+# Secrets / local env
+.env
+.env.*
+*.key
+*.pem
+
+# OS artifacts
+.DS_Store
+Thumbs.db
